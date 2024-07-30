@@ -1,0 +1,8 @@
+{
+    "files": [
+        "CustomComponent.qml",
+        "WindowFrameRate.qml",
+        "main.py",
+        "main.qml"
+    ]
+}

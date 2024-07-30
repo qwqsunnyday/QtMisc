@@ -1,0 +1,5 @@
+{
+    "python.analysis.typeCheckingMode": "basic",
+    "qmlFormat.command": "C:\\Users\\bobby\\DATA\\Git\\Python\\.venv\\Lib\\site-packages\\PySide6\\qmlformat.exe",
+    "qt.sdkPath": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64"
+}

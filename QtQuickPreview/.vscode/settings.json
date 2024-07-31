@@ -1,0 +1,45 @@
+{
+    "python.analysis.typeCheckingMode": "basic",
+    "qmlFormat.command": "C:\\Users\\bobby\\DATA\\Git\\Python\\.venv\\Lib\\site-packages\\PySide6\\qmlformat.exe",
+    "qt.sdkPath": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64",
+    "cmake.generator": "Visual Studio 17 2022",
+    "cmake.environment": {
+        "CMAKE_PREFIX_PATH": "C:/Users/bobby/DATA/DevEnvs/Qt/6.7.2/msvc2019_64"
+    },
+    "cmake.cmakePath": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\Tools\\CMake_64\\bin\\cmake.exe",
+    "qt-official.qmlls.traceLsp": "messages",
+    "qt-official.qmlls.enabled": true,
+    "qt-official.qtFolder": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt",
+    "qt-official.qmlls.customExePath": "qmlls",
+    "qt-official.qmlls.verboseOutput": true,
+    "qt-official.customWidgetsDesignerExePath": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\Tools\\QtDesignStudio\\bin",
+    "cmake.debugConfig": {
+        // 在.vscode\launch.json 中指定无效
+        "visualizerFile": "${workspaceFolder}/.vscode/qt6.natvis",
+        "showDisplayString": true,
+        "symbolSearchPath": "${env:Qt6_DIR}\\bin",
+    },
+    "files.associations": {
+        "*.txt": "plaintext",
+        "*.less": "less",
+        ".gdbinit": "gdb",
+        "*.S": "asm-intel-x86-generic",
+        "*.c": "c",
+        "*.log": "log",
+        "*.sql": "sql",
+        "*.qml": "qml",
+        "CMakeLists.txt": "cmake",
+        "qqmlapplicationengine": "cpp"
+    },
+    "qt.installPath": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt",
+    "qt.includePath": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\include",
+    "qt.qmllspToolPath": "C:\\Users\\bobby\\.vscode\\extensions\\triangleoxo.qtservitor-0.3.3\\tools\\windows\\qmllsp.exe",
+    "qt.previewInterval": 1000,
+    "qt.qtCreatorPath": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\Tools\\QtCreator",
+    "qt.qtnatvis": "C:\\Users\\bobby\\Documents\\Visual Studio 2022\\Visualizers\\qt6.natvis",
+    "qt.qmlTypeDescriptionFolder": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\Tools\\QtCreator\\share\\qtcreator\\qml-type-descriptions",
+    "qt.previewToolPath": "C:\\Users\\bobby\\.vscode\\extensions\\triangleoxo.qtservitor-0.3.3\\tools\\windows\\qmlpreview.exe",
+    "[qml]": {
+        // "editor.defaultFormatter": "theqtcompany.qt-official"
+    },
+}

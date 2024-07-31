@@ -17,7 +17,7 @@ Rectangle {
                     text: "button"
                     property int para: arg
                     onClicked: {
-                        console.log("pressed" + "para = " + para + " arg = " + arg);
+                        console.log("pressed" + "para = " + para + " arg = " + arg)
                     }
                 }
             }
@@ -32,14 +32,13 @@ Rectangle {
                     Button {
                         text: "qsTr(OK)"
                         onClicked: {
-                            console.log("pressed");
+                            console.log("pressed")
                         }
                     }
                 }
             }
             Repeater {
                 model: 4
-                
             }
         }
     }

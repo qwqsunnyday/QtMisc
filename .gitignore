@@ -1,0 +1,23 @@
+#注释           .gitignore的注释
+# *.txt           忽略所有 .txt 后缀的文件
+# !src.a          忽略除 src.a 外的其他文件
+# /*.c:           忽略 cat.c, 不忽略 build/cat.c
+# doc/*.txt       忽略doc目录下所有 .txt 后缀的文件, 但不包括doc子目录的 .txt 的文件
+# debug/*.obj:    忽略debug/io.obj, 不忽略 debug/common/io.obj和tools/debug/io.obj
+# **/foo:         忽略/foo, a/foo, a/b/foo等
+# a/**/b:         忽略a/b, a/x/b, a/x/y/b等
+# !/bin/run.sh    不忽略bin目录下的run.sh文件
+# config.js:      忽略当前路径的 config.js 文件
+# *.zip           忽略所有.zip文件
+
+# /位于头部的作用是只忽略当前目录下的内容；放在尾部的作用是只忽略目录，而不忽略文件
+# 头尾都没有 /  ​当前目录及下级目录中所有的runtime​​文件或目录都会被忽略​​
+# 前面有 /     ​只忽略当前目录中的 runtime 文件或目录​​, 不忽略下级目录中的 runtime 文件或目录​​
+# 后面有 /     ​只忽略当前目录和下级目录中的 runtime 目录​​, 不忽略当前目录和下级目录中的 runtime 文件​​
+# 头尾都有 /   ​只忽略当前目录中的 runtime 目录​​
+
+*.exe
+*.dll
+**/.vs/
+~*.*
+build/

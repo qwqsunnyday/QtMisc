@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Qt-6.7.2-msvc2019_64 - Clang 17.0.3 (GNU CLI) for MSVC 17.10.35013.160 (Visual Studio Community 2022 Release - amd64)",
+    "visualStudio": "187b378a",
+    "visualStudioArchitecture": "x64",
+    "compilers": {
+      "C": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang.exe",
+      "CXX": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang.exe"
+    },
+    "isTrusted": true,
+    "preferredGenerator": {
+      "name": "Visual Studio 17 2022"
+    },
+    "environmentVariables": {
+      "VSCODE_QT_FOLDER": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64",
+      "PATH": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64;C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\bin;${env:PATH}"
+    },
+    "toolchainFile": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\lib\\cmake\\Qt6\\qt.toolchain.cmake"
+  },
+  {
+    "name": "Qt-6.7.2-msvc2019_64 - Clang 17.0.3 (MSVC CLI) for MSVC 17.10.35013.160 (Visual Studio Community 2022 Release - amd64)",
+    "visualStudio": "187b378a",
+    "visualStudioArchitecture": "x64",
+    "preferredGenerator": {
+      "name": "Visual Studio 17 2022",
+      "platform": "x64",
+      "toolset": "ClangCL,host=x64"
+    },
+    "compilers": {
+      "C": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+      "CXX": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe"
+    },
+    "isTrusted": true,
+    "environmentVariables": {
+      "VSCODE_QT_FOLDER": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64",
+      "PATH": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64;C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\bin;${env:PATH}"
+    },
+    "toolchainFile": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\lib\\cmake\\Qt6\\qt.toolchain.cmake"
+  },
+  {
+    "name": "Qt-6.7.2-msvc2019_64 - Visual Studio Community 2022 Release - amd64",
+    "visualStudio": "187b378a",
+    "visualStudioArchitecture": "x64",
+    "isTrusted": true,
+    "preferredGenerator": {
+      "name": "Visual Studio 17 2022",
+      "platform": "x64",
+      "toolset": "host=x64"
+    },
+    "environmentVariables": {
+      "VSCODE_QT_FOLDER": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64",
+      "PATH": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64;C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\bin;${env:PATH}"
+    },
+    "toolchainFile": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\lib\\cmake\\Qt6\\qt.toolchain.cmake"
+  },
+  {
+    "name": "Qt-6.7.2-msvc2019_64 - Visual Studio Community 2022 Release - x86_amd64",
+    "visualStudio": "187b378a",
+    "visualStudioArchitecture": "x86",
+    "isTrusted": true,
+    "preferredGenerator": {
+      "name": "Visual Studio 17 2022",
+      "platform": "x64",
+      "toolset": "host=x86"
+    },
+    "environmentVariables": {
+      "VSCODE_QT_FOLDER": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64",
+      "PATH": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64;C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\bin;${env:PATH}"
+    },
+    "toolchainFile": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\lib\\cmake\\Qt6\\qt.toolchain.cmake"
+  }
+]

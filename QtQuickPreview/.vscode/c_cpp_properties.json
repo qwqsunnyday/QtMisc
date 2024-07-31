@@ -1,0 +1,30 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "${env:Qt6_DIR}/include/**"
+            ],
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "windowsSdkVersion": "10.0.22621.0",
+            "compilerPath": "C:/Program Files/Microsoft Visual Studio/2022/Community/VC/Tools/MSVC/14.40.33807/bin/Hostx64/x64/cl.exe",
+            "intelliSenseMode": "windows-msvc-x64",
+            "cppStandard": "c++17",
+            "cStandard": "c17",
+            "configurationProvider": "ms-vscode.cmake-tools",
+            "qt.targetFile": "C:/Users/bobby/DATA/Git/Python/PyQt/QtQuickPreview/build/Debug/appQtQuickPreview.exe",
+            "qt.targetFolder": "C:/Users/bobby/DATA/Git/Python/PyQt/QtQuickPreview",
+            "qt.importPath": "C:/Users/bobby/DATA/DevEnvs/Qt/6.7.2/msvc2019_64/qml",
+            "qt.qml2ImportPath": "C:/Users/bobby/DATA/DevEnvs/Qt/6.7.2/msvc2019_64/qml",
+            "qt.qrc": "",
+            "qt.sourceFolder": "C:/Users/bobby/DATA/Git/Python/PyQt/QtQuickPreview",
+            "qt.projectRoot": "C:/Users/bobby/DATA/Git/Python/PyQt/QtQuickPreview"
+        }
+    ],
+    "version": 4
+}

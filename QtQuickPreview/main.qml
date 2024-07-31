@@ -3,8 +3,8 @@ import QtQuick.Controls 2.15
 // import QtQuick.Controls.Styles 1.2
 import QtQuick.Layouts 1.15
 
-// ApplicationWindow才可以管理窗口相关, 如宽高
-ApplicationWindow {
+// ApplicationWindow Window才可以管理窗口相关, 如宽高
+Window {
     id: root_window
 
     minimumHeight: 500
@@ -26,13 +26,13 @@ ApplicationWindow {
         // 作用: 将视觉层级在上方的元素接收到的事件继续传递至下方(此层级本身在底层, 因此不用传递)
         // propagateComposedEvents: true
         onClicked: mouse => {
-            // MouseEvent mouse
-            // When handling this signal, changing the accepted property of the mouse parameter has no effect,
-            // unless the propagateComposedEvents property is true.
-            // 传递的事件在accepted时结束, 因此手动设置为false
-            // mouse.accepted = false
-            console.log(probe.x + ", " + probe.y + ": " + probe.imlicitWidth + " * " + probe.implicitHeight + " " + probe.width + " * " + probe.height + " " + probe.currentIndex);
-        }
+                       // MouseEvent mouse
+                       // When handling this signal, changing the accepted property of the mouse parameter has no effect,
+                       // unless the propagateComposedEvents property is true.
+                       // 传递的事件在accepted时结束, 因此手动设置为false
+                       // mouse.accepted = false
+                       console.log(probe.x + ", " + probe.y + ": " + probe.imlicitWidth + " * " + probe.implicitHeight + " " + probe.width + " * " + probe.height + " " + probe.currentIndex);
+                   }
     }
     Item {
         id: root
@@ -44,10 +44,10 @@ ApplicationWindow {
             anchors.fill: parent
 
             Rectangle {
-                id: left
+                id: leftZone
 
                 height: parent.height
-                width: parent.width - right.width
+                width: parent.width - rightZone.width
                 color: "gray"
                 border.color: Qt.lighter(color)
                 border.width: 2
@@ -85,7 +85,7 @@ ApplicationWindow {
                 }
             }
             Rectangle {
-                id: right
+                id: rightZone
 
                 height: parent.height
                 width: 300
@@ -247,13 +247,13 @@ ApplicationWindow {
         }
     }
     // onWidthChanged: {
-    //     console.log(root.width + " x " + root.height);
+    // console.log(root.width + " x " + root.height);
     // }
     WindowFrameRate {
         id: windowFrameRate
         // window为ApplicationWindow的Attached Property
         // https://doc.qt.io/qt-6/qtqml-syntax-objectattributes.html
-        targetWindow: ApplicationWindow.window
+        targetWindow: Window.window
         anchors.centerIn: parent
         visible: true
     }

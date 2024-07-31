@@ -1,0 +1,69 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "QML Debug: Attach",
+            "type": "qml",
+            "request": "attach",
+            "host": "localhost",
+            "port": 2333,
+            "paths": {
+                "qrc:/QtQuickPreview/": "${workspaceFolder}/"
+            }
+        },
+        {
+            "name": "Debug Qt Application with Visual Studio Debugger",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "visualizerFile": "C:\\Users\\bobby\\Documents\\Visual Studio 2022\\Visualizers\\qt6.natvis",
+            "windows": {
+                "environment": [
+                    {
+                        "name": "PATH",
+                        "value": "${env:PATH};${command:qt-official.kitDirectory}${/}bin"
+                    }
+                ]
+            },
+            "environment": [
+                {
+                    "name": "path",
+                    "value": "C:\\Users\\bobby\\DATA\\DevEnvs\\Qt\\6.7.2\\msvc2019_64\\bin"
+                }
+            ],
+            "args": [
+                "-qmljsdebugger=port:2333,block,services:DebugMessages,QmlDebugger,V8Debugger,QmlInspector,DebugTranslation"
+            ]
+        },
+        {
+            "name": "(gdb) Cmake Launch",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${command:cmake.launchTargetPath}",
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [
+                {
+                    "name": "PATH",
+                    "value": "${env:PATH}:${command:cmake.getLaunchTargetDirectory}:${env:Qt6_DIR}\\bin"
+                }
+            ],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "visualizerFile": "C:\\Users\\bobby\\Documents\\Visual Studio 2022\\Visualizers\\qt6.natvis",
+            "showDisplayString": true,
+            "args": [
+                "-qmljsdebugger=port:2333,block,services:DebugMessages,QmlDebugger,V8Debugger,QmlInspector,DebugTranslation"
+            ],
+        },
+    ]
+}

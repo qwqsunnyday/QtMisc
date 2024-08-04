@@ -18,6 +18,13 @@ qt_add_qml_module(appQtQuickPreview
     QML_FILES WindowFrameRate.qml
     RESOURCES Genetic_Element/9XUAS.png Genetic_Element/9XUAS1.png Genetic_Element/CMV.png Genetic_Element/CMV1.png Genetic_Element/GAL-4.png Genetic_Element/GAL-41.png Genetic_Element/INS.png Genetic_Element/INS1.png Genetic_Element/Luciferase.png Genetic_Element/Luciferase1.png Genetic_Element/miRNA.png Genetic_Element/miRNA1.png Genetic_Element/P-GIP.png Genetic_Element/P-GIP1.png Genetic_Element/Test1.png Genetic_Element/test2.png Genetic_Element/test3.png Genetic_Element/test31.png Genetic_Element/U6-P.png Genetic_Element/U6-P1.png Genetic_Element/U6-P2.png Light_button/Light_close.png Light_button/Light_close_m.png Light_button/Light_close_s.png Light_button/Light_close_sm.png Light_button/Light_close_ss.png Light_button/Light_open.png Light_button/Light_open_s.png
     RESOURCES Light_button/Light_close.png Light_button/Light_close_m.png Light_button/Light_close_s.png Light_button/Light_close_sm.png Light_button/Light_close_ss.png Light_button/Light_open.png Light_button/Light_open_s.png
+    QML_FILES Temp.qml
+    QML_FILES CustomComponent.qml
+    QML_FILES DynamicLoadComponent.qml
+    QML_FILES Drag.Automatic.qml
+    QML_FILES Drag.Internal.qml
+    QML_FILES DebugUtils.js
+    QML_FILES CommonHolderWindow.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

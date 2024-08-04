@@ -2,14 +2,19 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 // import QtQuick.Controls.Styles 1.2
 import QtQuick.Layouts 1.15
+// https://doc.qt.io/qt-6.2/qtquickcontrols2-styles.html#using-styles-in-qt-quick-controls
+// import QtQuick.Controls.Material
 
 // ApplicationWindow Window才可以管理窗口相关, 如宽高
 Window {
+
+    // 指定样式设置
+    // Material.background: "black"
+
     id: root_window
 
     minimumHeight: 500
     minimumWidth: 800
-
     // 要手动设置visible
     visible: true
 
@@ -19,19 +24,21 @@ Window {
         visible: false
         anchors.fill: parent
         cursorShape: Qt.PointingHandCursor
-        hoverEnabled: false
-        onEntered: {}
-        onExited: {}
-        onWheel: {}
-        // 作用: 将视觉层级在上方的元素接收到的事件继续传递至下方(此层级本身在底层, 因此不用传递)
-        // propagateComposedEvents: true
-        onClicked: mouse => {
+        // hoverEnabled: false
+        // onEntered: {}
+        // onExited: {}
+        // onWheel: {}
+        // 作用: 将视觉层级在上方的MouseArea接收到的事件继续传递至下方MouseArea, 注意仅MouseArea!!!
+        propagateComposedEvents: true
+
+        onClicked: (mouse) => {
                        // MouseEvent mouse
                        // When handling this signal, changing the accepted property of the mouse parameter has no effect,
                        // unless the propagateComposedEvents property is true.
                        // 传递的事件在accepted时结束, 因此手动设置为false
-                       // mouse.accepted = false
-                       console.log(probe.x + ", " + probe.y + ": " + probe.imlicitWidth + " * " + probe.implicitHeight + " " + probe.width + " * " + probe.height + " " + probe.currentIndex);
+                       mouse.accepted = false
+                       console.log("top level clicked")
+                       // console.log(probe.x + ", " + probe.y + ": " + probe.imlicitWidth + " * " + probe.implicitHeight + " " + probe.width + " * " + probe.height + " " + probe.currentIndex);
                    }
     }
     Item {
@@ -70,10 +77,80 @@ Window {
                             id: canvas
                             anchors.fill: parent
 
+                            Component {
+                                id: bioDevice
+                                // require modelData
+                                Rectangle {
+                                    x: posX; y: posY
+                                    width: img.implicitWidth; height: img.implicitHeight
+                                    // anchors.fill: parent
+                                    color: "transparent"
+                                    // color: "red"
+                                    // Drag.active: dragArea.drag.active
+                                    Drag.supportedActions: Qt.CopyAction
+                                    Drag.dragType: Drag.Automatic
+                                    Drag.mimeData: {"text/plain": modelData}
+
+                                    // Drag.imageSource: img.source
+                                    // MouseArea {
+                                    //     id: dragArea
+                                    //     anchors.fill: parent
+                                    //     drag.target: parent
+                                    // }
+                                    DragHandler {
+                                        onActiveChanged: {
+                                            if (active) {
+                                                console.log("start")
+                                                // The grab happens asynchronously and the JavaScript function callback is invoked
+                                                // when the grab is completed.
+                                                // The callback takes one argument, which is the result of the grab operation;
+                                                // an ItemGrabResult object
+                                                parent.grabToImage(function(result) {
+                                                    parent.Drag.imageSource = result.url
+                                                    parent.Drag.active = true
+                                                })
+                                            } else {
+                                                parent.Drag.active = false
+                                            }
+                                        }
+                                    }
+
+                                    Image {
+                                        id: img
+                                        source: "Genetic_Element/"+modelData
+                                        width: 100; height: 40
+                                        fillMode: Image.PreserveAspectFit
+                                    }
+                                }
+                            }
+
+                            ListModel {
+                                id: bioDevicesCanvasModel
+                            }
+
+                            Repeater {
+                                anchors.fill: parent
+                                model: bioDevicesCanvasModel
+                                delegate: bioDevice
+                            }
+
                             Rectangle {
                                 width: 100
                                 height: 100
                                 color: "black"
+                                opacity: 0.5
+                            }
+                        }
+                        DropArea {
+                            id: dropArea
+                            anchors.fill: parent
+                            onDropped: {
+                                bioDevicesSourceFlow.forceLayout()
+
+                                var modelData = drop.getDataAsString("text/plain")
+                                console.log(modelData+" dropped")
+                                bioDevicesCanvasModel.append({"modelData": modelData, "posX": drop.x, "posY": drop.y})
+                                console.log(_QObjectToJson(bioDevicesCanvasModel))
                             }
                         }
                     }
@@ -81,6 +158,91 @@ Window {
                         height: 0.3 * parent.height
                         width: parent.width
                         color: "yellow"
+
+                        Column {
+                           anchors.fill: parent
+                           anchors.margins: 10
+                           spacing: 20
+                            Flow {
+                                id: bioDevicesSourceFlow
+                                // anchors.fill: parent
+                                // anchors.margins: 10
+                                width: parent.width-10
+                                height: parent.height-10
+                                spacing: 10
+
+                                ListModel {
+                                    id: bioDevicesSourceModel
+                                    ListElement { modelData: "9XUAS1.png"}
+                                    ListElement { modelData: "CMV1.png"}
+                                    ListElement { modelData: "GAL-41.png"}
+                                    ListElement { modelData: "INS1.png"}
+                                    ListElement { modelData: "Luciferase1.png"}
+                                    ListElement { modelData: "miRNA1.png"}
+                                    ListElement { modelData: "P-GIP1.png"}
+                                    ListElement { modelData: "U6-P1.png"}
+                                    ListElement { modelData: "U6-P2.png"}
+
+                                    function getModelIndex(value) {
+                                        for (var i = 0; i < this.count; i++) {
+                                            if (this.get(i).modelData === value) {
+                                                return i;
+                                            }
+                                        }
+                                        return -1;
+                                    }
+                                }
+
+                                Repeater {
+                                    model: bioDevicesSourceModel
+                                    Rectangle {
+                                        width: img.implicitWidth; height: img.implicitHeight
+                                        // anchors.fill: parent
+                                        color: "transparent"
+                                        // color: "red"
+                                        // Drag.dragType 设置为Drag.Automatic时要手动指定下面的
+                                        Drag.active: dragArea.drag.active
+                                        Drag.dragType: Drag.Automatic
+                                        Drag.mimeData: {"text/plain": modelData}
+                                        // Drag.supportedActions: Qt.CopyAction
+
+                                        // Drag.imageSource: img.source
+                                        MouseArea {
+                                            id: dragArea
+                                            anchors.fill: parent
+                                            drag.target: parent
+                                        }
+                                        // DragHandler {
+                                        //     onActiveChanged: {
+                                        //         if (active) {
+                                        //             // Repeater语境下可以使用modelData(包括自定义属性)
+                                        //             var idx = bioDevicesSourceModel.getModelIndex(modelData)
+                                        //             console.log(modelData+ " start, index: "+idx+", "+_QObjectToJson(bioDevicesSourceModel.get(idx)))
+                                        //             bioDevicesSourceModel.insert(idx, bioDevicesSourceModel.get(idx))
+                                        //             // The grab happens asynchronously and the JavaScript function callback is invoked
+                                        //             // when the grab is completed.
+                                        //             // The callback takes one argument, which is the result of the grab operation;
+                                        //             // an ItemGrabResult object
+                                        //             parent.grabToImage(function(result) {
+                                        //                 parent.Drag.imageSource = result.url
+                                        //                 parent.Drag.active = true
+                                        //             })
+                                        //         } else {
+                                        //             parent.Drag.active = false
+                                        //         }
+                                        //     }
+                                        // }
+
+                                        Image {
+                                            id: img
+                                            source: "Genetic_Element/"+modelData
+                                            width: 100; height: 40
+                                            fillMode: Image.PreserveAspectFit
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -121,6 +283,7 @@ Window {
                                     height: 0.6 * parent.height
                                     width: parent.width
                                     Rectangle {
+                                        id: rectangle
                                         width: 100
                                         height: 100
                                         // visible: false
@@ -171,11 +334,56 @@ Window {
                         width: parent.width
                         color: "yellow"
 
+                        MouseArea {
+                            anchors.fill: parent
+                            // 定义一个计时器来聚合滚动事件
+                            Timer {
+                                id: scrollTimer
+                                interval: 100 // 设置合适的时间间隔（毫秒）
+                                repeat: false
+
+                                onTriggered: {
+
+                                }
+                            }
+
+                            onWheel: {
+                                // 响应一次滚动:
+                                // 1. 当滚轮事件开始且计时器没有运行
+                                // 2. 方向切换了
+                                if(wheel.inverted||(!scrollTimer.running)||((Math.abs(wheel.angleDelta.y)>=120)||(Math.abs(wheel.angleDelta.y)>=120))){
+                                    scrollTimer.start();
+                                    console.log("Handled one scroll event");
+                                    if(wheel.angleDelta.x<0||wheel.angleDelta.y<0){
+                                        // index遵循C风格
+                                        if(bar.currentIndex===bar.count-1){
+                                            bar.setCurrentIndex(0)
+                                        }else{
+                                            bar.incrementCurrentIndex();
+                                        }
+                                        console.log(bar.currentIndex+" "+bar.count);
+                                    }else{
+                                        if(bar.currentIndex===0){
+                                            bar.setCurrentIndex(bar.count-1)
+                                        }else{
+                                            bar.decrementCurrentIndex();
+                                        }
+                                        console.log(bar.currentIndex+" "+bar.count);
+                                    }
+                                }else{
+                                    scrollTimer.restart();
+                                }
+                               // console.log(wheel.angleDelta);
+                            }
+                            // onClicked: console.log("mouse clicked"); // 无效
+                        }
+                        // SwipeView无法直接获取事件响应, 因此将MouseArea放在SwipeView的下面
                         SwipeView {
                             id: view
 
                             // 双向绑定
                             currentIndex: bar.currentIndex
+
                             anchors.fill: parent
 
                             // from Item, default false 限制被显示的项是否只在当前区域内显示
@@ -209,6 +417,7 @@ Window {
                                 }
                             }
                         }
+
                         // 注意: 将TabBar放在SwipeView之上防止接受不到鼠标输入
                         TabBar {
                             id: bar
@@ -218,7 +427,6 @@ Window {
                             currentIndex: view.currentIndex
 
                             TabButton {
-                                id: probe
                                 text: "Tutorial"
                             }
                             TabButton {
@@ -246,6 +454,8 @@ Window {
             }
         }
     }
+
+
     // onWidthChanged: {
     // console.log(root.width + " x " + root.height);
     // }
@@ -257,182 +467,21 @@ Window {
         anchors.centerIn: parent
         visible: true
     }
-    // CustomComponent {
-    //     // CustomComponent具有的根属性
-    //     required_para: "2333"
-    //     // CustomComponent具有的根属性, 是button.para的alias
-    //     para: 6666
-    //     // 基于scope
-    //     property int context_var: 114514
-    //     anchors.centerIn: parent
-    // }
-}
 
-
-/* Item {
-id: root
-
-visible: true
-width: 1000
-height: 800
-
-Row {
-
-    anchors.fill: parent
-    layoutDirection: Qt.RightToLeft
-
-    // Upper Half
-    Column {
-        height: parent.height / 2
-        width: parent.width
-
-        TextField {
-            width: parent.width
-            placeholderText: "Enter text here"
-        }
-
-        Slider {
-            width: parent.width
-            from: 0
-            to: 100
-        }
-
-        Row {
-            width: parent.width
-
-            Switch {
-                text: "Option 1"
-            }
-
-            Switch {
-                text: "Option 2"
-            }
-
-            Switch {
-                text: "Option 3"
+    function _QObjectToJson(qObject) {
+        var jsonObject = {};
+        var keys = Object.keys(qObject);
+        // console.log(keys)
+        // console.log(keys[0]+" _ "+qObject[keys[0]]+" _ "+qObject.valueOf(keys[0])["text"]+" _ "+qObject["text"])
+        for (var i = 0; i < keys.length ; i++) {
+            var value = qObject[keys[i]]
+            // 防止循环引用
+            if (value !== undefined && keys[i] !== "parent") {
+                jsonObject[keys[i]] = value;
             }
         }
-    }
-
-    Column {
-        Canvas {
-            // width: 300
-            height: 0.7 * parent.height
-        }
-        Flow {
-            Rectangle {
-                height: 20
-                width: 40
-            }
-            Rectangle {
-                height: 20
-                width: 40
-            }
-            Rectangle {
-                height: 20
-                width: 40
-            }
-            Rectangle {
-                height: 20
-                width: 40
-            }
-            Rectangle {
-                height: 20
-                width: 40
-            }
-            Rectangle {
-                height: 20
-                width: 40
-            }
-        }
-    }
-
-}
-} */
-
-/* Item {
-visible: true
-width: 1000
-height: 800
-// title: qsTr("Responsive Layout Example")
-
-// Left Side
-Rectangle {
-    id: leftSide
-    width: parent.width - rightSide.width
-    height: parent.height
-    color: "lightgray"
-
-    Column {
-        anchors.fill: parent
-
-        Rectangle {
-            height: parent.height * 0.7
-            width: parent.width
-            color: "lightblue"
-        }
-
-        Rectangle {
-            height: Math.max(parent.height * 0.3, 100)
-            width: parent.width
-            color: "lightgreen"
-        }
+        return JSON.stringify(jsonObject, 4);
     }
 }
 
-// Right Side
-Rectangle {
-    id: rightSide
-    width: 300 // 固定宽度
-    height: parent.height
-    color: "lightyellow"
-    anchors.right: parent.right
-    anchors.top: parent.top
-    anchors.bottom: parent.bottom
 
-    Column {
-        anchors.fill: parent
-
-        // Upper Half
-        Column {
-            height: parent.height / 2
-            width: parent.width
-
-            TextField {
-                width: parent.width
-                placeholderText: "Enter text here"
-            }
-
-            Slider {
-                width: parent.width
-                from: 0
-                to: 100
-            }
-
-            Row {
-                width: parent.width
-
-                Switch {
-                    text: "Option 1"
-                }
-
-                Switch {
-                    text: "Option 2"
-                }
-
-                Switch {
-                    text: "Option 3"
-                }
-            }
-        }
-
-        // Lower Half
-        Rectangle {
-            height: parent.height / 2
-            width: parent.width
-            color: "lightcoral"
-        }
-    }
-}
-}
-*/

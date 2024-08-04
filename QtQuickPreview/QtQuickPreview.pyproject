@@ -1,6 +1,7 @@
 {
     "files": [
         "CustomComponent.qml",
+        "Temp.qml",
         "WindowFrameRate.qml",
         "main.py",
         "main.qml"

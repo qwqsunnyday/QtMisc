@@ -17,8 +17,5 @@ int main(int argc, char *argv[]) {
         Qt::QueuedConnection);
     engine.load(url);
 
-    QString a("qstring");
-    QString b("qstring");
-
     return app.exec();
 }

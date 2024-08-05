@@ -5,7 +5,7 @@ import "Utils.js" as Utils
 
 /*
 本QML主要包括:
-    回调函数与闭包作用域
+    JS回调函数与闭包作用域
     grabToImage时机: onEntered
     Drag.dragType: Drag.Automatic情况下的平滑拖拽处理
     外部访问Repeater和Loader的元素
@@ -21,7 +21,7 @@ Item {
     Column {
         id: root
         anchors.fill: parent
-        spacing: 10
+        spacing: 0
 
         Rectangle {
             id: canvas

@@ -40,6 +40,7 @@ Item {
         sourceComponent: customComponent
         onLoaded: {
             // 使用item访问Loaded的元素
+            // item.required_para = "set by loader.item.required_para: 2333" 不可以, item是加载完毕的
             console.log("Loaded: Accessing item.required_para(Component.Button.required_para):  "+item.required_para)
         }
     }
@@ -47,7 +48,6 @@ Item {
 /*
 总之, 内联定义的Component无法自定义根参数, 无法使用setSource, 只能依靠共享作用域传递参数
 单独文件定义的非常灵活, 直接使用/动态加载都可以
-运行时都无法实时响应
 
 usage:
     1.

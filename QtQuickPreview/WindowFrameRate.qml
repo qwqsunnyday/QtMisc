@@ -17,7 +17,11 @@ Window {
         // 如果Window为根元素(id: rootWindow), 则为rootWindow的值, 为了便于集成, 一般使用Window.window之类
     }
 }
- */
+*/
+
+/*
+
+*/
 Text {
     // ApplicationWindow in QtQuick.Controls
     // required property ApplicationWindow targetWindow
@@ -28,8 +32,10 @@ Text {
     property string displayString: "FPS:" + Utils.printf("%3d", fps)
 
     text: displayString
-    font.family: "Monospace"
-    width: displayString.length * font.pixelSize
+    font.family: "Consolas"
+    // contentWidth文本实际像素长度
+    width: contentWidth
+    height: contentHeight
     Connections {
         target: targetWindow
         // 使用其他组件的信号

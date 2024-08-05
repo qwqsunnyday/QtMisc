@@ -21,10 +21,12 @@ qt_add_qml_module(appQtQuickPreview
     QML_FILES Temp.qml
     QML_FILES CustomComponent.qml
     QML_FILES DynamicLoadComponent.qml
-    QML_FILES Drag.Automatic.qml
-    QML_FILES Drag.Internal.qml
-    QML_FILES DebugUtils.js
+    QML_FILES Drag_Automatic.qml
+    QML_FILES Drag_Internal.qml
+    QML_FILES Utils.js
     QML_FILES CommonHolderWindow.qml
+    QML_FILES GridLayer.qml
+    QML_FILES LayoutDemo.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

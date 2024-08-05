@@ -2,7 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 
-import "DebugUtils.js" as DebugUtils
+import "Utils.js" as Utils
 
 Window {
     id: root
@@ -200,7 +200,7 @@ Window {
                     var modelData = drop.getDataAsString("text/plain")
                     console.log(modelData+" dropped")
                     bioDevicesCanvasModel.append({"modelData": modelData, "posX": drop.x, "posY": drop.y})
-                    console.log(DebugUtils._QObjectToJson(bioDevicesCanvasModel))
+                    console.log(Utils._QObjectToJson(bioDevicesCanvasModel))
                 }
             }
         }
@@ -247,7 +247,7 @@ Window {
                                 if (active) {
                                     // Repeater语境下可以使用modelData(包括自定义属性)
                                     var idx = bioDevicesSourceModel.getModelIndex(modelData)
-                                    console.log(modelData+ " start, index: "+idx+", "+DebugUtils._QObjectToJson(bioDevicesSourceModel.get(idx)))
+                                    console.log(modelData+ " start, index: "+idx+", "+Utils._QObjectToJson(bioDevicesSourceModel.get(idx)))
                                     // bioDevicesSourceModel.insert(idx, bioDevicesSourceModel.get(idx))
                                     // The grab happens asynchronously and the JavaScript function callback is invoked
                                     // when the grab is completed.

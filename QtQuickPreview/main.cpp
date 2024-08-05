@@ -5,7 +5,7 @@ int main(int argc, char *argv[]) {
     QGuiApplication app(argc, argv);
 
     QQmlApplicationEngine engine;
-    const QUrl url(QStringLiteral("qrc:/QtQuickPreview/main.qml"));
+    const QUrl url(QStringLiteral("qrc:/QtQuickPreview/CommonHolderWindow.qml"));
     QObject::connect(
         &engine,
         &QQmlApplicationEngine::objectCreated,

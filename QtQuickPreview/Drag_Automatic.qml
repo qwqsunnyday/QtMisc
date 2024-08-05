@@ -1,22 +1,23 @@
 import QtQuick
 import QtQuick.Controls
 
-import "DebugUtils.js" as DebugUtils
+import "Utils.js" as Utils
 
 /*
 本QML主要包括:
     回调函数与闭包作用域
-    grabToImage时机
+    grabToImage时机: onEntered
     Drag.dragType: Drag.Automatic情况下的平滑拖拽处理
     外部访问Repeater和Loader的元素
     dumpItemTree
     网格叠加层
 */
-Window {
+Item {
     width: 500
     height: 400
     visible: true
     id: rootWindow
+
     Column {
         id: root
         anchors.fill: parent
@@ -30,6 +31,12 @@ Window {
             z: 1
             ListModel {
                 id: dropModel
+                // ListElement {
+                //     uuid: undefined
+                //     modelData: undefined
+                //     posX: 0
+                //     posY: 0
+                // }
             }
 
             Repeater {
@@ -41,7 +48,7 @@ Window {
             DropArea {
                 anchors.fill: parent
                 // 接受
-                keys: ['modelData','text/plain']
+                keys: ['modelData']
                 onEntered: {
                     console.log("entered")
                 }
@@ -58,8 +65,8 @@ Window {
                         console.log("Drop Text: " + drop.text)
                     }
                     drag.source.Drag.mimeData["discard"] = "true"
-                    console.log(DebugUtils._QObjectToJson( drag.source.Drag.mimeData))
-                    dropModel.append({"modelData": drag.source.Drag.mimeData["modelData"], "posX": drop.x - drag.source.Drag.hotSpot.x, "posY": drop.y - drag.source.Drag.hotSpot.y})
+                    console.log(Utils._QObjectToJson( drag.source.Drag.mimeData))
+                    dropModel.append({"uuid": Utils.uuid(),"modelData": drag.source.Drag.mimeData["modelData"], "posX": drop.x - drag.source.Drag.hotSpot.x, "posY": drop.y - drag.source.Drag.hotSpot.y})
                 }
                 Component.onCompleted: {
                     console.log("rootWindow.visible: "+rootWindow.visible)
@@ -81,7 +88,10 @@ Window {
                 id: dragCompenent
                 Rectangle {
                     id: dragItem
+                    // x: posX || 30
+                    // 这样会有警告, 不采用
                     x: (typeof(posX)=="undefined") ? 30 : posX
+                    // y: posY || 20
                     y: (typeof(posY)=="undefined") ? 20 : posY
                     width: 100
                     height: 100
@@ -107,22 +117,39 @@ Window {
                     // 默认, 在窗口内进行
                     // Drag.dragType: Drag.Internal
                     Drag.mimeData: {
-                        'modelData': "default",
-                        'text/plain': "test_string"
+                        'uuid': (typeof(uuid)=="undefined") ? "0" : uuid,
+                        'modelData': (typeof(modelData)=="undefined") ? "Default" : modelData,
+                        'type': parent == canvas ? "Dropped" : "ToBeDrop"
                     }
                     MouseArea {
                         id: dragArea
                         anchors.fill: parent
                         drag.target: dragItem
+                        hoverEnabled: true
                         onPressed: {
                             console.log("startDrag")
                             console.log(mouse.x+" "+mouse.y)
                             dragItem.Drag.hotSpot.x = mouse.x
                             dragItem.Drag.hotSpot.y = mouse.y
+                            // 问题在于, 由于是异步调用, 点击时不会立即生成图像, 第二次点击才可
+                            // dragItem.grabToImage(function(result) {
+                            //     dragItem.Drag.imageSource = result.url
+                            //     console.log(dragItem.Drag.mimeData["modelData"])
+                            //     imageDialog.loadImage(result.url)
+                            // })
                             dragItem.Drag.active = true;
-                            // dragItem.Drag.startDrag();
                             dragItem.Drag.start()
+                            // dragItem.Drag.startDrag();
                         }
+                        onEntered: {
+                            // 最终解决办法: hoverEnabled: true然后onEntered中抓取
+                            dragItem.grabToImage(function(result) {
+                                dragItem.Drag.imageSource = result.url
+                                // console.log(dragItem.Drag.mimeData["modelData"])
+                                // imageDialog.loadImage(result.url)
+                            })
+                        }
+
                         onReleased: {
                             console.log("released");
                             dragItem.Drag.drop();
@@ -147,6 +174,7 @@ Window {
                     //     item.Drag.imageSource = result.url
                     //     // dragItem.Drag.active = true
                     // })
+                    setSource(source, {"uuid": undefined, "modelData": "data: None" })
                 }
             }
             Rectangle {
@@ -155,12 +183,20 @@ Window {
                 width: parent.width/2
                 height: parent.height
 
+                ListModel {
+                    id: dragModel
+                    // ListElement {
+                    //     uuid: undefined
+                    //     modelData: undefined
+                    // }
+                }
+
                 Flow {
                     anchors.fill: parent
                     spacing: 20
                     Repeater {
                         id: dragRepeater
-                        model: 2
+                        model: dragModel
                         delegate: dragCompenent
                         // 或者
                         // delegate: Component {
@@ -169,20 +205,26 @@ Window {
                         // 但是不能是Loader
 
                         Component.onCompleted: {
+                            for (let i = 0; i < 3; i++) {
+                                dragModel.append({"uuid": Utils.uuid(), "modelData": "data: " + i})
+                            }
+
                             console.log("rootWindow.visible: "+rootWindow.visible)
                             console.log("Component.onCompleted - Repeater")
                             // 使用itemAt()获取元素
                             console.log("Accessing property of repeated item using itemAt(): "+itemAt(0).objectName)
-                            for (let i = 0; i < count; i++) {
-                                itemAt(i).grabToImage(function(result) {
-                                    // 注意, 由于是异步, 导致本回调函数可能在for执行完毕后才执行, 此时i已经变成了count
-                                    // 如果使用var定义i, 则回调函数始终捕获的是最后的i; 使用let(ES6, 2015)定义块级变量或使用IIFE捕获i可以解决
-                                    // 回调函数不会有错误提示
-                                    // console.log(i)
-                                    itemAt(i).Drag.imageSource = result.url
-                                    // imageDialog.loadImage(result.url)
-                                })
-                            }
+
+                            // deprecated:
+                            // for (let i = 0; i < count; i++) {
+                            //     itemAt(i).grabToImage(function(result) {
+                            //         // 注意, 由于是异步, 导致本回调函数可能在for执行完毕后才执行, 此时i已经变成了count
+                            //         // 如果使用var定义i, 则回调函数始终捕获的是最后的i; 使用let(ES6, 2015)定义块级变量或使用IIFE捕获i可以解决
+                            //         // 回调函数不会有错误提示
+                            //         // console.log(i)
+                            //         itemAt(i).Drag.imageSource = result.url
+                            //         // imageDialog.loadImage(result.url)
+                            //     })
+                            // }
 
                             /*
                             for (let i = 0; i < count; i++) {
@@ -227,12 +269,19 @@ Window {
                 onDropped: {
                     console.log("dropped")
                     console.log(drag.x+" "+drag.y+" "+drag.source.Drag.hotSpot.x+" "+drag.source.Drag.hotSpot.y)
-                    if (drop.hasText) {
-                        console.log("Drop Keys: " + drop.keys)
-                        console.log("Drop Text: " + drop.text)
+                    console.log("Drop Keys: " + drop.keys)
+                    // if (drop.hasText) {
+                    //     console.log("Drop Keys: " + drop.keys)
+                    //     console.log("Drop Text: " + drop.text)
+                    // }
+                    console.log(Utils._QObjectToJson(drag.source.Drag.mimeData))
+                    if (drag.source.Drag.mimeData["type"] === "Dropped") {
+                        console.log("current dropModel: ")
+                        console.log(Utils.modelToJSON(dropModel))
+                        let targetIndex = Utils.getModelIndex(dropModel, "uuid", drag.source.Drag.mimeData["uuid"])
+                        console.log("targetIndex: "+targetIndex)
+                        dropModel.remove(targetIndex)
                     }
-                    console.log(DebugUtils._QObjectToJson( drag.source.Drag.mimeData))
-
                 }
             }
 
@@ -241,67 +290,17 @@ Window {
                 console.log("Component.onCompleted - 4")
                 // Loader外使用item属性访问装载的元素
                 console.log("Accessing property of repeated item using item: "+dragLoader.item.objectName)
-                dragLoader.item.grabToImage(function(result) {
-                    dragLoader.item.Drag.imageSource = result.url
-                    // imageDialog.loadImage(result.url)
-                    // dragItem.Drag.active = true
-                })
+                // deprecated:
+                // dragLoader.item.grabToImage(function(result) {
+                //     dragLoader.item.Drag.imageSource = result.url
+                //     // imageDialog.loadImage(result.url)
+                //     // dragItem.Drag.active = true
+                // })
             }
         }
     }
 
-    Canvas {
-        id: gridCanvas
-        anchors.fill: parent
-        onPaint: {
-            var ctx = getContext("2d");
-            ctx.clearRect(0, 0, width, height);
 
-            // // 设置小格的颜色
-            // ctx.strokeStyle = "#e0e0e0"; // 浅灰色
-            // ctx.lineWidth = 1;
-            // // 绘制小格
-            // for (var x = 0; x <= width; x++) {
-            //     if (x % 10 !== 0) {
-            //         ctx.beginPath();
-            //         ctx.moveTo(x, 0);
-            //         ctx.lineTo(x, height);
-            //         ctx.stroke();
-            //     }
-            // }
-            // for (var y = 0; y <= height; y++) {
-            //     if (y % 10 !== 0) {
-            //         ctx.beginPath();
-            //         ctx.moveTo(0, y);
-            //         ctx.lineTo(width, y);
-            //         ctx.stroke();
-            //     }
-            // }
-
-            // 设置大格的颜色
-            ctx.strokeStyle = "#808080"; // 灰色
-            ctx.lineWidth = 1;
-            // 绘制大格
-            for (var x = 0; x <= width; x += 10) {
-                ctx.beginPath();
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, height);
-                ctx.stroke();
-            }
-            for (var y = 0; y <= height; y += 10) {
-                ctx.beginPath();
-                ctx.moveTo(0, y);
-                ctx.lineTo(width, y);
-                ctx.stroke();
-            }
-        }
-        onWidthChanged: gridCanvas.requestPaint()
-        onHeightChanged: gridCanvas.requestPaint()
-        Component.onCompleted: {
-            console.log("rootWindow.visible: "+rootWindow.visible)
-            console.log("Component.onCompleted - 5")
-        }
-    }
     Component.onCompleted: {
         console.log("rootWindow.visible: "+rootWindow.visible)
         console.log("Component.onCompleted - 6")
@@ -329,6 +328,6 @@ Window {
         }
     }
     WindowFrameRate {
-        targetWindow: rootWindow
+        targetWindow: Window.window
     }
 }

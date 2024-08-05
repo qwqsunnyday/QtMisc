@@ -4,22 +4,42 @@ import QtQuick.Controls
 import "Utils.js" as Utils
 
 /*
+# 文件概述
+
 本QML主要包括:
-    JS回调函数与闭包作用域
-    grabToImage时机: onEntered
-    Drag.dragType: Drag.Automatic情况下的平滑拖拽处理
-    外部访问Repeater和Loader的元素
-    dumpItemTree
-    网格叠加层
+    - JS回调函数与闭包作用域
+    - grabToImage时机: onEntered
+    - Drag.dragType: Drag.Automatic情况下的平滑拖拽处理
+    - 外部访问Repeater和Loader的元素
+    - dumpItemTree
+    - 网格叠加层
+
+## QML Drag&Drop
+
+拖拽主要关注两点, 事件处理时机和数据的传输
+坑点:
+
+
+QML中, 拖拽事件通过MouseArea(或DragHandler)处理, 使用DropArea接受数据
+
+QML中有两种常用的Drag类型, Drag.Automatic和Drag.Internal, 坑点在于, 两者区别可以说非常大, 但是官方文档描述比较含糊
+
+## Drag.Internal类型Drag
+
+QML中任意继承自Item的元素(dragItem)都可以通过简单地将元素置为MouseArea的drag.target来本体(dragItem)变得可拖动(注意, 前提是dragItem不要用锚和Layout布局, 原因是拖拽需要修改dragItem的坐标和宽高，而锚、Layout会限定坐标或宽高)
+
+## Drag.Automatic类型Drag
+
+这是更加一般的拖拽处理, 可以跨窗口传输数据
 */
+
 Item {
     width: 500
     height: 400
     visible: true
-    id: rootWindow
+    id: root
 
     Column {
-        id: root
         anchors.fill: parent
         spacing: 0
 
@@ -69,12 +89,12 @@ Item {
                     dropModel.append({"uuid": Utils.uuid(),"modelData": drag.source.Drag.mimeData["modelData"], "posX": drop.x - drag.source.Drag.hotSpot.x, "posY": drop.y - drag.source.Drag.hotSpot.y})
                 }
                 Component.onCompleted: {
-                    console.log("rootWindow.visible: "+rootWindow.visible)
+                    console.log("rootWindow.visible: "+root.visible)
                     console.log("Component.onCompleted - 1")
                 }
             }
             Component.onCompleted: {
-                console.log("rootWindow.visible: "+rootWindow.visible)
+                console.log("rootWindow.visible: "+root.visible)
                 console.log("Component.onCompleted - 2")
             }
         }
@@ -156,7 +176,7 @@ Item {
                         }
                     }
                     Component.onCompleted: {
-                        console.log("rootWindow.visible: "+rootWindow.visible)
+                        console.log("rootWindow.visible: "+root.visible)
                         console.log("Component.onCompleted - 3")
                     }
                 }
@@ -166,7 +186,7 @@ Item {
                 sourceComponent: dragCompenent
                 onLoaded: {
                     // 此时窗口仍然不可见
-                    console.log("rootWindow.visible: "+rootWindow.visible)
+                    console.log("rootWindow.visible: "+root.visible)
                     // 使用item属性访问装载的元素
                     console.log("onLoaded - 1"+ " objectName: "+item.objectName)
                     // 这样会失败
@@ -209,7 +229,7 @@ Item {
                                 dragModel.append({"uuid": Utils.uuid(), "modelData": "data: " + i})
                             }
 
-                            console.log("rootWindow.visible: "+rootWindow.visible)
+                            console.log("rootWindow.visible: "+root.visible)
                             console.log("Component.onCompleted - Repeater")
                             // 使用itemAt()获取元素
                             console.log("Accessing property of repeated item using itemAt(): "+itemAt(0).objectName)
@@ -256,7 +276,7 @@ Item {
                         }
                     }
                     Component.onCompleted: {
-                        console.log("rootWindow.visible: "+rootWindow.visible)
+                        console.log("rootWindow.visible: "+root.visible)
                         console.log("Component.onCompleted - Out Repeater")
                         // Repeater外使用itemAt()获取元素
                         console.log("Accessing property of repeated item using itemAt(): "+dragRepeater.itemAt(0).objectName)
@@ -286,7 +306,7 @@ Item {
             }
 
             Component.onCompleted: {
-                console.log("rootWindow.visible: "+rootWindow.visible)
+                console.log("rootWindow.visible: "+root.visible)
                 console.log("Component.onCompleted - 4")
                 // Loader外使用item属性访问装载的元素
                 console.log("Accessing property of repeated item using item: "+dragLoader.item.objectName)
@@ -302,7 +322,7 @@ Item {
 
 
     Component.onCompleted: {
-        console.log("rootWindow.visible: "+rootWindow.visible)
+        console.log("rootWindow.visible: "+root.visible)
         console.log("Component.onCompleted - 6")
     }
 

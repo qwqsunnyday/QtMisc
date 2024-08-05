@@ -5,6 +5,17 @@ import QtQuick.Layouts 2.15
 
 import "Utils.js" as Utils
 
+/*
+# 文件概述
+
+Drag.Internal类型Drag
+
+具体见Drag_Automatic.qml
+
+
+
+*/
+
 Item {
     visible: true
     width: 200
@@ -61,7 +72,7 @@ Item {
                     anchors.verticalCenter: undefined
                 }
             }
-            Drag.active: dragArea.drag.active
+            // Drag.active: dragArea.drag.active
             Text {
                 id: textComponent
                 anchors.centerIn: parent
@@ -74,13 +85,17 @@ Item {
                 drag.target: parent
                 onPressed: {
                     console.log("started")
+                    console.log("dragItem.Drag.active: "+dragItem.Drag.active) // false
                     dragItem.Drag.start()
+                    console.log("dragItem.Drag.active: "+dragItem.Drag.active) // true
                 }
                 onReleased: {
                     // dragItem.parent = dragItem.Drag.target
                     // console.log(dragItem.Drag.target.objectName)
                     console.log("released")
+                    console.log("dragItem.Drag.active: "+dragItem.Drag.active) //true
                     dragItem.Drag.drop()
+                    console.log("dragItem.Drag.active: "+dragItem.Drag.active) //false
                 }
             }
         }

@@ -1,0 +1,39 @@
+[
+    [
+        {
+            "name": "Constitutive",
+            "type": "Promoter",
+            "data_flow": {
+                "EMULATION": {
+                    "expression": {
+                        "default": 1.0
+                    }
+                }
+            }
+        },
+        {
+            "name": "Blue_light_sensor_gene",
+            "type": "Coding_Region",
+            "data_flow": {
+                "ENVIRONMENT": {
+                    "blue_light": {
+                        "default": 0.0
+                    }
+                },
+                "EMULATION": {
+                    "expression": {
+                        "default": 0.0
+                    },
+                    "blue_light_dimer_value": {
+                        "default": null,
+                        "depends_on": [
+                            "blue_light",
+                            "expression"
+                        ],
+                        "formula": "blue_light * expression"
+                    }
+                }
+            }
+        }
+    ]
+]

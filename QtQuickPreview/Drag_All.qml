@@ -1,36 +1,77 @@
 import QtQuick
 import QtQuick.Controls
+import QtQuick.Layouts 2.15
 
 import "Utils.js" as Utils
 
 /*
 # 文件概述
 
-本QML主要包括:
+本文件主要包括:
     - JS回调函数与闭包作用域
     - grabToImage时机: onEntered
     - Drag.dragType: Drag.Automatic情况下的平滑拖拽处理
     - 外部访问Repeater和Loader的元素
     - dumpItemTree
     - 网格叠加层
+    - 各种防忘注释
 
 ## QML Drag&Drop
 
-拖拽主要关注两点, 事件处理时机和数据的传输
+拖拽主要关注两点: 事件处理时机和数据的传输
+
 坑点:
+    1. QML中有两种常用的Drag类型, Drag.Automatic和Drag.Internal, 两者区别可以说非常大, 但是官方文档描述十分含糊
 
-
-QML中, 拖拽事件通过MouseArea(或DragHandler)处理, 使用DropArea接受数据
-
-QML中有两种常用的Drag类型, Drag.Automatic和Drag.Internal, 坑点在于, 两者区别可以说非常大, 但是官方文档描述比较含糊
+QML中, 拖拽事件通过 MouseArea (或 DragHandler )处理, 使用 DropArea 接受数据
 
 ## Drag.Internal类型Drag
 
-QML中任意继承自Item的元素(dragItem)都可以通过简单地将元素置为MouseArea的drag.target来本体(dragItem)变得可拖动(注意, 前提是dragItem不要用锚和Layout布局, 原因是拖拽需要修改dragItem的坐标和宽高，而锚、Layout会限定坐标或宽高)
+- 旧版拖拽
+
+    (qml doc: start backwards compatible drags automatically)
+
+- 侧重dragItem的坐标可变
+
+    Drag.Internal为默认值, 侧重于指定dragItem的坐标可变:
+    
+    QML中继承自 Item 的元素(dragItem)都可以通过简单地将元素置为MouseArea的drag.target来使本体(dragItem)变得可拖动(由于拖拽需要修改dragItem的坐标和宽高, 因此dragItem不要用锚布局, 比如x锚定住了, 就只能在y拖动了; 见qml book: src/ch04-qmlstart/anchors)
+    
+- DropArea::dropped()需额外配置:
+  
+    要自己通过dragItem.Drag.start()发送和dragItem.Drag.drop()结束一段drag events, 这样才能在 DropArea 中使用onDropped()处理dropped()信号
+
+- 自动处理 Drag.active:
+
+    dragItem.Drag.start()后为true, dragItem.Drag.drop()后为false
+    
+- 默认在parent层级内拖动: 
+    
+    跨区域可能需要修改parent的z stack(见qml doc: Item.z; 本文档: canvas.z)
 
 ## Drag.Automatic类型Drag
 
-这是更加一般的拖拽处理, 可以跨窗口传输数据
+- 新版拖拽
+
+    更加一般的拖拽处理, 可以跨窗口传输mime数据
+
+- 侧重"拖拽"动作与数据传输
+
+    与Drag.Internal的主要区别在于, Drag.Automatic根本不会试图改变dragItem的坐标, 只关注鼠标的Drag和Drop动作, 会自发送 DropArea::dropped()信号
+
+- 自动处理
+
+- 需要手动处理拖拽时的缩略图
+
+
+## 本文件的拖拽实现思路
+
+## 其他资源
+
+1. 文档: MouseArea; Drag; DropArea; DragHandler; DragEvent
+2. 官方Example: Qt Quick Examples - Drag and Drop.
+3. qml book src/ch04-qmlstart/anchors
+
 */
 
 Item {
@@ -45,7 +86,7 @@ Item {
 
         Rectangle {
             id: canvas
-            height: 0.5*parent.height
+            height: 0.3*parent.height
             width: parent.width
             color: "yellow"
             z: 1
@@ -89,18 +130,18 @@ Item {
                     dropModel.append({"uuid": Utils.uuid(),"modelData": drag.source.Drag.mimeData["modelData"], "posX": drop.x - drag.source.Drag.hotSpot.x, "posY": drop.y - drag.source.Drag.hotSpot.y})
                 }
                 Component.onCompleted: {
-                    console.log("rootWindow.visible: "+root.visible)
-                    console.log("Component.onCompleted - 1")
+                    // console.log("rootWindow.visible: "+root.visible)
+                    // console.log("Component.onCompleted - 1")
                 }
             }
             Component.onCompleted: {
-                console.log("rootWindow.visible: "+root.visible)
-                console.log("Component.onCompleted - 2")
+                // console.log("rootWindow.visible: "+root.visible)
+                // console.log("Component.onCompleted - 2")
             }
         }
         Rectangle {
             id: rectangle
-            height: 0.5*parent.height
+            height: 0.4*parent.height
             width: parent.width
             color: "red"
             z: 0
@@ -176,8 +217,8 @@ Item {
                         }
                     }
                     Component.onCompleted: {
-                        console.log("rootWindow.visible: "+root.visible)
-                        console.log("Component.onCompleted - 3")
+                        // console.log("rootWindow.visible: "+root.visible)
+                        // console.log("Component.onCompleted - 3")
                     }
                 }
             }
@@ -229,10 +270,10 @@ Item {
                                 dragModel.append({"uuid": Utils.uuid(), "modelData": "data: " + i})
                             }
 
-                            console.log("rootWindow.visible: "+root.visible)
-                            console.log("Component.onCompleted - Repeater")
+                            // console.log("rootWindow.visible: "+root.visible)
+                            // console.log("Component.onCompleted - Repeater")
                             // 使用itemAt()获取元素
-                            console.log("Accessing property of repeated item using itemAt(): "+itemAt(0).objectName)
+                            // console.log("Accessing property of repeated item using itemAt(): "+itemAt(0).objectName)
 
                             // deprecated:
                             // for (let i = 0; i < count; i++) {
@@ -264,7 +305,7 @@ Item {
                             }
                             */
 
-                            /*
+                            /* JS经典
                             // https://blog.csdn.net/zzzhhhy/article/details/126463776
                             for (var i = 1; i <= 5; i++) {
                                 setTimeout(function timer() {
@@ -276,10 +317,10 @@ Item {
                         }
                     }
                     Component.onCompleted: {
-                        console.log("rootWindow.visible: "+root.visible)
-                        console.log("Component.onCompleted - Out Repeater")
+                        // console.log("rootWindow.visible: "+root.visible)
+                        // console.log("Component.onCompleted - Out Repeater")
                         // Repeater外使用itemAt()获取元素
-                        console.log("Accessing property of repeated item using itemAt(): "+dragRepeater.itemAt(0).objectName)
+                        // console.log("Accessing property of repeated item using itemAt(): "+dragRepeater.itemAt(0).objectName)
                     }
                 }
             }
@@ -306,10 +347,10 @@ Item {
             }
 
             Component.onCompleted: {
-                console.log("rootWindow.visible: "+root.visible)
-                console.log("Component.onCompleted - 4")
+                // console.log("rootWindow.visible: "+root.visible)
+                // console.log("Component.onCompleted - 4")
                 // Loader外使用item属性访问装载的元素
-                console.log("Accessing property of repeated item using item: "+dragLoader.item.objectName)
+                // console.log("Accessing property of repeated item using item: "+dragLoader.item.objectName)
                 // deprecated:
                 // dragLoader.item.grabToImage(function(result) {
                 //     dragLoader.item.Drag.imageSource = result.url
@@ -318,12 +359,137 @@ Item {
                 // })
             }
         }
+        Rectangle {
+            id: dragInternalDemoArea
+            width: parent.width
+            height: 0.3*parent.height
+            Text {
+                text: "Drag.Internal Demo Area"
+                font.pixelSize: 28
+                anchors.horizontalCenter: parent.horizontalCenter
+                z: 1
+            }
+
+            RowLayout {
+                anchors.fill: parent
+                spacing: 0
+                Rectangle {
+                    Layout.preferredWidth: parent.width/2
+                    Layout.fillHeight: true
+                    color: "gray"
+                    ColumnLayout  {
+                        id: dropCanvas
+                        objectName: "canvas"
+                        anchors.fill: parent
+                        spacing: 0
+                        Rectangle {
+                            Layout.preferredHeight: parent.height/2
+                            Layout.fillWidth: true
+                            color: "yellow"
+                            Text {
+                                text: "accept keys: " + drop1.keys
+                                anchors.centerIn: parent
+                            }
+                            DropArea {
+                                id: drop1
+                                anchors.fill: parent
+                                keys: ['key1']
+                                onDropped: {
+                                    console.log("dropped")
+                                    console.log(Utils._QObjectToJson(drag.source.Drag.mimeData))
+                                }
+                            }
+                        }
+                        Rectangle {
+                            Layout.preferredHeight: parent.height/2
+                            Layout.fillWidth: true
+                            color: "gray"
+                            Text {
+                                text: "accept keys: " + drop2.keys
+                                anchors.centerIn: parent
+                            }
+                            DropArea {
+                                id: drop2
+                                anchors.fill: parent
+                                keys: ['key2']
+                                onDropped: {
+                                    console.log("dropped")
+                                    console.log(Utils._QObjectToJson(drag.source.Drag.mimeData))
+                                }
+                            }
+                        }
+                    }
+                }
+
+                Rectangle {
+                    Layout.preferredWidth: parent.width/2
+                    Layout.fillHeight: true
+                    color: "pink"
+                    Rectangle {
+                        id: dragItem
+                        // 不锚定住, 就会乱跑
+
+                        // anchors.centerIn: Drag.active ? undefined : parent
+                        //
+                        // anchors.horizontalCenter: parent.horizontalCenter
+                        // anchors.verticalCenter: parent.verticalCenter
+                        width: textComponent.implicitWidth + 20
+                        height: textComponent.implicitHeight + 10
+                        color: "green"
+
+                        Drag.dragType: Drag.Internal
+                        Drag.active: dragArea.drag.active
+                        Drag.supportedActions: Qt.CopyAction
+                        Drag.mimeData: {
+                            "key1": "Copied text"
+                        }
+                        Drag.keys: ["key1"]
+                        states: State {
+                            when: dragArea.drag.active
+                            AnchorChanges {
+                                target: dragItem
+                                // anchors.horizontalCenter: undefined
+                                // anchors.verticalCenter: undefined
+                            }
+                        }
+                        // Drag.active: dragArea.drag.active
+                        Text {
+                            id: textComponent
+                            anchors.centerIn: parent
+                            text: "Drag me"
+                        }
+
+                        MouseArea {
+                            id: dragArea
+                            anchors.fill: parent
+                            drag.target: parent
+                            onPressed: {
+                                console.log("started")
+                                console.log("dragItem.Drag.active: "+dragItem.Drag.active) // false
+                                dragItem.Drag.start()
+                                console.log("dragItem.Drag.active: "+dragItem.Drag.active) // true
+                                console.log(dragItem.anchors.verticalCenter)
+                            }
+                            onReleased: {
+                                console.log(dragItem.anchors.verticalCenter)
+                                // dragItem.parent = dragItem.Drag.target
+                                // console.log(dragItem.Drag.target.objectName)
+                                console.log("released")
+                                console.log("dragItem.Drag.active: "+dragItem.Drag.active) //true
+                                dragItem.Drag.drop()
+                                console.log("dragItem.Drag.active: "+dragItem.Drag.active) //false
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
 
     Component.onCompleted: {
-        console.log("rootWindow.visible: "+root.visible)
-        console.log("Component.onCompleted - 6")
+        // console.log("rootWindow.visible: "+root.visible)
+        // console.log("Component.onCompleted - 6")
     }
 
 

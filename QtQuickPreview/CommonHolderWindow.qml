@@ -6,6 +6,8 @@ import QtQuick.Controls.Universal
 /*
 # 文件概述
 
+用于实时预览QML文件
+
 ## Layout的使用
 
 Layout布局(RowLayout/...)比基于Anchor的锚定布局(Row/Column/...)更加灵活简便, 在使用上接近XAML的StackPanel
@@ -36,12 +38,12 @@ import QtQuick.Controls.Universal
 
 */
 Window {
-    width: 900
-    height: 500
+    width: 500
+    height: 600
     visible: true
     id: rootWindow
 
-    flags: Qt.Widget | Qt.Window
+    flags: alwayOnTopSwitch.checked ? (Qt.Widget | Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint) : (Qt.Widget | Qt.Window)
 
     ColumnLayout {
         id: mainLayout
@@ -96,12 +98,13 @@ Window {
                 ComboBox {
                     id: reloadUrlSelect
                     model: [
-                        "Drag_Automatic.qml",
+                        "Drag_All.qml",
                         "Drag_Internal.qml",
                         "main.qml",
                         "Temp.qml",
                         "DynamicLoadComponent.qml",
-                        "CommonHolderWindow.qml"
+                        "CommonHolderWindow.qml",
+                        "tiles/tiles.qml"
                     ]
                     Layout.fillWidth: true
                     Layout.minimumWidth: 50
@@ -123,6 +126,14 @@ Window {
                     text: "Toggle Grid Layer"
                     // 默认值
                     checked: false
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 50
+                }
+                Switch {
+                    id: alwayOnTopSwitch
+                    text: "Toggle Always On Top"
+                    // 默认值
+                    checked: true
                     Layout.fillWidth: true
                     Layout.minimumWidth: 50
                 }

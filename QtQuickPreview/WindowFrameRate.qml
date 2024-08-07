@@ -28,8 +28,9 @@ Text {
     // Window为基类, 具备window的Attached Property
     required property Window targetWindow
 
+    property string prefix: "FPS:"
     property real fps: 0
-    property string displayString: "FPS:" + Utils.printf("%3d", fps)
+    property string displayString: prefix + Utils.printf("%3d", fps)
 
     text: displayString
     font.family: "Consolas"

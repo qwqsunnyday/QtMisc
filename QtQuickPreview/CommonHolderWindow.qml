@@ -45,6 +45,10 @@ Window {
 
     flags: alwayOnTopSwitch.checked ? (Qt.Widget | Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint) : (Qt.Widget | Qt.Window)
 
+    Window {
+        id: consoleWindow
+    }
+
     ColumnLayout {
         id: mainLayout
         anchors.fill: parent
@@ -66,12 +70,27 @@ Window {
                     id: fps
                     // anchors.fill: parent
                     targetWindow: Window.window
+                    prefix: ""
                     font.pixelSize: 16
                 }
-
+                Button {
+                    text: "Console"
+                    font.pixelSize: 12
+                    onClicked: {
+                        var consoleComponent = Qt.createComponent("JSConsole.qml" + "#" + new Date().getTime(), Component.PreferSynchronous, consoleWindow)
+                        if (consoleComponent.status == Component.Ready) {
+                            var consoleItem = consoleComponent.createObject(consoleWindow);
+                            // 可以将consoleItem当作正常组件访问
+                            consoleWindow.height = 480
+                            consoleWindow.width = 640
+                            consoleWindow.show()
+                            // console.log(consoleComponent.errorString())
+                        }
+                    }
+                }
                 Button {
                     text: "Reload"
-                    font.pixelSize: 16
+                    font.pixelSize: 12
                     onClicked: {
                         console.log(reloadUrl.text)
                         loadSource()
@@ -184,7 +203,7 @@ Window {
             loadSource()
         }
     }
-    function loadSource() {
+    function loadSource(loadUrl) {
         // "继承"作用域
         loader.setSource(reloadUrl.text + "#" + new Date().getTime())
         // {"flags": Qt.SubWindow}此处可设置Window flags

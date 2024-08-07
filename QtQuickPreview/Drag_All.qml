@@ -117,17 +117,18 @@ Item {
                     // console.log("pos changed")
                     // console.log(drag.x+" "+drag.y)
                 }
-
+                // DropArea还具有drag.source属性
                 onDropped: {
-                    console.log("dropped")
-                    console.log(drag.x+" "+drag.y+" "+drag.source.Drag.hotSpot.x+" "+drag.source.Drag.hotSpot.y)
+                    // dropped(DragEvent drop)
+                    // 可以使用drop.source(参数)或drag.source(属性)访问dragItem
+                    console.log("dropped at:")
+                    console.log("drag at: ("+drop.x+", "+drop.y+") with Drag.hotSpot: ("+drag.source.Drag.hotSpot.x+", "+drop.source.Drag.hotSpot.y+")")
                     if (drop.hasText) {
                         console.log("Drop Keys: " + drop.keys)
                         console.log("Drop Text: " + drop.text)
                     }
-                    drag.source.Drag.mimeData["discard"] = "true"
-                    console.log(Utils._QObjectToJson( drag.source.Drag.mimeData))
-                    dropModel.append({"uuid": Utils.uuid(),"modelData": drag.source.Drag.mimeData["modelData"], "posX": drop.x - drag.source.Drag.hotSpot.x, "posY": drop.y - drag.source.Drag.hotSpot.y})
+                    console.log(Utils._QObjectToJson(drop.source.Drag.mimeData))
+                    dropModel.append({"uuid": Utils.uuid(),"modelData": drop.source.Drag.mimeData["modelData"], "posX": drop.x - drop.source.Drag.hotSpot.x, "posY": drop.y - drop.source.Drag.hotSpot.y})
                 }
                 Component.onCompleted: {
                     // console.log("rootWindow.visible: "+root.visible)
@@ -159,16 +160,42 @@ Item {
                     color: "black"
                     objectName: "description of dragItem"
 
+
+                    Rectangle {
+                        id: connectionArea
+                        width: 60
+                        height: 60
+                        color: "gray"
+                        anchors.right: parent.right
+                        anchors.verticalCenter: parent.verticalCenter
+                        DropArea {
+                            id: connectionDropArea
+                            anchors.fill: parent
+                            onEntered: {
+                                console.log("entered connectionDropArea")
+                            }
+
+                            onDropped: {
+                                console.log("connectionDropArea dropped:")
+                                console.log("drag.source.Drag.mimeData")
+                                console.log(Utils._QObjectToJson(drag.source.Drag.mimeData))
+                                console.log("dragItem.Drag.mimeData:")
+                                console.log(Utils._QObjectToJson(dragItem.Drag.mimeData))
+                            }
+                        }
+                    }
+
                     Text {
                         id: txt
                         // anchors.fill: parent
                         anchors.centerIn: parent
                         color: "white"
-                        font.pixelSize: parent.width/5
-                        text: parent.Drag.mimeData["modelData"]
+                        font.pixelSize: parent.width/6
+                        text: parent.Drag.mimeData["modelData"]+"\nuuid: "+uuid+"\nDrag: "+dragItem.Drag.active+"\n"+Drag.dragType
                     }
 
-                    opacity: Drag.active ? 0.8 : 1
+
+                    opacity: Drag.active ? 0.5 : 1
 
                     // 一般用于跨应用, dragItem可超出窗口范围, 使用mimeData传递数据
                     // 需要自己处理imageSource同时绑定Drag.active: dragArea.drag.active(可选)
@@ -199,7 +226,8 @@ Item {
                             //     imageDialog.loadImage(result.url)
                             // })
                             dragItem.Drag.active = true;
-                            dragItem.Drag.start()
+                            // 非常奇怪...因为Drag.start()之后dragItem.Drag.active会设置为true
+                            // dragItem.Drag.start() 注释后会解决
                             // dragItem.Drag.startDrag();
                         }
                         onEntered: {
@@ -213,6 +241,8 @@ Item {
 
                         onReleased: {
                             console.log("released");
+                            console.log(Utils.modelToJSON(dropModel))
+                            console.log(Utils.modelToJSON(dragModel))
                             dragItem.Drag.drop();
                         }
                     }
@@ -222,120 +252,144 @@ Item {
                     }
                 }
             }
-            Loader {
-                id: dragLoader
-                sourceComponent: dragCompenent
-                onLoaded: {
-                    // 此时窗口仍然不可见
-                    console.log("rootWindow.visible: "+root.visible)
-                    // 使用item属性访问装载的元素
-                    console.log("onLoaded - 1"+ " objectName: "+item.objectName)
-                    // 这样会失败
-                    // item.grabToImage(function(result) {
-                    //     item.Drag.imageSource = result.url
-                    //     // dragItem.Drag.active = true
-                    // })
-                    setSource(source, {"uuid": undefined, "modelData": "data: None" })
-                }
-            }
-            Rectangle {
-                color: "#806be7"
-                anchors.right: parent.right
-                width: parent.width/2
-                height: parent.height
-
-                ListModel {
-                    id: dragModel
-                    // ListElement {
-                    //     uuid: undefined
-                    //     modelData: undefined
-                    // }
-                }
-
-                Flow {
-                    anchors.fill: parent
-                    spacing: 20
-                    Repeater {
-                        id: dragRepeater
-                        model: dragModel
-                        delegate: dragCompenent
-                        // 或者
-                        // delegate: Component {
-                            // ...
-                        // }
-                        // 但是不能是Loader
-
-                        Component.onCompleted: {
-                            for (let i = 0; i < 3; i++) {
-                                dragModel.append({"uuid": Utils.uuid(), "modelData": "data: " + i})
-                            }
-
-                            // console.log("rootWindow.visible: "+root.visible)
-                            // console.log("Component.onCompleted - Repeater")
-                            // 使用itemAt()获取元素
-                            // console.log("Accessing property of repeated item using itemAt(): "+itemAt(0).objectName)
-
-                            // deprecated:
-                            // for (let i = 0; i < count; i++) {
-                            //     itemAt(i).grabToImage(function(result) {
-                            //         // 注意, 由于是异步, 导致本回调函数可能在for执行完毕后才执行, 此时i已经变成了count
-                            //         // 如果使用var定义i, 则回调函数始终捕获的是最后的i; 使用let(ES6, 2015)定义块级变量或使用IIFE捕获i可以解决
-                            //         // 回调函数不会有错误提示
-                            //         // console.log(i)
-                            //         itemAt(i).Drag.imageSource = result.url
-                            //         // imageDialog.loadImage(result.url)
-                            //     })
-                            // }
-
-                            /*
-                            for (let i = 0; i < count; i++) {
-                                (function (i_arg)
-                                    {
-                                        itemAt(i_arg).grabToImage(function(result) {
-                                            // 注意, 由于是异步, 导致本回调函数可能在for执行完毕后才执行, 此时i已经变成了count
-                                            // 如果使用var定义i, 则回调函数始终捕获的是最后的i; 使用let(ES6, 2015)定义块级变量或使用IIFE捕获i可以解决
-                                            // 回调函数不会有错误提示
-                                            console.log(i_arg)
-                                            itemAt(i_arg).Drag.imageSource = result.url
-                                            imageDialog.loadImage(result.url)
-                                        })
-                                    }
-                                )(i)
-                                // IIFE, 立即捕获i并赋给i_arg
-                            }
-                            */
-
-                            /* JS经典
-                            // https://blog.csdn.net/zzzhhhy/article/details/126463776
-                            for (var i = 1; i <= 5; i++) {
-                                setTimeout(function timer() {
-                                    console.log(i)
-                                }, 0)
-                            }  // 6 6 6 6 6 6
-                            为什么会全部输出6？ 如何改进， 让它输出1， 2， 3， 4， 5？
-                            */
+            // Loader {
+            //     id: dragLoader
+            //     sourceComponent: dragCompenent
+            //     onLoaded: {
+            //         // 此时窗口仍然不可见
+            //         // console.log("rootWindow.visible: "+root.visible)
+            //         // 使用item属性访问装载的元素
+            //         // console.log("onLoaded - 1"+ " objectName: "+item.objectName)
+            //         // 这样会失败
+            //         // item.grabToImage(function(result) {
+            //         //     item.Drag.imageSource = result.url
+            //         //     // dragItem.Drag.active = true
+            //         // })
+            //         // TODO XXX
+            //         setSource(dragCompenent, {"uuid": Utils.uuid(), "modelData": "data: None" })
+            //     }
+            // }
+            RowLayout {
+                anchors.fill: parent
+                Rectangle {
+                    color: "red"
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    ListView {
+                        anchors.fill: parent
+                        model: dropModel
+                        delegate: Text {
+                            id: txt
+                            text: "uuid: "+uuid+" modelData: "+modelData
+                            font.pixelSize: 16
                         }
                     }
-                    Component.onCompleted: {
-                        // console.log("rootWindow.visible: "+root.visible)
-                        // console.log("Component.onCompleted - Out Repeater")
-                        // Repeater外使用itemAt()获取元素
-                        // console.log("Accessing property of repeated item using itemAt(): "+dragRepeater.itemAt(0).objectName)
+                }
+
+                Rectangle {
+                    color: "#806be7"
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+
+                    ListModel {
+                        id: dragModel
+                        // ListElement {
+                        //     uuid: undefined
+                        //     modelData: undefined
+                        // }
+                    }
+
+                    Flow {
+                        anchors.fill: parent
+                        spacing: 20
+                        Repeater {
+                            id: dragRepeater
+                            model: dragModel
+                            delegate: dragCompenent
+                            // 或者
+                            // delegate: Component {
+                                // ...
+                            // }
+                            // 但是不能是Loader
+
+                            Component.onCompleted: {
+                                for (let i = 0; i < 3; i++) {
+                                    dragModel.append({"uuid": String(Utils.uuid()), "modelData": "data: " + i})
+                                }
+
+                                // console.log("rootWindow.visible: "+root.visible)
+                                // console.log("Component.onCompleted - Repeater")
+                                // 使用itemAt()获取元素
+                                // console.log("Accessing property of repeated item using itemAt(): "+itemAt(0).objectName)
+
+                                // deprecated:
+                                // for (let i = 0; i < count; i++) {
+                                //     itemAt(i).grabToImage(function(result) {
+                                //         // 注意, 由于是异步, 导致本回调函数可能在for执行完毕后才执行, 此时i已经变成了count
+                                //         // 如果使用var定义i, 则回调函数始终捕获的是最后的i; 使用let(ES6, 2015)定义块级变量或使用IIFE捕获i可以解决
+                                //         // 回调函数不会有错误提示
+                                //         // console.log(i)
+                                //         itemAt(i).Drag.imageSource = result.url
+                                //         // imageDialog.loadImage(result.url)
+                                //     })
+                                // }
+
+                                /*
+                                for (let i = 0; i < count; i++) {
+                                    (function (i_arg)
+                                        {
+                                            itemAt(i_arg).grabToImage(function(result) {
+                                                // 注意, 由于是异步, 导致本回调函数可能在for执行完毕后才执行, 此时i已经变成了count
+                                                // 如果使用var定义i, 则回调函数始终捕获的是最后的i; 使用let(ES6, 2015)定义块级变量或使用IIFE捕获i可以解决
+                                                // 回调函数不会有错误提示
+                                                console.log(i_arg)
+                                                itemAt(i_arg).Drag.imageSource = result.url
+                                                imageDialog.loadImage(result.url)
+                                            })
+                                        }
+                                    )(i)
+                                    // IIFE, 立即捕获i并赋给i_arg
+                                }
+                                */
+
+                                /* JS经典
+                                // https://blog.csdn.net/zzzhhhy/article/details/126463776
+                                for (var i = 1; i <= 5; i++) {
+                                    setTimeout(function timer() {
+                                        console.log(i)
+                                    }, 0)
+                                }  // 6 6 6 6 6 6
+                                为什么会全部输出6？ 如何改进， 让它输出1， 2， 3， 4， 5？
+                                */
+                            }
+                        }
+                        Component.onCompleted: {
+                            // console.log("rootWindow.visible: "+root.visible)
+                            // console.log("Component.onCompleted - Out Repeater")
+                            // Repeater外使用itemAt()获取元素
+                            // console.log("Accessing property of repeated item using itemAt(): "+dragRepeater.itemAt(0).objectName)
+                        }
                     }
                 }
             }
+
             DropArea {
                 anchors.fill: parent
                 // keys: ["discard"]
+                onEntered: {
+                    console.log("entered rectangle")
+                }
+
                 onDropped: {
-                    console.log("dropped")
-                    console.log(drag.x+" "+drag.y+" "+drag.source.Drag.hotSpot.x+" "+drag.source.Drag.hotSpot.y)
-                    console.log("Drop Keys: " + drop.keys)
-                    // if (drop.hasText) {
-                    //     console.log("Drop Keys: " + drop.keys)
-                    //     console.log("Drop Text: " + drop.text)
-                    // }
-                    console.log(Utils._QObjectToJson(drag.source.Drag.mimeData))
+                    // dropped(DragEvent drop)
+                    // 可以使用drop.source(参数)或drag.source(属性)访问dragItem
+                    console.log("dropped at rectangle")
+                    console.log("drag at: ("+drop.x+", "+drop.y+") with Drag.hotSpot: ("+drag.source.Drag.hotSpot.x+", "+drop.source.Drag.hotSpot.y+")")
+                    if (drop.hasText) {
+                        console.log("Drop Keys: " + drop.keys)
+                        console.log("Drop Text: " + drop.text)
+                    }
+                    console.log(Utils._QObjectToJson(drop.source.Drag.mimeData))
                     if (drag.source.Drag.mimeData["type"] === "Dropped") {
                         console.log("current dropModel: ")
                         console.log(Utils.modelToJSON(dropModel))
@@ -397,6 +451,9 @@ Item {
                                 onDropped: {
                                     console.log("dropped")
                                     console.log(Utils._QObjectToJson(drag.source.Drag.mimeData))
+                                    drag.source.anchors.horizontalCenter = undefined
+                                    drag.source.anchors.verticalCenter = undefined
+                                    drag.source.accepted = true
                                 }
                             }
                         }
@@ -429,10 +486,10 @@ Item {
                         id: dragItem
                         // 不锚定住, 就会乱跑
 
-                        // anchors.centerIn: Drag.active ? undefined : parent
-                        //
-                        // anchors.horizontalCenter: parent.horizontalCenter
-                        // anchors.verticalCenter: parent.verticalCenter
+                        // anchors.centerIn: (Drag.active || dragItem.accepted) ? undefined : parent
+                        // 以上一句等价于states中进行设置
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        anchors.verticalCenter: parent.verticalCenter
                         width: textComponent.implicitWidth + 20
                         height: textComponent.implicitHeight + 10
                         color: "green"
@@ -444,12 +501,13 @@ Item {
                             "key1": "Copied text"
                         }
                         Drag.keys: ["key1"]
+                        property bool accepted: false
                         states: State {
-                            when: dragArea.drag.active
+                            when: dragArea.drag.active || dragItem.accepted
                             AnchorChanges {
                                 target: dragItem
-                                // anchors.horizontalCenter: undefined
-                                // anchors.verticalCenter: undefined
+                                anchors.horizontalCenter: undefined
+                                anchors.verticalCenter: undefined
                             }
                         }
                         // Drag.active: dragArea.drag.active
@@ -468,10 +526,8 @@ Item {
                                 console.log("dragItem.Drag.active: "+dragItem.Drag.active) // false
                                 dragItem.Drag.start()
                                 console.log("dragItem.Drag.active: "+dragItem.Drag.active) // true
-                                console.log(dragItem.anchors.verticalCenter)
                             }
                             onReleased: {
-                                console.log(dragItem.anchors.verticalCenter)
                                 // dragItem.parent = dragItem.Drag.target
                                 // console.log(dragItem.Drag.target.objectName)
                                 console.log("released")

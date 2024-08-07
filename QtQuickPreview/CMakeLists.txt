@@ -28,6 +28,7 @@ qt_add_qml_module(appQtQuickPreview
     QML_FILES GridLayer.qml
     QML_FILES LayoutDemo.qml
     QML_FILES tiles/DragTile.qml tiles/DropTile.qml tiles/tiles.qml
+    QML_FILES jsconsole.js JSConsole.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

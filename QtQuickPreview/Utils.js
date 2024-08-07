@@ -25,7 +25,7 @@ function getModelIndex(model, idFieldString, value) {
 }
 
 function modelToJSON(model) {
-    let str = ""
+    let str = "\n"
     for (var i = 0; i < model.count; i++) {
         str = str + JSON.stringify(model.get(i)) + "\n"
     }

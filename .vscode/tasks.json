@@ -6,7 +6,7 @@
         {
             "label": "echo",
             "type": "shell",
-            "command": "& c:/Users/bobby/DATA/Git/Python/.venv/Scripts/python.exe c:/Users/bobby/DATA/Git/Python/PyQt/run_qml.py ${fileBasename}",
+            "command": "& c:/Users/bobby/DATA/Git/Python/.venv/Scripts/python.exe run_qml.py ${fileBasename}",
             "group": {
                 "kind": "build",
                 "isDefault": true

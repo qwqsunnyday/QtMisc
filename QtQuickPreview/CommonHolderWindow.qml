@@ -104,7 +104,8 @@ Window {
                         "Temp.qml",
                         "DynamicLoadComponent.qml",
                         "CommonHolderWindow.qml",
-                        "tiles/tiles.qml"
+                        "tiles/tiles.qml",
+                        "JSConsole.qml"
                     ]
                     Layout.fillWidth: true
                     Layout.minimumWidth: 50

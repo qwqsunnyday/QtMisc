@@ -3,24 +3,24 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Window 2.2
 import "jsconsole.js" as Util
+import "Utils.js" as Utils
 
-ApplicationWindow {
+Item {
     id: root
-    title: qsTr("JSConsole")
     width: 640
     height: 480
     
     visible: true
 
-    menuBar: MenuBar {
-        Menu {
-            title: qsTr("File")
-            MenuItem {
-                text: qsTr("Exit")
-                onTriggered: Qt.quit();
-            }
-        }
-    }
+    // menuBar: MenuBar {
+    //     Menu {
+    //         title: qsTr("File")
+    //         MenuItem {
+    //             text: qsTr("Exit")
+    //             onTriggered: Qt.quit();
+    //         }
+    //     }
+    // }
 
     ColumnLayout {
         anchors.fill: parent

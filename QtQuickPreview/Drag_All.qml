@@ -92,14 +92,68 @@ Item {
             z: 1
             ListModel {
                 id: dropModel
+                // 由于对象可能随意实例化, 因此持久化信息必须保存在model中!!!
                 // ListElement {
-                //     uuid: undefined
-                //     modelData: undefined
+                //     uuid: 0
+                //     sequenceIndex: -1
+                //     modelData: ""
+                //     posX: 0
+                //     posY: 0
+                //     stateType: "" inSource dropped inSequence
+                //     description: ""
+                //     info: ""
+                // }
+            }
+
+            ListModel {
+                id: sequenceModel
+                // ListElement {
+                //     uuid: 0
+                //     droppedItemModel: undefined
+                //     len: 0
                 //     posX: 0
                 //     posY: 0
                 // }
             }
 
+            Repeater {
+                model: sequenceModel
+
+
+                delegate: Rectangle {
+                    id: sequenceItem
+                    color: "pink"
+
+                    required property int uuid
+                    required property int index
+                    required property var droppedItemModel
+                    required property int posX
+                    required property int posY
+
+                    height: 120
+                    width: droppedItemModel.count*100
+                    x: posX
+                    y: posY
+                    Grid {
+                        rows: 1
+                        columns: droppedItemModel.count
+                        anchors.fill: parent
+
+                        Repeater {
+                            model: droppedItemModel
+
+                            delegate: dragCompenent
+                        }
+
+                    }
+                    MouseArea {
+                        anchors.fill: parent
+                        drag.target: sequenceItem
+                    }
+                    Component.onCompleted: {
+                    }
+                }
+            }
             Repeater {
                 model: dropModel
 
@@ -123,12 +177,23 @@ Item {
                     // 可以使用drop.source(参数)或drag.source(属性)访问dragItem
                     console.log("dropped at:")
                     console.log("drag at: ("+drop.x+", "+drop.y+") with Drag.hotSpot: ("+drag.source.Drag.hotSpot.x+", "+drop.source.Drag.hotSpot.y+")")
-                    if (drop.hasText) {
-                        console.log("Drop Keys: " + drop.keys)
-                        console.log("Drop Text: " + drop.text)
-                    }
-                    console.log(Utils._QObjectToJson(drop.source.Drag.mimeData))
-                    dropModel.append({"uuid": Utils.uuid(),"modelData": drop.source.Drag.mimeData["modelData"], "posX": drop.x - drop.source.Drag.hotSpot.x, "posY": drop.y - drop.source.Drag.hotSpot.y})
+                    // if (drop.hasText) {
+                    //     console.log("Drop Keys: " + drop.keys)
+                    //     console.log("Drop Text: " + drop.text)
+                    // }
+                    // console.log(Utils._QObjectToJson(drop.source.Drag.mimeData))
+                    // dropModel.append({"uuid": Utils.uuid(),"modelData": drop.source.Drag.mimeData["modelData"], "posX": drop.x - drop.source.Drag.hotSpot.x, "posY": drop.y - drop.source.Drag.hotSpot.y})
+                    let upItem = drop.source
+                    dropModel.append({
+                        "uuid": Utils.uuid(),
+                        "sequenceIndex": -1,
+                        "modelData": upItem.modelData,
+                        "posX": drop.x - drop.source.Drag.hotSpot.x,
+                        "posY": drop.y - drop.source.Drag.hotSpot.y,
+                        "stateType": "inSource",
+                        "description": "default description",
+                        "info": ""
+                    })
                 }
                 Component.onCompleted: {
                     // console.log("rootWindow.visible: "+root.visible)
@@ -138,6 +203,26 @@ Item {
             Component.onCompleted: {
                 // console.log("rootWindow.visible: "+root.visible)
                 // console.log("Component.onCompleted - 2")
+            }
+
+            Rectangle {
+                color: "Orange"
+                height: parent.height
+                width: parent.width/8
+                Text {
+                    text: "Nested Drop Area"
+                    anchors.centerIn: parent
+                }
+                DropArea {
+                    id: nestedDropArea
+                    anchors.fill: parent
+                    onDropped: {
+                        console.log("dropped in nestedDropArea")
+                    }
+                    onEntered: {
+                        console.log("entered nestedDropArea")
+                    }
+                }
             }
         }
         Rectangle {
@@ -150,16 +235,28 @@ Item {
                 id: dragCompenent
                 Rectangle {
                     id: dragItem
-                    // x: posX || 30
-                    // 这样会有警告, 不采用
-                    x: (typeof(posX)=="undefined") ? 30 : posX
-                    // y: posY || 20
-                    y: (typeof(posY)=="undefined") ? 20 : posY
+
+                    // 要手动加才可以访问index附加属性
+                    required property int index
+                    required property int uuid
+                    required property int posX
+                    required property int posY
+                    required property int sequenceIndex
+                    required property string modelData
+                    required property string stateType
+                    required property string description
+                    required property var info
+
+                    function toString() {
+                        return JSON.stringify({"uuid":uuid, "posX":posX, "posY":posX, "modelData":modelData, "stateType":stateType, "description":description, "info":info})
+                    }
+
+                    x: posX
+                    y: posY
                     width: 100
                     height: 100
                     color: "black"
                     objectName: "description of dragItem"
-
 
                     Rectangle {
                         id: connectionArea
@@ -172,15 +269,49 @@ Item {
                             id: connectionDropArea
                             anchors.fill: parent
                             onEntered: {
-                                console.log("entered connectionDropArea")
+                                // console.log("entered connectionDropArea")
                             }
 
                             onDropped: {
                                 console.log("connectionDropArea dropped:")
-                                console.log("drag.source.Drag.mimeData")
-                                console.log(Utils._QObjectToJson(drag.source.Drag.mimeData))
-                                console.log("dragItem.Drag.mimeData:")
-                                console.log(Utils._QObjectToJson(dragItem.Drag.mimeData))
+                                // console.log("drag.source.Drag.mimeData")
+                                // console.log(Utils._QObjectToJson(drag.source.Drag.mimeData))
+                                // console.log("dragItem.Drag.mimeData:")
+                                // console.log(Utils._QObjectToJson(dragItem.Drag.mimeData))
+
+                                var upItem = drag.source
+                                var downItem = dragItem
+                                console.log(downItem.index)
+
+                                var currentSequenceIndex = downItem.sequenceIndex
+                                console.log(currentSequenceIndex)
+                                if(currentSequenceIndex !==-1){
+                                    // down已经在一个序列内了
+                                    console.log("down已经在一个序列内了")
+                                    let currentSequenceIndex = downItem.parent.parent.index
+                                    dropModel.get(upItem.index).sequenceIndex=currentSequenceIndex
+                                    sequenceModel.get(currentSequenceIndex).droppedItemModel.append(dropModel.get(upItem.index))
+
+                                    dropModel.remove(upItem.index)
+                                }else{
+                                    // 全新的两个元素
+                                    console.log("全新的两个元素")
+                                    dropModel.get(upItem.index).sequenceIndex=sequenceModel.count
+                                    dropModel.get(downItem.index).sequenceIndex=sequenceModel.count
+                                    sequenceModel.append({
+                                        uuid: Utils.uuid(),
+                                        droppedItemModel: [dropModel.get(downItem.index), dropModel.get(upItem.index)],
+                                        posX: dragItem.x,
+                                        posY: dragItem.y
+                                    })
+
+                                    dropModel.remove(upItem.index)
+                                    dropModel.remove(downItem.index)
+                                }
+
+
+                                // console.log(Utils.modelToJSON(sequenceModel))
+
                             }
                         }
                     }
@@ -191,11 +322,40 @@ Item {
                         anchors.centerIn: parent
                         color: "white"
                         font.pixelSize: parent.width/6
-                        text: parent.Drag.mimeData["modelData"]+"\nuuid: "+uuid+"\nDrag: "+dragItem.Drag.active+"\n"+Drag.dragType
+                        text: parent.Drag.mimeData["modelData"]+"\nuuid: "+uuid+"\nDrag: "+dragItem.Drag.active+"\n"+dragItem.Drag.dragType
                     }
 
 
-                    opacity: Drag.active ? 0.5 : 1
+                    // opacity: Drag.active ? 0.8 : 1
+
+                    PropertyAnimation {
+                        id: dragItemOpacityAnimation
+                        target: dragItem
+                        property: "opacity"
+                        from: 1.0
+                        to: 0.8
+                        easing.type : Easing.OutExpo
+                        duration: 200
+                    }
+                    PropertyAnimation {
+                        id: dragItemOpacityAnimationReversed
+                        target: dragItem
+                        property: "opacity"
+                        from: 0.8
+                        to: 1.0
+                        easing.type : Easing.OutExpo
+                        duration: 200
+                    }
+                    Connections {
+                        target: dragArea
+                        function onEntered (mouse) {
+                            dragItemOpacityAnimation.start()
+                        }
+                        function onExited (mouse) {
+                            dragItemOpacityAnimationReversed.start()
+                        }
+                    }
+
 
                     // 一般用于跨应用, dragItem可超出窗口范围, 使用mimeData传递数据
                     // 需要自己处理imageSource同时绑定Drag.active: dragArea.drag.active(可选)
@@ -227,8 +387,11 @@ Item {
                             // })
                             dragItem.Drag.active = true;
                             // 非常奇怪...因为Drag.start()之后dragItem.Drag.active会设置为true
-                            // dragItem.Drag.start() 注释后会解决
+                            // dragItem.Drag.start()
+                            // TODO 注释后会解决无法识别Drop区域的问题, 但是小概率引入无法响应拖拽的问题
                             // dragItem.Drag.startDrag();
+                            dragItem.z = 100
+                            console.log(JSON.stringify(dragItem.Drag.mimeData))
                         }
                         onEntered: {
                             // 最终解决办法: hoverEnabled: true然后onEntered中抓取
@@ -237,13 +400,20 @@ Item {
                                 // console.log(dragItem.Drag.mimeData["modelData"])
                                 // imageDialog.loadImage(result.url)
                             })
+                            // console.log(dragItem.parent == canvas ? "parent == canvas":"0")
+                            // console.log(JSON.stringify(dragItem.Drag.mimeData))
+                            // console.log("z: "+dragItem.z)
                         }
 
                         onReleased: {
                             console.log("released");
-                            console.log(Utils.modelToJSON(dropModel))
-                            console.log(Utils.modelToJSON(dragModel))
+                            // console.log(Utils.modelToJSON(dropModel))
+                            // console.log(Utils.modelToJSON(dragModel))
                             dragItem.Drag.drop();
+                            dragItem.z = 0
+                        }
+                        onClicked: {
+                            console.log(dragItem.toString())
                         }
                     }
                     Component.onCompleted: {
@@ -275,15 +445,29 @@ Item {
                     color: "red"
                     Layout.fillHeight: true
                     Layout.fillWidth: true
-                    ListView {
+
+                    ColumnLayout {
                         anchors.fill: parent
-                        model: dropModel
-                        delegate: Text {
-                            id: txt
-                            text: "uuid: "+uuid+" modelData: "+modelData
-                            font.pixelSize: 16
+                        ListView {
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            model: dropModel
+                            delegate: Text {
+                                text: "uuid: "+uuid+" modelData: "+modelData
+                                font.pixelSize: 16
+                            }
+                        }
+                        ListView {
+                            Layout.fillHeight: true
+                            Layout.fillWidth: true
+                            model: sequenceModel
+                            delegate: Text {
+                                text: "index: "+index+" droppedItemModel.count: "+droppedItemModel.count + " posX: "+posX + " posY: "+posY
+                                font.pixelSize: 16
+                            }
                         }
                     }
+
                 }
 
                 Rectangle {
@@ -300,6 +484,7 @@ Item {
                     }
 
                     Flow {
+                        clip: true
                         anchors.fill: parent
                         spacing: 20
                         Repeater {
@@ -314,9 +499,18 @@ Item {
 
                             Component.onCompleted: {
                                 for (let i = 0; i < 3; i++) {
-                                    dragModel.append({"uuid": String(Utils.uuid()), "modelData": "data: " + i})
+                                    dragModel.append({
+                                        "uuid": Utils.uuid(),
+                                        "sequenceIndex": -1,
+                                        "modelData": "data: " + i,
+                                        "posX": 0,
+                                        "posY": 0,
+                                        "stateType": "inSource",
+                                        "description": "default description",
+                                        "info": ""
+                                    })
                                 }
-
+                                // console.log(dragModel.get(0).uuid)
                                 // console.log("rootWindow.visible: "+root.visible)
                                 // console.log("Component.onCompleted - Repeater")
                                 // 使用itemAt()获取元素

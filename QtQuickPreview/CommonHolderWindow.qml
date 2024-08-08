@@ -121,6 +121,7 @@ Window {
                         "Drag_Internal.qml",
                         "main.qml",
                         "Temp.qml",
+                        "ViewModel.qml",
                         "DynamicLoadComponent.qml",
                         "CommonHolderWindow.qml",
                         "tiles/tiles.qml",

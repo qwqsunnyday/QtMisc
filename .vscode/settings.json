@@ -43,4 +43,5 @@
         // "editor.defaultFormatter": "theqtcompany.qt-official"
     },
     "cmake.sourceDirectory": "C:/Users/bobby/DATA/Git/QtMisc/QtQuickPreview",
+    "editor.formatOnSave": false,
 }

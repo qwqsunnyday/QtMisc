@@ -30,7 +30,7 @@ qt_add_qml_module(appQtQuickPreview
     QML_FILES tiles/DragTile.qml tiles/DropTile.qml tiles/tiles.qml
     QML_FILES  JSConsole.qml
     QML_FILES Binding.qml
-    QML_FILES Drag_All_Object_Model.qml
+    QML_FILES
     QML_FILES ViewModel.qml
 )
 

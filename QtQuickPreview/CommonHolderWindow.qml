@@ -65,6 +65,7 @@ Window {
                 // 不会覆盖左右, 因此作用为设置上下margin为10
                 anchors.margins: 5
                 spacing: 10
+                layoutDirection: Qt.RightToLeft
 
                 WindowFrameRate {
                     id: fps

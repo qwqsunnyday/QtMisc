@@ -148,6 +148,9 @@ Item {
             }
         }
     }
+    Component.onDestruction: {
+        outputModel.clear()
+    }
 
     function acceptHandle() {
         root.jsCall(input.text, this)

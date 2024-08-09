@@ -143,3 +143,10 @@ function dataProvider() {
     var provider = (typeof(provider) == "undefined") ? new DataProvider() : provider
     return provider
 }
+
+function copyToClipBoard(txt) {
+    var object = Qt.createQmlObject("import QtQuick; TextEdit{id: textEdit; visible: false}", root)
+    object.text = txt
+    object.selectAll()
+    object.copy()
+}

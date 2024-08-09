@@ -12,130 +12,109 @@ Item {
     anchors.fill: parent
     visible: true
 
-    // menuBar: MenuBar {
-    //     Menu {
-    //         title: qsTr("File")
-    //         MenuItem {
-    //             text: qsTr("Exit")
-    //             onTriggered: Qt.quit();
-    //         }
-    //     }
-    // }
+    property var predefinedCommands: []
 
-    ColumnLayout {
-        anchors.fill: parent
-        anchors.margins: 9
-        RowLayout {
-            Layout.fillWidth: true
-            ListModel {
-                id: inputModel
-                property int currentIdx: 0
-                ListElement {
-                    // 保证始终在最后面
-                    modelData: ""
-                }
-            }
-            TextField {
-                id: input
-                Layout.fillWidth: true
-                focus: true
-                text: inputModel.get(inputModel.currentIdx).modelData
-                onAccepted: {
-                    acceptHandle()
-                }
-                Keys.onPressed: {
-                    switch (event.key) {
-                        case Qt.Key_Up:
-                            if (inputModel.currentIdx>=1){
-                                inputModel.currentIdx-=1
-                            }
-                            input.text = inputModel.get(inputModel.currentIdx).modelData
-                            break
-                        case Qt.Key_Down:
-                            if (inputModel.currentIdx<inputModel.count-1){
-                                inputModel.currentIdx+=1
-                            }
-                            input.text = inputModel.get(inputModel.currentIdx).modelData
-                            break
-                    }
-                }
-            }
-            Button {
-                text: qsTr("Send")
-                onClicked: {
-                    acceptHandle()
-                }
-            }
-            Button {
-                text: qsTr("Clear")
-                onClicked: {
-                    outputModel.clear()
-                    input.text = ""
-                }
-            }
-            Switch {
-                id: historySwitch
-                visible: false
-                text: qsTr("History")
-                checked: false
+    ListModel {
+        id: inputModel
+        property int currentIdx: 0
+        ListElement {
+            // 保证始终在最后面
+            modelData: ""
+        }
+        Component.onCompleted: {
+            for (let i = 0; i < predefinedCommands.length ; i++) {
+                addCommand(predefinedCommands[i])
+                let data = root.jsCall(predefinedCommands[i])
+                inspectorModel.insert(0, data)
             }
         }
-        ListView {
-            id: inputView
-            clip: true
-            visible: historySwitch.checked
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            model: inputModel
-            delegate: TextField {
-                width: inputView.width
-                text: "currentIdx: "+inputModel.currentIdx+"modelData: "+model.modelData
-                background: Rectangle {
-                    anchors.fill: parent
-                    border.width: 0
-                }
-            }
-            Rectangle {
-                anchors.fill: parent
-                color: '#333'
-                border.color: Qt.darker(color)
-                opacity: 0.2
-                radius: 2
-            }
-        }
-
+    }
+    ListModel {
+        id: outputModel
+    }
+    ListModel {
+        id: inspectorModel
+        // ListElement {
+        //     expression: "3+4"
+        //     result: "7"
+        // }
+    }
+    Component {
+        id: cmdEchoDisplayComponent
         Item {
-            Layout.fillWidth: true
-            Layout.fillHeight: true
-            Rectangle {
-                anchors.fill: parent
-                color: '#333'
-                border.color: Qt.darker(color)
-                opacity: 0.2
-                radius: 0
+            anchors.fill: parent
+            Timer {
+                id: timer
+                interval: refreshInterval.value
+                repeat: true
+                triggeredOnStart: true
+                onTriggered: {
+                    if (targetModel == "inspectorModel") {
+                        for (let i = 0; i < inspectorModel.count ; i++) {
+                            let cmd = inspectorModel.get(i).expression
+                            inspectorModel.set(i, root.jsCall(cmd))
+                        }
+                    }
+
+                }
+                Component.onCompleted: {
+                    timer.start()
+                }
             }
 
+            required property string targetModel
             ScrollView {
                 id: scrollView
                 clip: true
                 anchors.fill: parent
                 anchors.margins: 9
+
+
                 ListView {
                     id: resultView
-                    model: ListModel {
-                        id: outputModel
-                    }
+                    // 奇技淫巧
+                    model: eval(targetModel)
                     delegate: ColumnLayout {
                         width: ListView.view.width
-                        Label {
+                        RowLayout {
+                            // Layout.fillHeight: true
                             Layout.fillWidth: true
-                            color: 'green'
-                            text: "> " + model.expression
+                            Button {
+                                Layout.fillWidth: true
+                                contentItem: Text {
+                                    text: "> " + model.expression
+                                    font.family: "Consolas"
+                                    horizontalAlignment : Text.AlignLeft
+                                }
+                                onClicked: {
+                                    Utils.copyToClipBoard(model.expression)
+                                }
+                            }
+                            Button {
+                                visible: targetModel == "outputModel"
+                                Layout.preferredWidth: contentTxt.contentWidth+20
+                                contentItem: Text {
+                                    id: contentTxt
+                                    text: "Watch"
+                                    horizontalAlignment : Text.AlignLeft
+                                }
+                                onClicked: {
+                                    let data = root.jsCall(model.expression)
+                                    inspectorModel.insert(0, data)
+                                }
+                            }
                         }
-                        Label {
+
+                        Button {
                             Layout.fillWidth: true
-                            color: 'blue'
-                            text: "" + model.result
+                            contentItem: Text {
+                                text: "" + model.result
+                                font.family: "Consolas"
+                                horizontalAlignment : Text.AlignLeft
+                            }
+                            onClicked: {
+                                Utils.copyToClipBoard(model.result)
+                            }
                         }
                         Rectangle {
                             height: 1
@@ -148,27 +127,187 @@ Item {
             }
         }
     }
+
+    ColumnLayout {
+        anchors.fill: parent
+        spacing: 1
+        Rectangle {
+            Layout.fillWidth: true
+            // Layout.fillHeight: true
+            Layout.preferredHeight: controlZone.implicitHeight + controlZone.anchors.margins*2
+            border.color: "#d6d6d6"
+            border.width: 2
+            RowLayout {
+                id: controlZone
+                anchors.fill: parent
+                anchors.margins: 3
+                TextField {
+                    id: input
+                    Layout.fillWidth: true
+                    Layout.minimumWidth: 50
+                    focus: true
+                    text: inputModel.get(inputModel.currentIdx).modelData
+                    onAccepted: {
+                        addCommand(input.text)
+                    }
+                    Keys.onPressed: {
+                        switch (event.key) {
+                            case Qt.Key_Up:
+                                if (inputModel.currentIdx>=1){
+                                    inputModel.currentIdx-=1
+                                }
+                                input.text = inputModel.get(inputModel.currentIdx).modelData
+                                break
+                            case Qt.Key_Down:
+                                if (inputModel.currentIdx<inputModel.count-1){
+                                    inputModel.currentIdx+=1
+                                }
+                                input.text = inputModel.get(inputModel.currentIdx).modelData
+                                break
+                        }
+                    }
+                }
+                Button {
+                    text: qsTr("Send")
+                    onClicked: {
+                        addCommand(input.text)
+                    }
+                }
+                Button {
+                    text: qsTr("Clear")
+                    onClicked: {
+                        outputModel.clear()
+                        input.text = ""
+                    }
+                }
+                Switch {
+                    id: historySwitch
+                    visible: false
+                    text: qsTr("History")
+                    checked: false
+                }
+                Slider {
+                    id: refreshInterval
+                    from: 100
+                    to: 2000
+                    value: 200
+                    Layout.preferredWidth: 100
+                }
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            anchors.margins: 9
+            ColumnLayout {
+                id: consoleZone
+                Layout.fillHeight: true
+                Layout.preferredWidth: parent.width/2
+                ListView {
+                    id: inputView
+                    clip: true
+                    visible: historySwitch.checked
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    model: inputModel
+                    delegate: TextField {
+                        width: inputView.width
+                        text: "currentIdx: "+inputModel.currentIdx+"modelData: "+model.modelData
+                        background: Rectangle {
+                            anchors.fill: parent
+                            border.width: 0
+                        }
+                    }
+                    Rectangle {
+                        anchors.fill: parent
+                        color: '#333'
+                        border.color: Qt.darker(color)
+                        opacity: 0.2
+                        radius: 2
+                    }
+                }
+
+                Item {
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Rectangle {
+                        anchors.fill: parent
+                        color: '#333'
+                        border.color: Qt.darker(color)
+                        opacity: 0.2
+                        radius: 0
+                    }
+
+
+
+                    Repeater {
+                        anchors.fill: parent
+                        // 作用是代替Loader
+                        model: ListModel {
+                            ListElement {
+                                targetModel: "outputModel"
+                            }
+                        }
+                        delegate: cmdEchoDisplayComponent
+                    }
+                }
+            }
+
+            ColumnLayout {
+                id: inspectorZone
+                Layout.fillHeight: true
+                Layout.preferredWidth: parent.width/2
+
+                Item {
+                    Layout.fillHeight: true
+                    Layout.fillWidth: true
+                    Rectangle {
+                        anchors.fill: parent
+                        color: '#333'
+                        border.color: Qt.darker(color)
+                        opacity: 0.2
+                        radius: 0
+                    }
+                    Repeater {
+                        model: ListModel {
+                            ListElement {
+                                targetModel: "inspectorModel"
+                            }
+                        }
+                        delegate: cmdEchoDisplayComponent
+                        Component.onCompleted: {
+                            console.log(Utils.modelToJSON(inspectorModel))
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+
+
+
     Component.onDestruction: {
         outputModel.clear()
     }
 
-    function acceptHandle() {
-        root.jsCall(input.text, this)
-        inputModel.insert(inputModel.count-1, {modelData: input.text})
+    function addCommand(cmd) {
+        let data = root.jsCall(cmd)
+        outputModel.insert(0, data)
+        inputModel.insert(inputModel.count-1, {modelData: cmd})
         inputModel.currentIdx = inputModel.count-1
         input.text = ""
     }
 
-    function jsCall(exp, scope) {
-        // console.log(scope);
-        // var data = Util.call(exp, scope);
+    function jsCall(exp) {
         try {
             var result = String(eval(exp));
         } catch (e) {
             result  = e.toString();
         }
-
-        var data = {expression: exp,result: result}
-        outputModel.insert(0, data)
+        // console.log(JSON.stringify({expression: exp,result: result}))
+        return {expression: exp,result: result}
     }
 }

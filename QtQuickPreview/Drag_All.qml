@@ -67,6 +67,11 @@ QML中, 拖拽事件通过 MouseArea (或 DragHandler )处理, 使用 DropArea �
 
 ## 本文件的拖拽实现思路
 
+## 大坑
+
+- z stack
+- 双向/单向绑定
+
 ## 其他资源
 
 1. 文档: MouseArea; Drag; DropArea; DragHandler; DragEvent
@@ -125,6 +130,7 @@ Item {
                 delegate: Rectangle {
                     id: sequenceItem
                     color: "pink"
+                    z: 10
 
                     required property var droppedItemModel
                     required property int uuid
@@ -155,7 +161,7 @@ Item {
                     function stringify() {
                         let str = ""
                         str+="uuid: "+sequenceItem.uuid+"\n"
-                        str+="posX: "+sequenceItem.posX+" poxY: "+sequenceItem.posY+"\n"
+                        str+="posX: "+sequenceItem.posX+" posY: "+sequenceItem.posY+"\n"
                         str+=Utils.modelToJSON(droppedItemModel)
                         return str
                     }
@@ -170,10 +176,12 @@ Item {
                         drag.target: sequenceItem
 
                         onPressed: {
+                            sequenceItem.z+=1
                             console.log("sequenceItem started")
                             sequenceItem.Drag.start()
                         }
                         onReleased: {
+                            sequenceItem.z -=1
                             console.log("sequenceItem released")
                             sequenceItem.Drag.drop()
                             sequenceItem.getCurrentData().posX = sequenceItem.x
@@ -208,14 +216,9 @@ Item {
                 anchors.fill: parent
                 // 接受
                 keys: ["inSource", "dropped"]
-                property var acceptKeys: ["inSource", "dropped"]
 
                 onEntered: {
                     // console.log("entered canvasDropArea")
-                }
-                onPositionChanged: {
-                    // console.log("pos changed")
-                    // console.log(drag.x+" "+drag.y)
                 }
                 // DropArea还具有drag.source属性
                 onDropped: { // canvasDropArea
@@ -246,6 +249,7 @@ Item {
                 color: "Orange"
                 height: parent.height
                 width: parent.width/8
+                visible: false
                 Text {
                     text: "Nested Drop Area"
                     anchors.centerIn: parent
@@ -303,11 +307,12 @@ Item {
                     function actualState() {
                         let str = ""
                         str+="uuid: "+dragItem.uuid+"\n"
-                        str+="sequenceIndex: "+dragItem.sequenceIndex+"\n"
+                        // str+="sequenceIndex: "+dragItem.sequenceIndex+"\n"
+                        str+="z: "+dragItem.z+"\n"
                         str+="active: "+dragItem.Drag.active+"\n"
                         str+="type: "+dragItem.Drag.dragType+"\n"
                         str+="state: "+dragItem.stateType+"\n"
-                        str+="posX: "+dragItem.posX+" poxY: "+dragItem.posY+"\n"
+                        str+="posX: "+dragItem.posX+" posY: "+dragItem.posY+"\n"
                         // str+="hotSpot: "+dragItem.Drag.hotSpot.x+" "+dragItem.Drag.hotSpot.y
                         return str
                     }
@@ -318,6 +323,8 @@ Item {
 
                     x: posX
                     y: posY
+                    // 这里z值非常重要, 至少要比canvasArea高
+                    z: 10
                     width: 100
                     height: 100
                     color: "black"
@@ -358,19 +365,19 @@ Item {
                     // 需要自己处理imageSource同时绑定Drag.active: dragArea.drag.active(可选)
                     // 这里为了平滑, 自定义了dragItem.Drag.hotSpot并在pressed时设置Drag.active=true
                     // Drag.active: dragArea.drag.active
-                    Drag.dragType: parent == canvas ? Drag.Internal : Drag.Automatic
+                    // Drag.dragType: parent == canvas ? Drag.Internal : Drag.Automatic
+                    Drag.dragType: (stateType === "dropped" || stateType === "inSequence") ? Drag.Internal : Drag.Automatic
                     // 默认, 在窗口内进行
                     // Drag.dragType: Drag.Internal
                     Drag.mimeData: {"inSource": "inSource", "dropped": "dropped", "inSequence": "inSequence"}
-                    // 绑定有风险, 更改时会产生副作用
-                    // Drag.keys: ["inSource", "dropped", "inSequence"]
-                    // Drag.keys: [stateType]
+                    Drag.keys: [stateType]
                     MouseArea {
                         id: dragArea
                         anchors.fill: parent
                         drag.target: dragItem
                         hoverEnabled: true
                         onPressed: {
+                            dragItem.z +=1
                             console.log("startDrag")
                             console.log(mouse.x+" "+mouse.y)
                             dragItem.Drag.hotSpot.x = mouse.x
@@ -379,12 +386,11 @@ Item {
                             // dragItem.grabToImage(function(result) {
                             //     dragItem.Drag.imageSource = result.url
                             // })
-                            dragItem.Drag.active = true;
-                            // 非常奇怪...因为Drag.start()之后dragItem.Drag.active会设置为true
-                            // dragItem.Drag.start()
-                            // TODO 注释后会解决无法识别Drop区域的问题, 但是小概率引入无法响应拖拽的问题
-                            // dragItem.Drag.startDrag();
-                            dragItem.z = 100
+                            if (dragItem.Drag.dragType === Drag.Internal){
+                                dragItem.Drag.start()
+                            } else {
+                                dragItem.Drag.active = true
+                            }
                         }
                         onEntered: {
                             // 最终解决办法: hoverEnabled: true然后onEntered中抓取
@@ -392,23 +398,17 @@ Item {
                                 dragItem.Drag.imageSource = result.url
                                 // imageDialog.loadImage(result.url)
                             })
-                            // console.log(dragItem.parent == canvas ? "parent == canvas":"0")
-                            // console.log("z: "+dragItem.z)
                         }
 
                         onReleased: {
+                            dragItem.z -=1
                             console.log("released");
                             dragItem.Drag.drop();
-                            dragItem.z = 0
                             getCurrentData().posX = dragItem.x
                             getCurrentData().posY = dragItem.y
-                            // console.log(getCurrentData().posX +" "+ dragItem.x)
-                            // console.log(getCurrentData().posY +" "+ dragItem.y)
                         }
                         onClicked: {
                             console.log(dragItem.stringify())
-                            // console.log(dragItem.parent==canvas)
-                            // console.log(dragItem.Drag.dragType)
                         }
                     }
 
@@ -423,12 +423,11 @@ Item {
                             id: connectionDropArea
                             anchors.fill: parent
 
-                            // TODO 诡异行为
+                            keys: ["dropped"]
                             // keys: ["dropped", "inSource"]
-                            property var acceptKeys: ["dropped", "inSource"]
 
                             onEntered: {
-                                console.log("entered connectionDropArea")
+                                // console.log("entered connectionDropArea")
                             }
 
                             onDropped: { // connectionArea
@@ -438,7 +437,7 @@ Item {
                                 console.log("dropped at connectionDropArea:")
                                 console.log(upItem.stringify())
                                 console.log(upItem.stateType)
-                                if (!acceptKeys.includes(upItem.stateType)) {
+                                if (!keys.includes(upItem.stateType)) {
                                     console.log("not dropped")
                                     return
                                 }
@@ -451,7 +450,7 @@ Item {
                                     // 修改之后不能调用getModel()
 
                                     // in sequenceModel.get(sequenceIndex).droppedItemModel
-                                    downItem.getModel().append(dropModel.get(upItem.index))
+                                    downItem.getModel().insert(downItem.index+1, dropModel.get(upItem.index))
 
                                     dropModel.remove(upItem.index)
                                 }else{
@@ -469,10 +468,6 @@ Item {
                                     dropModel.remove(upItem.index)
                                     dropModel.remove(downItem.index)
                                 }
-
-
-                                // console.log(Utils.modelToJSON(sequenceModel))
-
                             }
                         }
                     }
@@ -539,22 +534,7 @@ Item {
                                 font.pixelSize: 16
                             }
                         }
-                        // Text {
-                        //     Layout.fillHeight: true
-                        //     Layout.fillWidth: true
-                        //     text: {
-                        //         Utils.modelToJSON(dropModel)
-                        //     }
-                        // }
-                        // Text {
-                        //     Layout.fillHeight: true
-                        //     Layout.fillWidth: true
-                        //     text: {
-                        //         Utils.modelToJSON(sequenceModel)
-                        //     }
-                        // }
                     }
-
                 }
 
                 Rectangle {
@@ -656,7 +636,6 @@ Item {
                 anchors.fill: parent
 
                 keys: ["dropped", "isSequence"]
-                property var acceptKeys: ["dropped", "isSequence"]
 
                 onEntered: {
                     // console.log("entered removeArea")
@@ -669,7 +648,7 @@ Item {
 
                     console.log("dropped at removeArea")
                     console.log(upItem.stringify())
-                    if (!acceptKeys.includes(upItem.stateType)) {
+                    if (!keys.includes(upItem.stateType)) {
                         console.log("not dropped")
                         return
                     }
@@ -696,7 +675,6 @@ Item {
                 // })
             }
         }
-
     }
 
     // 定义一个弹窗，用于显示加载的图像
@@ -725,5 +703,12 @@ Item {
 
     JSConsoleButton {
         anchors.right: parent.right
+        windowHeight: 600
+        windowWidth: 800
+        predefinedCommands: [
+            "Utils.modelToJSON(dragModel)",
+            "Utils.modelToJSON(dropModel)",
+            "Utils.modelToJSON(sequenceModel)"
+        ]
     }
 }

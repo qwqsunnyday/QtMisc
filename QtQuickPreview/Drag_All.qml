@@ -1,6 +1,7 @@
 import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
+import QtQuick.Controls.Universal
 
 import "Utils.js" as Utils
 
@@ -86,7 +87,7 @@ Item {
 
         Rectangle {
             id: canvas
-            Layout.preferredHeight: 0.3* parent.height
+            Layout.preferredHeight: 0.5* parent.height
             Layout.fillWidth: true
             color: "yellow"
             z: 1
@@ -95,6 +96,7 @@ Item {
                 // 由于对象可能随意实例化, 因此持久化信息必须保存在model中!!!
                 // ListElement 本身也是ListModel
                 // 使用Object承载数据时, 是副本, 无法修改
+                // Model和View是单项绑定, view无法影响Model
                 // ListModel等可以进行绑定, 否则需要自行在C++/Python实现
                 // sequenceIndex 可以通过parent.parent.index访问(当stateType=="inSequence")
                 // ListElement {
@@ -103,8 +105,6 @@ Item {
                 //     posX: 0
                 //     posY: 0
                 //     stateType: "" inSource dropped inSequence
-                //     description: ""
-                //     info: ""
                 // }
             }
 
@@ -113,7 +113,6 @@ Item {
                 // ListElement {
                 //     uuid: 0
                 //     droppedItemModel: undefined
-                //     len: 0
                 //     posX: 0
                 //     posY: 0
                 // }
@@ -147,11 +146,54 @@ Item {
 
                             delegate: dragCompenent
                         }
-
                     }
+
+                    function getCurrentData() {
+                        return sequenceModel.get(index)
+                    }
+
+                    function stringify() {
+                        let str = ""
+                        str+="uuid: "+sequenceItem.uuid+"\n"
+                        str+="posX: "+sequenceItem.posX+" poxY: "+sequenceItem.posY+"\n"
+                        str+=Utils.modelToJSON(droppedItemModel)
+                        return str
+                    }
+
+                    property string stateType: "isSequence"
+
+                    Drag.dragType: Drag.Internal
+                    Drag.keys: [stateType]
+
                     MouseArea {
                         anchors.fill: parent
                         drag.target: sequenceItem
+
+                        onPressed: {
+                            console.log("sequenceItem started")
+                            sequenceItem.Drag.start()
+                        }
+                        onReleased: {
+                            console.log("sequenceItem released")
+                            sequenceItem.Drag.drop()
+                            sequenceItem.getCurrentData().posX = sequenceItem.x
+                            sequenceItem.getCurrentData().posY = sequenceItem.y
+                        }
+                        onDoubleClicked: {
+                            console.log("sequenceItem doubleClicked")
+
+                            for (let i = 0; i < droppedItemModel.count ; i++) {
+                                let reAddItem = droppedItemModel.get(i)
+                                reAddItem.stateType = "dropped"
+                                reAddItem.posX = sequenceItem.posX + i*110
+                                reAddItem.posY = sequenceItem.posY
+                                dropModel.append(reAddItem)
+                            }
+                            sequenceModel.remove(index)
+                        }
+                        onClicked: {
+                            console.log(sequenceItem.stringify())
+                        }
                     }
                 }
             }
@@ -195,9 +237,7 @@ Item {
                         "modelData": upItem.modelData,
                         "posX": drop.x - drop.source.Drag.hotSpot.x,
                         "posY": drop.y - drop.source.Drag.hotSpot.y,
-                        "stateType": "dropped",
-                        "description": "",
-                        "info": ""
+                        "stateType": "dropped"
                     })
                 }
             }
@@ -240,8 +280,6 @@ Item {
                     required property int posY
                     required property string modelData
                     required property string stateType
-                    required property string description
-                    required property var info
                     property int sequenceIndex: stateType==="inSequence" ? parent.parent.index : -1
 
                     function getCurrentData() {
@@ -405,7 +443,6 @@ Item {
                                     return
                                 }
 
-
                                 var currentSequenceIndex = downItem.sequenceIndex
                                 if(currentSequenceIndex !==-1){
                                     // down已经在一个序列内了
@@ -498,7 +535,7 @@ Item {
                             model: sequenceModel
                             delegate: Text {
                                 required property int index
-                                // text: Utils.modelToJSON(sequenceModel.get(index).droppedItemModel)
+                                text: Utils.modelToJSON(sequenceModel.get(index).droppedItemModel)
                                 font.pixelSize: 16
                             }
                         }
@@ -523,7 +560,7 @@ Item {
                 Rectangle {
                     color: "#806be7"
                     Layout.fillHeight: true
-                    Layout.fillWidth: true
+                    Layout.preferredWidth: 0.3* parent.width
 
                     ListModel {
                         id: dragModel
@@ -554,9 +591,7 @@ Item {
                                         "modelData": "data: " + i,
                                         "posX": 0,
                                         "posY": 0,
-                                        "stateType": "inSource",
-                                        "description": "",
-                                        "info": ""
+                                        "stateType": "inSource"
                                     })
                                 }
                                 // console.log(dragModel.get(0).uuid)
@@ -620,11 +655,11 @@ Item {
                 id: removeArea
                 anchors.fill: parent
 
-                keys: ["dropped"]
-                property var acceptKeys: ["dropped"]
+                keys: ["dropped", "isSequence"]
+                property var acceptKeys: ["dropped", "isSequence"]
 
                 onEntered: {
-                    console.log("entered removeArea")
+                    // console.log("entered removeArea")
                 }
 
                 onDropped: { // removeArea
@@ -638,16 +673,19 @@ Item {
                         console.log("not dropped")
                         return
                     }
-
-                    console.log("drag at: ("+drop.x+", "+drop.y+") with Drag.hotSpot: ("+drag.source.Drag.hotSpot.x+", "+drop.source.Drag.hotSpot.y+")")
-
-                    dropModel.remove(upItem.index)
+                    // console.log("drag at: ("+drop.x+", "+drop.y+") with Drag.hotSpot: ("+drag.source.Drag.hotSpot.x+", "+drop.source.Drag.hotSpot.y+")")
+                    switch (upItem.stateType ) {
+                        case "isSequence":
+                            sequenceModel.remove(upItem.index)
+                            break
+                        case "dropped":
+                            dropModel.remove(upItem.index)
+                            break
+                    }
                 }
             }
 
             Component.onCompleted: {
-                // console.log("rootWindow.visible: "+root.visible)
-                // console.log("Component.onCompleted - 4")
                 // Loader外使用item属性访问装载的元素
                 // console.log("Accessing property of repeated item using item: "+dragLoader.item.objectName)
                 // deprecated:
@@ -683,5 +721,9 @@ Item {
     }
     WindowFrameRate {
         targetWindow: Window.window
+    }
+
+    JSConsoleButton {
+        anchors.right: parent.right
     }
 }

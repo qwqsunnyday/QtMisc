@@ -32,6 +32,7 @@ qt_add_qml_module(appQtQuickPreview
     QML_FILES Binding.qml
     QML_FILES
     QML_FILES ViewModel.qml
+    QML_FILES JSConsoleButton.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

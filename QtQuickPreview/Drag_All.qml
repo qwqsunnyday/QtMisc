@@ -423,8 +423,8 @@ Item {
                             id: connectionDropArea
                             anchors.fill: parent
 
-                            keys: ["dropped"]
-                            // keys: ["dropped", "inSource"]
+                            // keys: ["dropped"]
+                            keys: ["dropped", "inSource"]
 
                             onEntered: {
                                 // console.log("entered connectionDropArea")
@@ -441,31 +441,42 @@ Item {
                                     console.log("not dropped")
                                     return
                                 }
+                                if (upItem.stateType === "inSource") {
+                                    dropModel.append({
+                                        "uuid": Utils.uuid(),
+                                        "modelData": upItem.modelData,
+                                        "posX": drop.x - drop.source.Drag.hotSpot.x,
+                                        "posY": drop.y - drop.source.Drag.hotSpot.y,
+                                        "stateType": "inSequence"
+                                    })
+                                }
+                                let upItemIndex = upItem.stateType === "inSource" ? dropModel.count-1 : upItem.index
 
-                                var currentSequenceIndex = downItem.sequenceIndex
+                                if (upItem.stateType === "dropped") {
+                                    upItem.getCurrentData().stateType = "inSequence" // in dropModel
+                                }
+                                let currentSequenceIndex = downItem.sequenceIndex
                                 if(currentSequenceIndex !==-1){
                                     // down已经在一个序列内了
                                     console.log("down已经在一个序列内了")
-                                    upItem.getCurrentData().stateType = "inSequence" // in dropModel
                                     // 修改之后不能调用getModel()
 
                                     // in sequenceModel.get(sequenceIndex).droppedItemModel
-                                    downItem.getModel().insert(downItem.index+1, dropModel.get(upItem.index))
+                                    downItem.getModel().insert(downItem.index+1, dropModel.get(upItemIndex))
 
-                                    dropModel.remove(upItem.index)
+                                    dropModel.remove(upItemIndex)
                                 }else{
                                     // 全新的两个元素
                                     console.log("全新的两个元素")
                                     downItem.getCurrentData().stateType = "inSequence" // in dropModel
-                                    upItem.getCurrentData().stateType = "inSequence" // in dropModel
                                     sequenceModel.append({
                                         uuid: Utils.uuid(),
-                                        droppedItemModel: [dropModel.get(downItem.index), dropModel.get(upItem.index)],
+                                        droppedItemModel: [dropModel.get(downItem.index), dropModel.get(upItemIndex)],
                                         posX: dragItem.x,
                                         posY: dragItem.y
                                     })
 
-                                    dropModel.remove(upItem.index)
+                                    dropModel.remove(upItemIndex)
                                     dropModel.remove(downItem.index)
                                 }
                             }

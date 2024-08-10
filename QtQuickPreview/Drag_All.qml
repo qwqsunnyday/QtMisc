@@ -71,6 +71,7 @@ QML中, 拖拽事件通过 MouseArea (或 DragHandler )处理, 使用 DropArea �
 
 - z stack
 - 双向/单向绑定
+- onPressed和onReleased的处理细节要看文档
 
 ## 其他资源
 
@@ -206,6 +207,7 @@ Item {
                 }
             }
             Repeater {
+                id: dropRepeater
                 model: dropModel
 
                 delegate: dragCompenent
@@ -224,17 +226,21 @@ Item {
                 onDropped: { // canvasDropArea
                     // dropped(DragEvent drop)
                     // 可以使用drop.source(参数)或drag.source(属性)访问dragItem
-
                     let upItem = drop.source
 
+                    if (upItem.pressed) {
+                        // workaround... >_<###
+                        dragRepeater.rePresent()
+                    }
+
                     console.log("dropped at: canvasDropArea")
-                    console.log(upItem.stringify())
+                    // console.log(upItem.stringify())
                     if (upItem.stateType !== "inSource") {
                         console.log("not dropped")
                         return
                     }
 
-                    console.log("drag at: ("+drop.x+", "+drop.y+") with Drag.hotSpot: ("+drag.source.Drag.hotSpot.x+", "+drop.source.Drag.hotSpot.y+")")
+                    // console.log("drag at: ("+drop.x+", "+drop.y+") with Drag.hotSpot: ("+drag.source.Drag.hotSpot.x+", "+drop.source.Drag.hotSpot.y+")")
                     dropModel.append({
                         "uuid": Utils.uuid(),
                         "modelData": upItem.modelData,
@@ -284,7 +290,17 @@ Item {
                     required property int posY
                     required property string modelData
                     required property string stateType
-                    property int sequenceIndex: stateType==="inSequence" ? parent.parent.index : -1
+                    // 绑定容易出问题
+                    property int sequenceIndex: (stateType==="inSequence" && (typeof(parent.parent.index)!="undefined")) ? parent.parent.index : -1
+
+                    function getSequenceIndex() {
+                        if (stateType==="inSequence") {
+                            if ((typeof(parent.parent.index)=="undefined")){
+                                return -1
+                            }
+                            return parent.parent.index
+                        }
+                    }
 
                     function getCurrentData() {
                         return getModel().get(index)
@@ -310,7 +326,8 @@ Item {
                         // str+="sequenceIndex: "+dragItem.sequenceIndex+"\n"
                         str+="z: "+dragItem.z+"\n"
                         str+="active: "+dragItem.Drag.active+"\n"
-                        str+="type: "+dragItem.Drag.dragType+"\n"
+                        str+="pressed: "+pressed+"\n"
+                        str+="type: "+(dragItem.Drag.dragType == Drag.Internal ? "Internal" : "Automatic")+"\n"
                         str+="state: "+dragItem.stateType+"\n"
                         str+="posX: "+dragItem.posX+" posY: "+dragItem.posY+"\n"
                         // str+="hotSpot: "+dragItem.Drag.hotSpot.x+" "+dragItem.Drag.hotSpot.y
@@ -360,7 +377,6 @@ Item {
                         }
                     }
 
-
                     // 一般用于跨应用, dragItem可超出窗口范围, 使用mimeData传递数据
                     // 需要自己处理imageSource同时绑定Drag.active: dragArea.drag.active(可选)
                     // 这里为了平滑, 自定义了dragItem.Drag.hotSpot并在pressed时设置Drag.active=true
@@ -371,15 +387,18 @@ Item {
                     // Drag.dragType: Drag.Internal
                     Drag.mimeData: {"inSource": "inSource", "dropped": "dropped", "inSequence": "inSequence"}
                     Drag.keys: [stateType]
+
+                    property alias pressed: dragArea.pressed
                     MouseArea {
                         id: dragArea
                         anchors.fill: parent
                         drag.target: dragItem
                         hoverEnabled: true
+                        preventStealing: true
                         onPressed: {
                             dragItem.z +=1
                             console.log("startDrag")
-                            console.log(mouse.x+" "+mouse.y)
+                            // console.log(mouse.x+" "+mouse.y)
                             dragItem.Drag.hotSpot.x = mouse.x
                             dragItem.Drag.hotSpot.y = mouse.y
                             // 问题在于, 由于是异步调用, 点击时不会立即生成图像, 第二次点击才可
@@ -394,21 +413,34 @@ Item {
                         }
                         onEntered: {
                             // 最终解决办法: hoverEnabled: true然后onEntered中抓取
-                            dragItem.grabToImage(function(result) {
-                                dragItem.Drag.imageSource = result.url
-                                // imageDialog.loadImage(result.url)
-                            })
+                            if (dragItem.Drag.dragType === Drag.Automatic){
+                                dragItem.grabToImage(function(result) {
+                                    dragItem.Drag.imageSource = result.url
+                                    // imageDialog.loadImage(result.url)
+                                })
+                            }
                         }
+                        // onPressedChanged: {
+                        //     问题在于, drop后pressed依然为true
+                        //     if (dragArea.pressed) {
+                        //     }else {
+                        //     }
+                        // }
 
                         onReleased: {
+                            // 大问题, onReleased()有一定几率凭空不会被调用
                             dragItem.z -=1
-                            console.log("released");
+                            console.log("onReleased");
                             dragItem.Drag.drop();
                             getCurrentData().posX = dragItem.x
                             getCurrentData().posY = dragItem.y
                         }
                         onClicked: {
-                            console.log(dragItem.stringify())
+                            console.log("onClicked")
+                            // console.log(dragItem.stringify())
+                        }
+                        onCanceled: {
+                            console.error("onCanceled !")
                         }
                     }
 
@@ -433,6 +465,11 @@ Item {
                             onDropped: { // connectionArea
                                 var upItem = drag.source
                                 var downItem = dragItem
+
+                                if (upItem.pressed) {
+                                    // workaround... >_<###
+                                    dragRepeater.rePresent()
+                                }
 
                                 console.log("dropped at connectionDropArea:")
                                 console.log(upItem.stringify())
@@ -575,6 +612,19 @@ Item {
                             // }
                             // 但是不能是Loader
 
+                            function rePresent() {
+                                dragModel.clear()
+                                for (let i = 0; i < 3; i++) {
+                                    dragModel.append({
+                                        "uuid": i+1,
+                                        "modelData": "data: " + i,
+                                        "posX": 0,
+                                        "posY": 0,
+                                        "stateType": "inSource"
+                                    })
+                                }
+                            }
+
                             Component.onCompleted: {
                                 for (let i = 0; i < 3; i++) {
                                     dragModel.append({
@@ -633,8 +683,6 @@ Item {
                             }
                         }
                         Component.onCompleted: {
-                            // console.log("rootWindow.visible: "+root.visible)
-                            // console.log("Component.onCompleted - Out Repeater")
                             // Repeater外使用itemAt()获取元素
                             // console.log("Accessing property of repeated item using itemAt(): "+dragRepeater.itemAt(0).objectName)
                         }
@@ -656,6 +704,11 @@ Item {
                     // dropped(DragEvent drop)
                     // 可以使用drop.source(参数)或drag.source(属性)访问dragItem
                     var upItem = drag.source
+
+                    if (upItem.pressed) {
+                        // workaround... >_<###
+                        dragRepeater.rePresent()
+                    }
 
                     console.log("dropped at removeArea")
                     console.log(upItem.stringify())
@@ -717,6 +770,8 @@ Item {
         windowHeight: 600
         windowWidth: 800
         predefinedCommands: [
+            "Utils.getRepeaterItem(dragRepeater, 1)",
+            "Utils.getRepeaterItem(dropRepeater, 4)",
             "Utils.modelToJSON(dragModel)",
             "Utils.modelToJSON(dropModel)",
             "Utils.modelToJSON(sequenceModel)"

@@ -24,6 +24,15 @@ function getModelIndex(model, idFieldString, value) {
     return -1;
 }
 
+function getRepeaterItem(repeater, uuid) {
+    for (let i = 0; i < repeater.count ; i++) {
+        if (repeater.itemAt(i).uuid == uuid) {
+            return repeater.itemAt(i)
+        }
+    }
+    return undefined
+}
+
 function modelToJSON(model) {
     let str = "\n"
     for (var i = 0; i < model.count; i++) {

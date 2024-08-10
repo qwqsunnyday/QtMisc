@@ -118,10 +118,10 @@ Window {
                 ComboBox {
                     id: reloadUrlSelect
                     model: [
+                        "main.qml",
                         "Drag_All.qml",
                         "Drag_Internal.qml",
                         "Drag_Combination.qml",
-                        "main.qml",
                         "Temp.qml",
                         "ViewModel.qml",
                         "DynamicLoadComponent.qml",

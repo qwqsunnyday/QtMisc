@@ -91,9 +91,54 @@ Item {
     visible: true
     id: root
 
+
     ColumnLayout {
         anchors.fill: parent
         spacing: 0
+
+        RowLayout {
+            id: controlPanel
+            Layout.fillWidth: true
+            Layout.preferredHeight: 28
+            Button {
+                id: clear
+                text: "Clear"
+                onClicked: {
+                    dropModel.clear()
+                    sequenceModel.clear()
+                }
+            }
+            Button {
+                id: restore
+                text: "Restore"
+                onClicked: {
+                    // save.data为对象数组
+                    dropModel.append(save.dropModelData)
+                    sequenceModel.append(save.sequenceModelData)
+                }
+            }
+            Button {
+                id: save
+                text: "Save"
+                property var dropModelData
+                property var sequenceModelData
+                onClicked: {
+                    dropModelData = JSON.parse(Utils.modelToJSON(dropModel))
+                    sequenceModelData = JSON.parse(Utils.modelToJSON(sequenceModel))
+                }
+            }
+            JSConsoleButton {
+                windowHeight: 600
+                windowWidth: 800
+                predefinedCommands: [
+                    "Utils.getRepeaterItem(dragRepeater, 1)",
+                    "Utils.getRepeaterItem(dropRepeater, 4)",
+                    "Utils.modelToJSON(dragModel)",
+                    "Utils.modelToJSON(dropModel)",
+                    "Utils.modelToJSON(sequenceModel)"
+                ]
+            }
+        }
 
         Rectangle {
             id: canvas
@@ -182,11 +227,13 @@ Item {
                         drag.target: sequenceItem
 
                         onPressed: {
+                            canvas.clip = false
                             sequenceItem.z+=1
                             console.log("sequenceItem started")
                             sequenceItem.Drag.start()
                         }
                         onReleased: {
+                            canvas.clip = true
                             sequenceItem.z -=1
                             console.log("sequenceItem released")
                             sequenceItem.Drag.drop()
@@ -233,11 +280,6 @@ Item {
                     // 可以使用drop.source(参数)或drag.source(属性)访问dragItem
                     let upItem = drop.source
 
-                    if (upItem.pressed) {
-                        // workaround... >_<###
-                        dragRepeater.rePresent()
-                    }
-
                     console.log("dropped at: canvasDropArea")
                     // console.log(upItem.stringify())
                     if (upItem.stateType !== "inSource") {
@@ -253,6 +295,10 @@ Item {
                         "posY": drop.y - drop.source.Drag.hotSpot.y,
                         "stateType": "dropped"
                     })
+                    if (upItem.pressed) {
+                        // workaround... >_<###
+                        dragRepeater.rePresent()
+                    }
                 }
             }
         }
@@ -380,6 +426,7 @@ Item {
                         hoverEnabled: true
                         preventStealing: true
                         onPressed: {
+                            canvas.clip = false
                             dragItem.z +=1
                             console.log("startDrag")
                             // console.log(mouse.x+" "+mouse.y)
@@ -412,6 +459,7 @@ Item {
                         // }
 
                         onReleased: {
+                            canvas.clip = true
                             // 大问题, onReleased()有一定几率凭空不会被调用
                             dragItem.z -=1
                             console.log("onReleased");
@@ -422,10 +470,10 @@ Item {
                         onClicked: {
                             console.log("onClicked")
                         }
-                        onPressAndHold: {
-                            console.log("onPressAndHold")
-                            console.log(dragItem.stringify())
-                        }
+                        // onPressAndHold: {
+                        //     console.log("onPressAndHold")
+                        //     console.log(dragItem.stringify())
+                        // }
                         onCanceled: {
                             console.error("onCanceled !")
                         }
@@ -452,11 +500,6 @@ Item {
                             onDropped: { // connectionArea
                                 var upItem = drag.source
                                 var downItem = dragItem
-
-                                if (upItem.pressed) {
-                                    // workaround... >_<###
-                                    dragRepeater.rePresent()
-                                }
 
                                 console.log("dropped at connectionDropArea:")
                                 console.log(upItem.stringify())
@@ -488,6 +531,11 @@ Item {
                                     // in sequenceModel.get(sequenceIndex).droppedItemModel
                                     downItem.getModel().insert(downItem.index+1, dropModel.get(upItemIndex))
 
+                                    if (upItem.pressed) {
+                                        // workaround... >_<###
+                                        dragRepeater.rePresent()
+                                    }
+
                                     dropModel.remove(upItemIndex)
                                 }else{
                                     // 全新的两个元素
@@ -499,10 +547,14 @@ Item {
                                         posX: dragItem.x,
                                         posY: dragItem.y
                                     })
-
+                                    if (upItem.pressed) {
+                                        // workaround... >_<###
+                                        dragRepeater.rePresent()
+                                    }
                                     dropModel.remove(upItemIndex)
                                     dropModel.remove(downItem.index)
                                 }
+
                             }
                         }
                     }
@@ -583,6 +635,7 @@ Item {
                             // 但是不能是Loader
 
                             function rePresent() {
+                                canvas.clip = true
                                 dragModel.clear()
                                 for (let i = 0; i < 3; i++) {
                                     dragModel.append({
@@ -675,11 +728,6 @@ Item {
                     // 可以使用drop.source(参数)或drag.source(属性)访问dragItem
                     var upItem = drag.source
 
-                    if (upItem.pressed) {
-                        // workaround... >_<###
-                        dragRepeater.rePresent()
-                    }
-
                     console.log("dropped at removeArea")
                     console.log(upItem.stringify())
                     if (!keys.includes(upItem.stateType)) {
@@ -694,6 +742,11 @@ Item {
                         case "dropped":
                             dropModel.remove(upItem.index)
                             break
+                    }
+
+                    if (upItem.pressed) {
+                        // workaround... >_<###
+                        dragRepeater.rePresent()
                     }
                 }
             }
@@ -733,18 +786,5 @@ Item {
     }
     WindowFrameRate {
         targetWindow: Window.window
-    }
-
-    JSConsoleButton {
-        anchors.right: parent.right
-        windowHeight: 600
-        windowWidth: 800
-        predefinedCommands: [
-            "Utils.getRepeaterItem(dragRepeater, 1)",
-            "Utils.getRepeaterItem(dropRepeater, 4)",
-            "Utils.modelToJSON(dragModel)",
-            "Utils.modelToJSON(dropModel)",
-            "Utils.modelToJSON(sequenceModel)"
-        ]
     }
 }

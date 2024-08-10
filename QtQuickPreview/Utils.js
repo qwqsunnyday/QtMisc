@@ -34,10 +34,11 @@ function getRepeaterItem(repeater, uuid) {
 }
 
 function modelToJSON(model) {
-    let str = "\n"
+    let str = "[\n"
     for (var i = 0; i < model.count; i++) {
-        str = str + JSON.stringify(model.get(i)) + "\n"
+        str += JSON.stringify(model.get(i)) + (i===model.count-1 ? "":",")+"\n"
     }
+    str += "]"
     return str
 }
 

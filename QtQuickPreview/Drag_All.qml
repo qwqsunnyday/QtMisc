@@ -73,6 +73,10 @@ QML中, 拖拽事件通过 MouseArea (或 DragHandler )处理, 使用 DropArea �
 - 双向/单向绑定
 - onPressed和onReleased的处理细节要看文档
 
+## 已知BUG
+
+- onReleased()有一定几率凭空不会被调用(workaround OK)
+
 ## 其他资源
 
 1. 文档: MouseArea; Drag; DropArea; DragHandler; DragEvent
@@ -251,27 +255,6 @@ Item {
                     })
                 }
             }
-
-            Rectangle {
-                color: "Orange"
-                height: parent.height
-                width: parent.width/8
-                visible: false
-                Text {
-                    text: "Nested Drop Area"
-                    anchors.centerIn: parent
-                }
-                DropArea {
-                    id: nestedDropArea
-                    anchors.fill: parent
-                    onDropped: {
-                        console.log("dropped in nestedDropArea")
-                    }
-                    onEntered: {
-                        console.log("entered nestedDropArea")
-                    }
-                }
-            }
         }
         Rectangle {
             id: rectangle
@@ -438,7 +421,10 @@ Item {
                         }
                         onClicked: {
                             console.log("onClicked")
-                            // console.log(dragItem.stringify())
+                        }
+                        onPressAndHold: {
+                            console.log("onPressAndHold")
+                            console.log(dragItem.stringify())
                         }
                         onCanceled: {
                             console.error("onCanceled !")
@@ -531,23 +517,6 @@ Item {
                     }
                 }
             }
-            // Loader {
-            //     id: dragLoader
-            //     sourceComponent: dragCompenent
-            //     onLoaded: {
-            //         // 此时窗口仍然不可见
-            //         // console.log("rootWindow.visible: "+root.visible)
-            //         // 使用item属性访问装载的元素
-            //         // console.log("onLoaded - 1"+ " objectName: "+item.objectName)
-            //         // 这样会失败
-            //         // item.grabToImage(function(result) {
-            //         //     item.Drag.imageSource = result.url
-            //         //     // dragItem.Drag.active = true
-            //         // })
-            //         // TODO XXX
-            //         setSource(dragCompenent, {"uuid": Utils.uuid(), "modelData": "data: None" })
-            //     }
-            // }
             RowLayout {
                 anchors.fill: parent
                 Rectangle {

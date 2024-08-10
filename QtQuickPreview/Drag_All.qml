@@ -93,6 +93,7 @@ Item {
 
         Rectangle {
             id: canvas
+            clip: true
             Layout.preferredHeight: 0.5* parent.height
             Layout.fillWidth: true
             color: "yellow"

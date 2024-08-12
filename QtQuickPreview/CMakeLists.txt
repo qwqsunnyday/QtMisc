@@ -37,6 +37,7 @@ qt_add_qml_module(appQtQuickPreview
     QML_FILES Triangle.qml
     QML_FILES Circle.qml
     QML_FILES RoundedRectangle.qml
+    QML_FILES GeneticElementComponent_Deprecated.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

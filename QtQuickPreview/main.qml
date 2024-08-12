@@ -2,6 +2,7 @@ import QtQuick 2.15
 import QtQuick.Controls 2.15
 import QtQuick.Layouts 1.15
 import QtQuick.Controls.Universal
+import QtCore
 
 import "Utils.js" as Utils
 
@@ -10,6 +11,12 @@ Item {
 
     anchors.fill: parent
     anchors.margins: 1
+
+    Settings {
+        id: settings
+        property bool debug: debugSwitch.checked
+        property color highLightColor: debug ? Qt.lighter("red") : "transparent"
+    }
 
     RowLayout {
         anchors.fill: parent
@@ -40,17 +47,17 @@ Item {
 
                     ListModel {
                         id: sourceModel
-                        ListElement { name: "9XUAS"; type: "启动子"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "CMV"; type: "启动子"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "U6_P"; type: "启动子"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "GAL4"; type: "蛋白质编码区"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "INS"; type: "蛋白质编码区"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "Luciferase"; type: "蛋白质编码区"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "miRNA"; type: "蛋白质编码区"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "P_GIP"; type: "蛋白质编码区"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "miRNA_BS"; type: "蛋白质编码区"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "LOV"; type: "蛋白质编码区"; fillColor: "orange"; backgroundColor: "white"; description: "" }
-                        ListElement { name: "VP16"; type: "蛋白质编码区"; fillColor: "orange"; backgroundColor: "white"; description: "" }
+                        ListElement { name: "9XUAS"; internalName: "9XUAS"; type: "启动子"; fillColor: "orange"; description: "" }
+                        ListElement { name: "CMV"; internalName: "CMV"; type: "启动子"; fillColor: "orange"; description: "" }
+                        ListElement { name: "U6_P"; internalName: "U6_P"; type: "启动子"; fillColor: "orange"; description: "" }
+                        ListElement { name: "GAL4"; internalName: "GAL4"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
+                        ListElement { name: "INS"; internalName: "INS"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
+                        ListElement { name: "Luciferase"; internalName: "Luciferase"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
+                        ListElement { name: "miRNA"; internalName: "miRNA"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
+                        ListElement { name: "P_GIP"; internalName: "P_GIP"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
+                        ListElement { name: "miRNA_BS"; internalName: "miRNA_BS"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
+                        ListElement { name: "LOV"; internalName: "LOV"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
+                        ListElement { name: "VP16"; internalName: "VP16"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
                     }
 
                     ListModel {
@@ -88,10 +95,10 @@ Item {
                     ListModel {
                         id: sequenceModel
                         // ListElement {
-                        //     uuid: 0
-                        //     droppedItemModel: undefined
-                        //     posX: 0
-                        //     posY: 0
+                        //     uuid: int
+                        //     droppedItemModel: var
+                        //     posX: real
+                        //     posY: real
                         // }
                     }
 
@@ -114,7 +121,9 @@ Item {
 
                         Rectangle {
                             id: sequenceItem
-                            color: "pink"
+                            color: "transparent"
+                            border.color: settings.highLightColor
+                            border.width: 4
                             z: 10
 
                             required property var droppedItemModel
@@ -172,38 +181,49 @@ Item {
                             Drag.dragType: Drag.Internal
                             Drag.keys: [stateType]
 
-                            MouseArea {
-                                anchors.fill: parent
-                                drag.target: sequenceItem
+                            Rectangle {
+                                width: parent.width
+                                height: 48
+                                anchors.bottom: parent.bottom
 
-                                onPressed: {
-                                    canvas.clip = false
-                                    sequenceItem.z+=1
-                                    console.log("sequenceItem started")
-                                    sequenceItem.Drag.start()
-                                }
-                                onReleased: {
-                                    canvas.clip = true
-                                    sequenceItem.z -=1
-                                    console.log("sequenceItem released")
-                                    sequenceItem.Drag.drop()
-                                    sequenceItem.getCurrentData().posX = sequenceItem.x
-                                    sequenceItem.getCurrentData().posY = sequenceItem.y
-                                }
-                                onDoubleClicked: {
-                                    console.log("sequenceItem doubleClicked")
+                                color: "transparent"
+                                border.color: settings.highLightColor
+                                border.width: 4
 
-                                    for (let i = 0; i < droppedItemModel.count ; i++) {
-                                        let reAddItem = droppedItemModel.get(i)
-                                        reAddItem.stateType = "dropped"
-                                        reAddItem.posX = sequenceItem.posX + i*110
-                                        reAddItem.posY = sequenceItem.posY
-                                        dropModel.append(reAddItem)
+                                MouseArea {
+                                    anchors.fill: parent
+                                    drag.target: sequenceItem
+
+                                    onPressed: {
+                                        canvas.clip = false
+                                        sequenceItem.z+=1
+                                        console.log("sequenceItem started")
+                                        sequenceItem.Drag.start()
                                     }
-                                    sequenceModel.remove(index)
-                                }
-                                onClicked: {
-                                    console.log(sequenceItem.stringify())
+                                    onReleased: {
+                                        canvas.clip = true
+                                        sequenceItem.z-=1
+                                        console.log("sequenceItem released")
+                                        sequenceItem.Drag.drop()
+                                        sequenceItem.getCurrentData().posX = sequenceItem.x
+                                        sequenceItem.getCurrentData().posY = sequenceItem.y
+                                    }
+                                    onDoubleClicked: {
+                                        console.log("sequenceItem doubleClicked")
+
+                                        for (let i = 0; i < droppedItemModel.count ; i++) {
+                                            // 修改状态后重新加入
+                                            let reAddItem = droppedItemModel.get(i)
+                                            reAddItem.stateType = "dropped"
+                                            reAddItem.posX = sequenceItem.posX + i * (reAddItem.itemWidth + 15)
+                                            reAddItem.posY = sequenceItem.posY
+                                            dropModel.append(reAddItem)
+                                        }
+                                        sequenceModel.remove(index)
+                                    }
+                                    onClicked: {
+                                        console.log(sequenceItem.stringify())
+                                    }
                                 }
                             }
                         }
@@ -281,7 +301,7 @@ Item {
                             width: itemWidth
                             height: itemHeight
                             color: "transparent"
-                            border.color: Qt.lighter("gray")
+                            border.color: settings.highLightColor
                             border.width: 2
                             objectName: "description of dragItem"
 
@@ -327,147 +347,6 @@ Item {
                             Drag.keys: [stateType]
 
                             property alias pressed: dragArea.pressed
-                            MouseArea {
-                                id: dragArea
-                                anchors.fill: parent
-                                drag.target: dragItem
-                                hoverEnabled: true
-                                preventStealing: true
-                                onPressed: {
-                                    canvas.clip = false
-                                    dragItem.z +=1
-                                    console.log("startDrag")
-                                    // console.log(mouse.x+" "+mouse.y)
-                                    dragItem.Drag.hotSpot.x = mouse.x
-                                    dragItem.Drag.hotSpot.y = mouse.y
-                                    // 问题在于, 由于是异步调用, 点击时不会立即生成图像, 第二次点击才可
-                                    // dragItem.grabToImage(function(result) {
-                                    //     dragItem.Drag.imageSource = result.url
-                                    // })
-                                    if (dragItem.Drag.dragType === Drag.Internal){
-                                        dragItem.Drag.start()
-                                    } else {
-                                        dragItem.Drag.active = true
-                                    }
-                                }
-                                onEntered: {
-                                    // 最终解决办法: hoverEnabled: true然后onEntered中抓取
-                                    if (dragItem.Drag.dragType === Drag.Automatic){
-                                        dragItem.grabToImage(function(result) {
-                                            dragItem.Drag.imageSource = result.url
-                                            // imageDialog.loadImage(result.url)
-                                        })
-                                    }
-                                }
-                                // onPressedChanged: {
-                                //     问题在于, drop后pressed依然为true
-                                //     if (dragArea.pressed) {
-                                //     }else {
-                                //     }
-                                // }
-
-                                onReleased: {
-                                    canvas.clip = true
-                                    // 大问题, onReleased()有一定几率凭空不会被调用
-                                    dragItem.z -=1
-                                    console.log("onReleased");
-                                    dragItem.Drag.drop();
-                                    getCurrentData().posX = dragItem.x
-                                    getCurrentData().posY = dragItem.y
-                                }
-                                onClicked: {
-                                    console.log("onClicked")
-                                }
-                                // onPressAndHold: {
-                                //     console.log("onPressAndHold")
-                                //     console.log(dragItem.stringify())
-                                // }
-                                onCanceled: {
-                                    console.error("onCanceled !")
-                                }
-                            }
-
-                            Rectangle {
-                                id: connectionArea
-                                border.color: "gray"
-                                border.width: 2
-                                anchors.fill: parent
-                                anchors.margins: 4
-                                DropArea {
-                                    id: connectionDropArea
-                                    anchors.fill: parent
-
-                                    // keys: ["dropped"]
-                                    keys: ["dropped", "inSource"]
-
-                                    onEntered: {
-                                        // console.log("entered connectionDropArea")
-                                    }
-
-                                    onDropped: { // connectionArea
-                                        var upItem = drag.source
-                                        var downItem = dragItem
-
-                                        console.log("dropped at connectionDropArea:")
-                                        console.log(upItem.stringify())
-                                        console.log(upItem.stateType)
-                                        if (!keys.includes(upItem.stateType)) {
-                                            console.log("not dropped")
-                                            return
-                                        }
-                                        if (upItem.stateType === "inSource") {
-                                            dropModel.append({
-                                                "uuid": Utils.uuid(),
-                                                "modelData": upItem.modelData,
-                                                "posX": drop.x - drop.source.Drag.hotSpot.x,
-                                                "posY": drop.y - drop.source.Drag.hotSpot.y,
-                                                "stateType": "inSequence",
-                                                "sourceData": upItem.sourceData,
-                                                "itemWidth": upItem.itemWidth,
-                                                "itemHeight": upItem.itemHeight
-                                            })
-                                        }
-                                        let upItemIndex = upItem.stateType === "inSource" ? dropModel.count-1 : upItem.index
-
-                                        if (upItem.stateType === "dropped") {
-                                            upItem.getCurrentData().stateType = "inSequence" // in dropModel
-                                        }
-                                        let currentSequenceIndex = downItem.sequenceIndex
-                                        if(currentSequenceIndex !==-1){
-                                            // down已经在一个序列内了
-                                            console.log("down已经在一个序列内了")
-                                            // 修改之后不能调用getModel()
-
-                                            // in sequenceModel.get(sequenceIndex).droppedItemModel
-                                            downItem.getModel().insert(downItem.index+1, dropModel.get(upItemIndex))
-
-                                            if (upItem.pressed) {
-                                                // workaround... >_<###
-                                                dragRepeater.rePresent()
-                                            }
-
-                                            dropModel.remove(upItemIndex)
-                                        }else{
-                                            // 全新的两个元素
-                                            console.log("全新的两个元素")
-                                            downItem.getCurrentData().stateType = "inSequence" // in dropModel
-                                            sequenceModel.append({
-                                                uuid: Utils.uuid(),
-                                                droppedItemModel: [dropModel.get(downItem.index), dropModel.get(upItemIndex)],
-                                                posX: dragItem.x,
-                                                posY: dragItem.y
-                                            })
-                                            if (upItem.pressed) {
-                                                // workaround... >_<###
-                                                dragRepeater.rePresent()
-                                            }
-                                            dropModel.remove(upItemIndex)
-                                            dropModel.remove(downItem.index)
-                                        }
-
-                                    }
-                                }
-                            }
 
                             Repeater {
                                 model: dragItem.sourceData
@@ -477,9 +356,201 @@ Item {
                                 }
                             }
 
+                            Rectangle {
+                                width: parent.width
+                                height: 48
+                                anchors.bottom: parent.bottom
+
+                                color: "transparent"
+                                border.color: settings.highLightColor
+                                border.width: 4
+                                MouseArea {
+                                    id: dragArea
+                                    anchors.fill: parent
+
+                                    drag.target: dragItem
+                                    hoverEnabled: true
+                                    preventStealing: true
+                                    onPressed: {
+                                        canvas.clip = false
+                                        dragItem.z +=1
+                                        console.log("startDrag")
+                                        // mouse.x+" "+mouse.y是相对于当前item(dragArea)的
+                                        // console.log(mouse.x+" "+mouse.y)
+                                        dragItem.Drag.hotSpot.x = mapToItem(dragItem, Qt.point(mouse.x, mouse.y)).x
+                                        dragItem.Drag.hotSpot.y = mapToItem(dragItem, Qt.point(mouse.x, mouse.y)).y
+                                        // 问题在于, 由于是异步调用, 点击时不会立即生成图像, 第二次点击才可
+                                        // dragItem.grabToImage(function(result) {
+                                        //     dragItem.Drag.imageSource = result.url
+                                        // })
+                                        if (dragItem.Drag.dragType === Drag.Internal){
+                                            dragItem.Drag.start()
+                                        } else {
+                                            dragItem.Drag.active = true
+                                        }
+                                    }
+                                    onEntered: {
+                                        // 最终解决办法: hoverEnabled: true然后onEntered中抓取
+                                        if (dragItem.Drag.dragType === Drag.Automatic){
+                                            dragItem.grabToImage(function(result) {
+                                                dragItem.Drag.imageSource = result.url
+                                                // imageDialog.loadImage(result.url)
+                                            })
+                                        }
+                                    }
+                                    // onPressedChanged: {
+                                    //     问题在于, drop后pressed依然为true
+                                    //     if (dragArea.pressed) {
+                                    //     }else {
+                                    //     }
+                                    // }
+
+                                    onReleased: {
+                                        canvas.clip = true
+                                        // 大问题, onReleased()有一定几率凭空不会被调用
+                                        dragItem.z -=1
+                                        console.log("onReleased");
+                                        dragItem.Drag.drop();
+                                        getCurrentData().posX = dragItem.x
+                                        getCurrentData().posY = dragItem.y
+                                    }
+                                    onClicked: {
+                                        console.log("onClicked")
+                                    }
+                                    // onPressAndHold: {
+                                    //     console.log("onPressAndHold")
+                                    //     console.log(dragItem.stringify())
+                                    // }
+                                    onCanceled: {
+                                        console.error("onCanceled !")
+                                    }
+                                }
+                            }
+
+                            RowLayout {
+                                anchors.fill: parent
+                                Repeater {
+                                    model: 2
+
+                                    delegate: Rectangle {
+                                        id: connectionArea
+                                        color: "transparent"
+                                        border.color: settings.highLightColor
+                                        border.width: 2
+                                        // anchors.fill: parent
+                                        // anchors.margins: 4
+                                        Layout.preferredHeight: 45
+                                        Layout.fillWidth: true
+                                        Layout.alignment: Qt.AlignBottom
+
+                                        // 区分左右连接区域
+                                        required property int index
+
+                                        DropArea {
+                                            id: connectionDropArea
+                                            anchors.fill: parent
+
+                                            keys: ["dropped", "inSource"]
+
+                                            function checkCompatibility(upItem, downItem) {
+                                                if (!keys.includes(upItem.stateType)) {
+                                                    return false
+                                                }
+                                                if (upItem.sourceData.type==="启动子") {
+                                                    return false
+                                                }
+                                                if (downItem.sourceData.type==="启动子" && connectionArea.index===0) {
+                                                    return false
+                                                }
+                                                return true
+                                            }
+
+                                            Connections {
+                                                target: connectionDropArea
+                                                function onEntered (mouse) {
+                                                    dragItemOpacityAnimation.start()
+                                                }
+                                                function onExited (mouse) {
+                                                    dragItemOpacityAnimationReversed.start()
+                                                }
+                                            }
+
+                                            onEntered: {
+                                                // console.log("entered connectionDropArea, index: "+connectionArea.index)
+                                            }
+
+                                            onDropped: { // connectionArea
+                                                var upItem = drag.source
+                                                var downItem = dragItem
+
+                                                console.log("dropped at connectionDropArea:")
+                                                // 需要针对不同的组件类型进行过滤
+                                                if (!checkCompatibility(upItem, downItem)) {
+                                                    console.log("not dropped")
+                                                    return
+                                                }
+                                                console.log(upItem.stringify())
+                                                if (upItem.stateType === "inSource") {
+                                                    dropModel.append({
+                                                        "uuid": Utils.uuid(),
+                                                        "modelData": upItem.modelData,
+                                                        "posX": drop.x - drop.source.Drag.hotSpot.x,
+                                                        "posY": drop.y - drop.source.Drag.hotSpot.y,
+                                                        "stateType": "inSequence",
+                                                        "sourceData": upItem.sourceData,
+                                                        "itemWidth": upItem.itemWidth,
+                                                        "itemHeight": upItem.itemHeight
+                                                    })
+                                                }
+                                                let upItemIndex = upItem.stateType === "inSource" ? dropModel.count-1 : upItem.index
+
+                                                if (upItem.stateType === "dropped") {
+                                                    upItem.getCurrentData().stateType = "inSequence" // in dropModel
+                                                }
+                                                let currentSequenceIndex = downItem.sequenceIndex
+                                                if(currentSequenceIndex !==-1){
+                                                    // down已经在一个序列内了
+                                                    console.log("down已经在一个序列内了")
+                                                    // 修改之后不能调用getModel()
+
+                                                    // 左区域则插在前面, 否则插在后面
+                                                    // in sequenceModel.get(sequenceIndex).droppedItemModel
+                                                    console.log(downItem.index+" "+connectionArea.index)
+                                                    downItem.getModel().insert(downItem.index + connectionArea.index, dropModel.get(upItemIndex))
+
+                                                    if (upItem.pressed) {
+                                                        // workaround... >_<###
+                                                        dragRepeater.rePresent()
+                                                    }
+
+                                                    dropModel.remove(upItemIndex)
+                                                }else{
+                                                    // 全新的两个元素
+                                                    console.log("全新的两个元素")
+                                                    downItem.getCurrentData().stateType = "inSequence" // in dropModel
+                                                    sequenceModel.append({
+                                                        uuid: Utils.uuid(),
+                                                        droppedItemModel: [dropModel.get(downItem.index), dropModel.get(upItemIndex)],
+                                                        posX: dragItem.x,
+                                                        posY: dragItem.y
+                                                    })
+                                                    if (upItem.pressed) {
+                                                        // workaround... >_<###
+                                                        dragRepeater.rePresent()
+                                                    }
+                                                    dropModel.remove(upItemIndex)
+                                                    dropModel.remove(downItem.index)
+                                                }
+
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
                             Text {
                                 id: txt
-                                // anchors.fill: parent
+                                visible: settings.debug
                                 anchors.centerIn: parent
                                 color: "gray"
                                 font.pixelSize: 11
@@ -854,6 +925,11 @@ Item {
                                                 dropModelData = JSON.parse(Utils.modelToJSON(dropModel))
                                                 sequenceModelData = JSON.parse(Utils.modelToJSON(sequenceModel))
                                             }
+                                        }
+                                        Button {
+                                            id: debugSwitch
+                                            text: "Debug"
+                                            checkable: true
                                         }
                                         JSConsoleButton {
                                             windowHeight: 600

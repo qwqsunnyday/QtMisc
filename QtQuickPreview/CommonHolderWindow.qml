@@ -3,6 +3,8 @@ import QtQuick.Controls 2.15
 import QtQuick.Layouts
 import QtQuick.Controls.Universal
 
+import "Utils.js" as Utils
+
 /*
 # 文件概述
 
@@ -127,7 +129,8 @@ Window {
                         "DynamicLoadComponent.qml",
                         "CommonHolderWindow.qml",
                         "tiles/tiles.qml",
-                        "JSConsole.qml"
+                        "JSConsole.qml",
+                        "GeneticElementComponent.qml"
                     ]
                     Layout.fillWidth: true
                     Layout.minimumWidth: 50

@@ -33,6 +33,10 @@ qt_add_qml_module(appQtQuickPreview
     QML_FILES ViewModel.qml
     QML_FILES JSConsoleButton.qml
     QML_FILES Drag_Combination.qml
+    QML_FILES GeneticElementComponent.qml
+    QML_FILES Triangle.qml
+    QML_FILES Circle.qml
+    QML_FILES RoundedRectangle.qml
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

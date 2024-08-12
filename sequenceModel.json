@@ -1,0 +1,84 @@
+[
+    {
+        "uuid": 14,
+        "droppedItemModel": [
+            {
+                "uuid": 12,
+                "modelData": "data: 0",
+                "posX": 66.5,
+                "posY": 61,
+                "stateType": "inSequence",
+                "sourceData": {
+                    "objectName": "",
+                    "description": "",
+                    "fillColor": "orange",
+                    "type": "启动子",
+                    "internalName": "9XUAS",
+                    "name": "9XUAS"
+                },
+                "itemWidth": 200,
+                "itemHeight": 100
+            },
+            {
+                "uuid": 13,
+                "modelData": "data: 3",
+                "posX": -0.5,
+                "posY": -44.5,
+                "stateType": "inSequence",
+                "sourceData": {
+                    "objectName": "",
+                    "description": "",
+                    "fillColor": "orange",
+                    "type": "蛋白质编码区",
+                    "internalName": "GAL4",
+                    "name": "GAL4"
+                },
+                "itemWidth": 200,
+                "itemHeight": 100
+            }
+        ],
+        "posX": 16,
+        "posY": 16.5
+    },
+    {
+        "uuid": 17,
+        "droppedItemModel": [
+            {
+                "uuid": 15,
+                "modelData": "data: 2",
+                "posX": 52,
+                "posY": 141.5,
+                "stateType": "inSequence",
+                "sourceData": {
+                    "objectName": "",
+                    "description": "",
+                    "fillColor": "orange",
+                    "type": "启动子",
+                    "internalName": "U6_P",
+                    "name": "U6_P"
+                },
+                "itemWidth": 200,
+                "itemHeight": 100
+            },
+            {
+                "uuid": 16,
+                "modelData": "data: 9",
+                "posX": 10.5,
+                "posY": -48.5,
+                "stateType": "inSequence",
+                "sourceData": {
+                    "objectName": "",
+                    "description": "",
+                    "fillColor": "orange",
+                    "type": "蛋白质编码区",
+                    "internalName": "LOV",
+                    "name": "LOV"
+                },
+                "itemWidth": 200,
+                "itemHeight": 100
+            }
+        ],
+        "posX": 52,
+        "posY": 141.5
+    }
+]

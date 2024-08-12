@@ -40,7 +40,7 @@ import QtQuick.Controls.Universal
 
 */
 Window {
-    width: 500
+    width: 800
     height: 600
     visible: true
     id: rootWindow

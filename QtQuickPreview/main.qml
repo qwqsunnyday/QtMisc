@@ -6,6 +6,8 @@ import QtCore
 
 import "Utils.js" as Utils
 
+import io.emulator 1.0
+
 Item {
     id: root
 
@@ -930,6 +932,16 @@ Item {
                                             id: debugSwitch
                                             text: "Debug"
                                             checkable: true
+                                        }
+                                        Button {
+                                            id: evaluate
+                                            text: "Evaluate"
+                                            onClicked: {
+                                                console.log(emulator.evaluate(Utils.modelToJSON(sequenceModel)))
+                                            }
+                                            Emulator {
+                                                id: emulator
+                                            }
                                         }
                                         JSConsoleButton {
                                             windowHeight: 600

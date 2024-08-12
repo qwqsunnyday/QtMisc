@@ -102,13 +102,13 @@ def determine_result():
         return '无结果'
     
 # 示例输入
-conditions = [
-    'INS-miRNA_BS',
-    'P_GIP-VP16-GI',
-    'U6_P-miRNA',
-    'P_GIP-circRNA',
-    'CMV-GAL4-LOV'
-]
+# conditions = [
+#     'INS-miRNA_BS',
+#     'P_GIP-VP16-GI',
+#     'U6_P-miRNA',
+#     'P_GIP-circRNA',
+#     'CMV-GAL4-LOV'
+# ]
 # 执行函数并打印结果
-result = evaluate_conditions(conditions)
-print(result)
+# result = evaluate_conditions(conditions)
+# print(result)

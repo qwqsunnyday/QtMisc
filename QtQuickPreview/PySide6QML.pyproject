@@ -1,0 +1,13 @@
+{
+    "files": [
+        "CommonHolderWindow.qml",
+        "GeneticElementComponent.qml",
+        "JSConsole.qml",
+        "JSConsoleButton.qml",
+        "Utils.js",
+        "WindowFrameRate.qml",
+        "main.py",
+        "main.qml",
+        "pd.py"
+    ]
+}

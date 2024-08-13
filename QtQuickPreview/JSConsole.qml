@@ -12,7 +12,10 @@ Item {
     anchors.fill: parent
     visible: true
 
-    property var predefinedCommands: []
+    property var predefinedCommands: ["\"qwertyuikjghnfbvxdczscdvfbg \
+fdgrthyjugfdsaxfvgbnh\
+fdrgthnjmk,hmgfdsacfvgbnhbmjn\
+fdghnjmk,mhngbfvdsccfvgbhnmjn,kdfghnjmkhghfdfcvgbnhmj,kmhngbfdvgbhnmjn,mhngbhfvd\gbhnmjn\""]
 
     ListModel {
         id: inputModel
@@ -105,17 +108,32 @@ Item {
                             }
                         }
 
-                        Button {
+                        ScrollView {
                             Layout.fillWidth: true
-                            contentItem: Text {
-                                text: "" + model.result
-                                font.family: "Consolas"
-                                horizontalAlignment : Text.AlignLeft
-                            }
-                            onClicked: {
-                                Utils.copyToClipBoard(model.result)
+                            Layout.preferredHeight: contentHeight + 10
+                            Flickable {
+                                clip: true
+                                contentWidth: btn.implicitWidth
+                                contentHeight: btn.implicitHeight
+                                Button {
+                                    id: btn
+                                    leftPadding: 4
+                                    topPadding: 4
+                                    rightPadding: 4
+                                    bottomPadding: 4
+                                    contentItem: Text {
+                                        id: resultText
+                                        text: "" + model.result
+                                        font.family: "Consolas"
+                                        horizontalAlignment : Text.AlignLeft
+                                    }
+                                    onClicked: {
+                                        Utils.copyToClipBoard(model.result)
+                                    }
+                                }
                             }
                         }
+
                         Rectangle {
                             height: 1
                             Layout.fillWidth: true
@@ -280,7 +298,6 @@ Item {
                             console.log(Utils.modelToJSON(inspectorModel))
                         }
                     }
-
                 }
             }
         }

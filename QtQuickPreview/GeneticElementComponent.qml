@@ -20,7 +20,7 @@ Rectangle {
     Image {
         id: svgImage
         source: "Genetic_Element/"+root.type+".svg"
-        width: parent.width+10
+        width: parent.width
         // height: parent.height
         anchors.bottom: parent.bottom
         fillMode: Image.PreserveAspectFit

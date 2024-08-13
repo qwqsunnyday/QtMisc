@@ -132,6 +132,7 @@ Window {
                         "JSConsole.qml",
                         "GeneticElementComponent.qml"
                     ]
+                    implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
                     Layout.fillWidth: true
                     Layout.minimumWidth: 50
                     onActivated: {

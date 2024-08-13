@@ -63,8 +63,8 @@ target_wrapper.*
 *.autosave
 
 # QtCreator Qml
-*.qmlproject.user
-*.qmlproject.user.*
+*.user
+*.user.*
 
 # QtCreator CMake
 CMakeLists.txt.user*
@@ -76,3 +76,7 @@ compile_commands.json
 *creator.user*
 
 *_qmlcache.qrc
+
+*.pyc
+
+__pycache__/

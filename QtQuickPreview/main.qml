@@ -11,13 +11,20 @@ import io.emulator 1.0
 Item {
     id: root
 
+    width: 800
+    height: 600
     anchors.fill: parent
     anchors.margins: 1
 
     Settings {
         id: settings
         property bool debug: debugSwitch.checked
-        property color highLightColor: debug ? Qt.lighter("red") : "transparent"
+        property color highlightColor: debug ? Qt.lighter("red") : "transparent"
+        Component.onCompleted: {
+            Qt.application.name = "Gene-circuit"
+            Qt.application.organization = ""
+            Qt.application.domain = ""
+        }
     }
 
     RowLayout {
@@ -52,11 +59,11 @@ Item {
                         ListElement { name: "9XUAS"; internalName: "9XUAS"; type: "启动子"; fillColor: "orange"; description: "" }
                         ListElement { name: "CMV"; internalName: "CMV"; type: "启动子"; fillColor: "orange"; description: "" }
                         ListElement { name: "U6_P"; internalName: "U6_P"; type: "启动子"; fillColor: "orange"; description: "" }
+                        ListElement { name: "P_GIP"; internalName: "P_GIP"; type: "启动子"; fillColor: "orange"; description: "" }
                         ListElement { name: "GAL4"; internalName: "GAL4"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
                         ListElement { name: "INS"; internalName: "INS"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
                         ListElement { name: "Luciferase"; internalName: "Luciferase"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
                         ListElement { name: "miRNA"; internalName: "miRNA"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
-                        ListElement { name: "P_GIP"; internalName: "P_GIP"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
                         ListElement { name: "miRNA_BS"; internalName: "miRNA_BS"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
                         ListElement { name: "LOV"; internalName: "LOV"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
                         ListElement { name: "VP16"; internalName: "VP16"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
@@ -124,7 +131,7 @@ Item {
                         Rectangle {
                             id: sequenceItem
                             color: "transparent"
-                            border.color: settings.highLightColor
+                            border.color: settings.highlightColor
                             border.width: 4
                             z: 10
 
@@ -138,9 +145,8 @@ Item {
                             width: calWidth()
                             x: posX
                             y: posY
-                            Grid {
-                                rows: 1
-                                columns: droppedItemModel.count
+                            RowLayout {
+                                spacing: -20
                                 anchors.fill: parent
 
                                 Repeater {
@@ -189,7 +195,7 @@ Item {
                                 anchors.bottom: parent.bottom
 
                                 color: "transparent"
-                                border.color: settings.highLightColor
+                                border.color: settings.highlightColor
                                 border.width: 4
 
                                 MouseArea {
@@ -303,7 +309,7 @@ Item {
                             width: itemWidth
                             height: itemHeight
                             color: "transparent"
-                            border.color: settings.highLightColor
+                            border.color: settings.highlightColor
                             border.width: 2
                             objectName: "description of dragItem"
 
@@ -364,7 +370,7 @@ Item {
                                 anchors.bottom: parent.bottom
 
                                 color: "transparent"
-                                border.color: settings.highLightColor
+                                border.color: settings.highlightColor
                                 border.width: 4
                                 MouseArea {
                                     id: dragArea
@@ -437,7 +443,7 @@ Item {
                                     delegate: Rectangle {
                                         id: connectionArea
                                         color: "transparent"
-                                        border.color: settings.highLightColor
+                                        border.color: settings.highlightColor
                                         border.width: 2
                                         // anchors.fill: parent
                                         // anchors.margins: 4
@@ -623,7 +629,7 @@ Item {
                             Flow {
                                 width: source.width
                                 height: source.width
-                                spacing: 20
+                                spacing: 40
                                 Repeater {
                                     id: dragRepeater
                                     model: dragModel
@@ -707,7 +713,7 @@ Item {
             id: rightZone
 
             Layout.fillHeight: true
-            Layout.preferredWidth: bar.implicitWidth+80
+            Layout.preferredWidth: bar.implicitWidth+120
             border.color: Qt.lighter("gray")
             border.width: 2
             ColumnLayout {
@@ -736,11 +742,10 @@ Item {
                                 // anchors.margins: 10
                                 height: 0.6 * parent.height
                                 width: parent.width
-                                Rectangle {
-                                    width: 100
-                                    height: 100
-                                    // visible: false
-                                    color: "black"
+                                Text {
+                                    id: textOutput
+                                    font.pixelSize: 20
+                                    anchors.centerIn: parent
                                 }
 
                                 Image {
@@ -826,31 +831,59 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
-                        // 注意: 将TabBar放在SwipeView之上防止接受不到鼠标输入
                         Rectangle {
-                            Layout.preferredHeight: bar.implicitHeight
+                            Layout.preferredHeight: tabPanel.implicitHeight + tabPanel.anchors.margins*2
                             Layout.fillWidth: true
                             border.color: Qt.lighter("gray")
                             border.width: 2
-                            TabBar {
-                                id: bar
+                            RowLayout {
+                                id: tabPanel
                                 anchors.fill: parent
-                                anchors.margins: 2
+                                anchors.margins: 4
 
-                                // 双向绑定
-                                currentIndex: view.currentIndex
+                                Container {
+                                    id: bar
+                                    // 双向绑定
+                                    currentIndex: view.currentIndex
 
-                                Repeater {
-                                    model: ["Tutorial", "Protein", "Questions", "Load"]
-                                    delegate:                                     TabButton {
-                                        text: modelData
-                                        background:
-                                          Rectangle {
-                                            anchors.fill: parent
-                                            anchors.margins: 2
-                                            border.color: Qt.lighter("gray")
-                                            border.width: 2
+                                    contentItem: RowLayout {
+                                    }
+                                    Repeater {
+                                        id: tabButtons
+                                        model: ["Tutorial 📚", "Questions 💡", "Load 🛠"]
+                                        delegate: Control {
+                                            Layout.fillHeight: true
+                                            Layout.preferredWidth: tabButtons.getButtonWidth()
+                                            required property int index
+                                            required property string modelData
+                                            contentItem: Button {
+                                                anchors.fill: parent
+                                                text: modelData
+                                                down: index === bar.currentIndex
+                                                onClicked: {
+                                                    bar.currentIndex = index
+                                                }
+                                            }
                                         }
+                                        function getButtonWidth() {
+                                            let buttonWidth = 0.0
+                                            for (let i = 0; i < tabButtons.count ; i++) {
+                                                buttonWidth = Math.max(buttonWidth, tabButtons.itemAt(i).implicitWidth)
+                                            }
+                                            return buttonWidth
+                                        }
+                                    }
+                                }
+                                Button {
+                                    id: evaluate
+                                    text: "Evaluate ▶️"
+                                    onClicked: {
+                                        var result = emulator.evaluate(Utils.modelToJSON(sequenceModel))
+                                        console.log(result)
+                                        textOutput.text = result
+                                    }
+                                    Emulator {
+                                        id: emulator
                                     }
                                 }
                             }
@@ -869,13 +902,6 @@ Item {
                                 id: tutorial
                                 Text {
                                     text: "tutorial"
-                                    anchors.centerIn: parent
-                                }
-                            }
-                            Item {
-                                id: protein
-                                Text {
-                                    text: "protein"
                                     anchors.centerIn: parent
                                 }
                             }
@@ -933,16 +959,6 @@ Item {
                                             text: "Debug"
                                             checkable: true
                                         }
-                                        Button {
-                                            id: evaluate
-                                            text: "Evaluate"
-                                            onClicked: {
-                                                console.log(emulator.evaluate(Utils.modelToJSON(sequenceModel)))
-                                            }
-                                            Emulator {
-                                                id: emulator
-                                            }
-                                        }
                                         JSConsoleButton {
                                             windowHeight: 600
                                             windowWidth: 800
@@ -972,7 +988,6 @@ Item {
                             Layout.alignment: Qt.AlignHCenter
                         }
                     }
-
                 }
             }
         }

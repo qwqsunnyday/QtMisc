@@ -58,6 +58,7 @@ if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
     qml_file = Path(__file__).resolve().parent / "CommonHolderWindow.qml"
+
     engine.load(qml_file)
     if not engine.rootObjects():
         sys.exit(-1)

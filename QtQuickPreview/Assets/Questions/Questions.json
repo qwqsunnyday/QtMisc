@@ -2,32 +2,759 @@
     {
         "title": "绿色荧光",
         "description": "CMV-LUC",
-        "picture": "Assets/Questions/greencell@4x.png"
+        "picture": "Assets/Questions/greencell@4x.png",
+        "loadData": [
+            {
+                "uuid": 3,
+                "droppedItemModel": [
+                    {
+                        "uuid": 1,
+                        "modelData": "data: 1",
+                        "posX": 45.5,
+                        "posY": 12.5,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "CMV",
+                            "name": "CMV"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 2,
+                        "modelData": "data: 6",
+                        "posX": -6.5,
+                        "posY": -58.5,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "Luciferase",
+                            "name": "Luciferase"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 45.5,
+                "posY": 12.5
+            }
+        ]
     },
     {
         "title": "高血糖生成绿色荧光",
         "description": "P-GIP-LUC",
-        "picture": "Assets/Questions/sugargreen@4x.png"
+        "picture": "Assets/Questions/sugargreen@4x.png",
+        "loadData": [
+            {
+                "uuid": 6,
+                "droppedItemModel": [
+                    {
+                        "uuid": 4,
+                        "modelData": "data: 3",
+                        "posX": 32,
+                        "posY": 13,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "P_GIP",
+                            "name": "P_GIP"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 5,
+                        "modelData": "data: 6",
+                        "posX": -7.5,
+                        "posY": -62,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "Luciferase",
+                            "name": "Luciferase"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 32,
+                "posY": 13
+            }
+        ]
     },
     {
         "title": "蓝光下生成绿色荧光",
         "description": "CMV-GI-GAL4 \nU-6P-LOV-VP16 \n9XUAS-LUC",
-        "picture": "Assets/Questions/bluegreen@4x.png"
+        "picture": "Assets/Questions/bluegreen@4x.png",
+        "loadData": [
+            {
+                "uuid": 3,
+                "droppedItemModel": [
+                    {
+                        "uuid": 1,
+                        "modelData": "data: 1",
+                        "posX": 28,
+                        "posY": 9,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "CMV",
+                            "name": "CMV"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 2,
+                        "modelData": "data: 5",
+                        "posX": -24.5,
+                        "posY": -54,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "GI",
+                            "name": "GI"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 4,
+                        "modelData": "data: 4",
+                        "posX": -20.5,
+                        "posY": -58,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "GAL4",
+                            "name": "GAL4"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 28,
+                "posY": 9
+            },
+            {
+                "uuid": 7,
+                "droppedItemModel": [
+                    {
+                        "uuid": 5,
+                        "modelData": "data: 2",
+                        "posX": 27.5,
+                        "posY": 115,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "U6_P",
+                            "name": "U6_P"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 6,
+                        "modelData": "data: 10",
+                        "posX": -23,
+                        "posY": -58.5,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "LOV",
+                            "name": "LOV"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 8,
+                        "modelData": "data: 11",
+                        "posX": -13.5,
+                        "posY": -50,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "VP16",
+                            "name": "VP16"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 27.5,
+                "posY": 115
+            },
+            {
+                "uuid": 11,
+                "droppedItemModel": [
+                    {
+                        "uuid": 9,
+                        "modelData": "data: 0",
+                        "posX": 25.5,
+                        "posY": 226,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "9XUAS",
+                            "name": "9XUAS"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 10,
+                        "modelData": "data: 7",
+                        "posX": -49,
+                        "posY": -48.5,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "Luciferase",
+                            "name": "Luciferase"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 25.5,
+                "posY": 226
+            }
+        ]
     },
     {
         "title": "蓝光下胰岛素生成",
         "description": "CMV-GI-GAL4 \nU-6P-LOV-VP16 \n9XUAS-INS",
-        "picture": "Assets/Questions/blue_ins@4x.png"
+        "picture": "Assets/Questions/blue_ins@4x.png",
+        "loadData": [
+            {
+                "uuid": 3,
+                "droppedItemModel": [
+                    {
+                        "uuid": 1,
+                        "modelData": "data: 1",
+                        "posX": 28,
+                        "posY": 9,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "CMV",
+                            "name": "CMV"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 2,
+                        "modelData": "data: 5",
+                        "posX": -24.5,
+                        "posY": -54,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "GI",
+                            "name": "GI"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 4,
+                        "modelData": "data: 4",
+                        "posX": -20.5,
+                        "posY": -58,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "GAL4",
+                            "name": "GAL4"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 28,
+                "posY": 9
+            },
+            {
+                "uuid": 7,
+                "droppedItemModel": [
+                    {
+                        "uuid": 5,
+                        "modelData": "data: 2",
+                        "posX": 27.5,
+                        "posY": 115,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "U6_P",
+                            "name": "U6_P"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 6,
+                        "modelData": "data: 10",
+                        "posX": -23,
+                        "posY": -58.5,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "LOV",
+                            "name": "LOV"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 8,
+                        "modelData": "data: 11",
+                        "posX": -13.5,
+                        "posY": -50,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "VP16",
+                            "name": "VP16"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 27.5,
+                "posY": 115
+            },
+            {
+                "uuid": 13,
+                "droppedItemModel": [
+                    {
+                        "uuid": 9,
+                        "modelData": "data: 0",
+                        "posX": 25.5,
+                        "posY": 226,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "9XUAS",
+                            "name": "9XUAS"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 12,
+                        "modelData": "data: 6",
+                        "posX": 6.5,
+                        "posY": -53.5,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "INS",
+                            "name": "INS"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 25.5,
+                "posY": 226
+            }
+        ]
     },
     {
         "title": "高血糖胰岛素上升",
         "description": "P-GIP-INS",
         "picture": "Assets/Questions/sugar_ins@4x.png",
+        "loadData": [
+            {
+                "uuid": 16,
+                "droppedItemModel": [
+                    {
+                        "uuid": 14,
+                        "modelData": "data: 3",
+                        "posX": 32,
+                        "posY": 4,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "启动子",
+                            "internalName": "P_GIP",
+                            "name": "P_GIP"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    },
+                    {
+                        "uuid": 15,
+                        "modelData": "data: 6",
+                        "posX": -16.5,
+                        "posY": -44.5,
+                        "stateType": "inSequence",
+                        "sourceData": {
+                            "objectName": "",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "description": "",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
+                            "internalName": "INS",
+                            "name": "INS"
+                        },
+                        "itemWidth": 200,
+                        "itemHeight": 100
+                    }
+                ],
+                "posX": 32,
+                "posY": 4
+            }
+        ],
         "note": "不好表现，我觉得这个question不需要存在，先存疑"
     },
     {
         "title": "CSU项目",
-        "description": "CMV-GI-GAL4 \nP-GIP-LOV-VP16 \n9XUAS-INS-miRNA-BS \nU-6P-miRNA \nQ-GIP-circRNA",
-        "picture": ""
+        "description": "CMV-GI-GAL4 \nP-GIP-LOV-VP16 \n9XUAS-INS-miRNA-BS \nU-6P-miRNA \nP-GIP-circRNA",
+        "picture": "",
+        "loadData": [
+            {
+                "droppedItemModel": [
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 1",
+                        "posX": 12,
+                        "posY": -4,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "CMV",
+                            "name": "CMV",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 1
+                    },
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 5",
+                        "posX": -46,
+                        "posY": -50.5,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "GI",
+                            "name": "GI",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 2
+                    },
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 4",
+                        "posX": -14.5,
+                        "posY": -56,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "GAL4",
+                            "name": "GAL4",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 4
+                    }
+                ],
+                "posX": 12,
+                "posY": -4,
+                "uuid": 3
+            },
+            {
+                "droppedItemModel": [
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 3",
+                        "posX": 9.5,
+                        "posY": 90.5,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "P_GIP",
+                            "name": "P_GIP",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 5
+                    },
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 10",
+                        "posX": 3,
+                        "posY": -55,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "LOV",
+                            "name": "LOV",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 6
+                    },
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 11",
+                        "posX": -38.5,
+                        "posY": -56,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "VP16",
+                            "name": "VP16",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 8
+                    }
+                ],
+                "posX": 12.5,
+                "posY": 109.5,
+                "uuid": 7
+            },
+            {
+                "droppedItemModel": [
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 0",
+                        "posX": 5,
+                        "posY": 186.5,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "9XUAS",
+                            "name": "9XUAS",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 9
+                    },
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 6",
+                        "posX": -23,
+                        "posY": -43.5,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "INS",
+                            "name": "INS",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 10
+                    },
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 9",
+                        "posX": -4.5,
+                        "posY": -43.5,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "miRNA_BS",
+                            "name": "miRNA_BS",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 12
+                    }
+                ],
+                "posX": 11.5,
+                "posY": 226,
+                "uuid": 11
+            },
+            {
+                "droppedItemModel": [
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 2",
+                        "posX": 0.5,
+                        "posY": 278,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "U6_P",
+                            "name": "U6_P",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 13
+                    },
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 8",
+                        "posX": -55,
+                        "posY": -45.5,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "miRNA",
+                            "name": "miRNA",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 14
+                    }
+                ],
+                "posX": 622,
+                "posY": -3,
+                "uuid": 15
+            },
+            {
+                "droppedItemModel": [
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 3",
+                        "posX": 624.5,
+                        "posY": 110,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "P_GIP",
+                            "name": "P_GIP",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 1
+                    },
+                    {
+                        "itemHeight": 100,
+                        "itemWidth": 200,
+                        "modelData": "data: 9",
+                        "posX": -24,
+                        "posY": -52.5,
+                        "sourceData": {
+                            "description": "",
+                            "fillColor": "orange",
+                            "internalName": "miRNA",
+                            "name": "circRNA",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
+                        },
+                        "stateType": "inSequence",
+                        "uuid": 2
+                    }
+                ],
+                "posX": 624.5,
+                "posY": 110,
+                "uuid": 3
+            }
+        ]
     }
 ]

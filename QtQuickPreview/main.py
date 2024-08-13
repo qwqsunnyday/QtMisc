@@ -68,6 +68,12 @@ class FileIO(QObject):
             with open(file_path, 'r', encoding='utf-8') as file:
                 return file.read()
         return ""
+    
+    @Slot(str, str, result=str)
+    def write(self, file_path: str, content: str):
+        # 打开文件并写入
+        with open(file_path, 'w') as file:
+            file.write(content)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,8 @@
+[
+    "Utils.getRepeaterItem(dragRepeater, 1)",
+    "Utils.getRepeaterItem(dropRepeater, 4)",
+    "Utils.modelToJSON(dragModel)",
+    "Utils.modelToJSON(dropModel)",
+    "Utils.modelToJSON(sequenceModel)",
+    "JSON.stringify(JSON.parse(Utils.modelToJSON(sequenceModel)))"
+]

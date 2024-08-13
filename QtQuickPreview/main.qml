@@ -22,8 +22,11 @@ Item {
         property bool debug: debugSwitch.checked
         property color highlightColor: debug ? Qt.lighter("red") : "transparent"
         property url questionsDataUrl: "Assets/Questions/Questions.json"
-        property url tutorialDataUrl: "Assets/Questions/Tutorial.json"
+        property url tutorialDataUrl: "Assets/Tutorial.json"
         property url sourceModelDataUrl: "Assets/Genetic_Element/GeneticElementData.json"
+        property url predefinedCommandsUrl: "Assets/PredefinedCommands.json"
+        property url saveUrl: "Save.json"
+
         Component.onCompleted: {
             Qt.application.name = "Gene-circuit"
             Qt.application.organization = ""
@@ -244,6 +247,10 @@ Item {
                                     }
                                 }
                             }
+                            Component.onCompleted: {
+                                console.log("sequenceItem.droppedItemModel")
+                                console.log(Utils.modelToJSON(sequenceItem.droppedItemModel))
+                            }
                         }
                     }
 
@@ -367,7 +374,14 @@ Item {
                             property alias pressed: dragArea.pressed
 
                             Repeater {
-                                model: dragItem.sourceData
+                                // sourceDataModel为只读副本
+                                model: ListModel {
+                                    id: sourceDataModel
+                                    Component.onCompleted: {
+                                        sourceDataModel.append(dragItem.sourceData)
+                                    }
+                                }
+
                                 delegate: GeneticElementComponent {
                                     height: dragItem.itemHeight
                                     width: dragItem.itemWidth
@@ -660,7 +674,7 @@ Item {
                                                 "posX": 0,
                                                 "posY": 0,
                                                 "stateType": "inSource",
-                                                "sourceData": sourceModel.get(i),
+                                                "sourceData": JSON.parse(JSON.stringify(sourceModel.get(i))),
                                                 "itemWidth": 200,
                                                 "itemHeight": 100
                                             })
@@ -1001,6 +1015,78 @@ Item {
 
                                     }
                                 }
+                                Item {
+                                    id: questions
+
+                                    SwipeBanner {
+                                        anchors.fill: parent
+                                        anchors.margins: 6
+                                        Repeater {
+                                            model: JSON.parse(FileIO.read(settings.questionsDataUrl))
+                                            delegate: ColumnLayout {
+                                                id: questionsTextSection
+                                                spacing: 20
+                                                required property string title
+                                                required property string description
+                                                required property string picture
+                                                required property var loadData
+                                                Control {
+                                                    background: Rectangle {
+                                                        border.color: settings.highlightColor
+                                                    }
+                                                    Layout.fillWidth: true
+                                                    Layout.alignment: Qt.AlignHCenter
+                                                    contentItem: Text {
+                                                        text: questionsTextSection.title
+                                                        font.pixelSize: 18
+                                                        font.bold: true
+                                                        horizontalAlignment: Text.AlignHCenter
+                                                    }
+                                                }
+
+                                                Control {
+                                                    background: Rectangle {
+                                                        border.color: settings.highlightColor
+                                                        border.width: 2
+                                                    }
+                                                    Layout.fillWidth: true
+                                                    Layout.fillHeight: true
+                                                    Layout.alignment: Qt.AlignHCenter
+                                                    Image {
+                                                        id: img
+                                                        anchors.fill: parent
+                                                        source: questionsTextSection.picture
+                                                        fillMode: Image.PreserveAspectFit
+                                                    }
+                                                }
+
+                                                Control {
+                                                    background: Rectangle {
+                                                        border.color: settings.highlightColor
+                                                    }
+                                                    Layout.fillWidth: true
+                                                    Layout.alignment: Qt.AlignHCenter
+                                                    contentItem: Text {
+                                                        text: questionsTextSection.description
+                                                        wrapMode: Text.WordWrap
+                                                        font.pixelSize: 14
+                                                        horizontalAlignment: Text.AlignHCenter
+                                                    }
+                                                }
+                                                Button {
+                                                    Layout.alignment: Qt.AlignHCenter
+                                                    text: "Load ⚡"
+                                                    onClicked: {
+                                                        dropModel.clear()
+                                                        sequenceModel.clear()
+                                                        // TODO ??? 直接append questionsTextSection.loadData不行
+                                                        sequenceModel.append(JSON.parse(JSON.stringify(questionsTextSection.loadData)))
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
 
                                 Item {
                                     id: tutorial
@@ -1035,57 +1121,7 @@ Item {
                                         }
                                     }
                                    }
-                                Item {
-                                    id: questions
 
-                                    SwipeBanner {
-                                        anchors.fill: parent
-                                        anchors.margins: 6
-                                        Repeater {
-                                            model: JSON.parse(FileIO.read(settings.questionsDataUrl))
-                                            delegate: ColumnLayout {
-                                                id: questionsTextSection
-                                                spacing: 20
-                                                required property string title
-                                                required property string description
-                                                required property string picture
-                                                Text {
-                                                    Layout.fillHeight: true
-                                                    Layout.fillWidth: true
-                                                    text: questionsTextSection.title
-
-                                                    font.pixelSize: 18
-                                                    font.bold: true
-                                                    horizontalAlignment: Text.AlignHCenter
-                                                }
-
-                                                Rectangle {
-                                                    border.color: settings.highlightColor
-                                                    border.width: 1
-
-                                                    Layout.preferredHeight: 100
-                                                    Layout.preferredWidth: 200
-                                                    Layout.alignment: Qt.AlignHCenter
-                                                    Image {
-                                                        id: img
-                                                        anchors.fill: parent
-                                                        source: questionsTextSection.picture
-                                                        fillMode: Image.PreserveAspectFit
-                                                    }
-                                                }
-
-                                                Text {
-                                                    Layout.fillHeight: true
-                                                    Layout.fillWidth: true
-                                                    text: parent.description
-                                                    wrapMode: Text.WordWrap
-                                                    font.pixelSize: 14
-                                                    horizontalAlignment: Text.AlignHCenter
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
                                 Item {
                                     id: load
 
@@ -1137,13 +1173,7 @@ Item {
                                             JSConsoleButton {
                                                 windowHeight: 600
                                                 windowWidth: 800
-                                                predefinedCommands: [
-                                                    "Utils.getRepeaterItem(dragRepeater, 1)",
-                                                    "Utils.getRepeaterItem(dropRepeater, 4)",
-                                                    "Utils.modelToJSON(dragModel)",
-                                                    "Utils.modelToJSON(dropModel)",
-                                                    "Utils.modelToJSON(sequenceModel)"
-                                                ]
+                                                predefinedCommands: JSON.parse(FileIO.read(settings.predefinedCommandsUrl))
                                             }
                                         }
                                     }

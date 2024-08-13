@@ -33,6 +33,12 @@ Module {
             type: "QString"
             Parameter { name: "a1"; type: "QString" }
         }
+        Method {
+            name: "write"
+            type: "QString"
+            Parameter { name: "a1"; type: "QString" }
+            Parameter { name: "a2"; type: "QString" }
+        }
     }
     Component {
         file: "qobject.h"

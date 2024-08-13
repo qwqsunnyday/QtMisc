@@ -44,6 +44,14 @@
         "description": "",
         "fillColor": "orange",
         "type": "蛋白质编码区",
+        "internalName": "GI",
+        "name": "GI"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
         "internalName": "INS",
         "name": "INS"
     },
@@ -62,6 +70,14 @@
         "type": "蛋白质编码区",
         "internalName": "miRNA",
         "name": "miRNA"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "miRNA",
+        "name": "circRNA"
     },
     {
         "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",

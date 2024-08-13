@@ -62,6 +62,21 @@
                             }
                         ],
                         "returnType": "QString"
+                    },
+                    {
+                        "access": "public",
+                        "name": "write",
+                        "arguments": [
+                            {
+                                "name": "a1",
+                                "type": "QString"
+                            },
+                            {
+                                "name": "a2",
+                                "type": "QString"
+                            }
+                        ],
+                        "returnType": "QString"
                     }
                 ]
             }

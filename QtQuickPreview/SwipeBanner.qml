@@ -7,6 +7,7 @@ Container {
     id: swipeBannerContainer
 
     contentItem: RowLayout {
+        anchors.fill: parent
 
         Button {
             Layout.fillHeight: true
@@ -40,6 +41,7 @@ Container {
                     }
                 }
                 PageIndicator {
+                    visible: true
                     count: textDisplayView.count
                     currentIndex: textDisplayView.currentIndex
                     Layout.alignment: Qt.AlignHCenter

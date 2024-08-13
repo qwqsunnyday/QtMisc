@@ -12,10 +12,7 @@ Item {
     anchors.fill: parent
     visible: true
 
-    property var predefinedCommands: ["\"qwertyuikjghnfbvxdczscdvfbg \
-fdgrthyjugfdsaxfvgbnh\
-fdrgthnjmk,hmgfdsacfvgbnhbmjn\
-fdghnjmk,mhngbfvdsccfvgbhnmjn,kdfghnjmkhghfdfcvgbnhmj,kmhngbfdvgbhnmjn,mhngbhfvd\gbhnmjn\""]
+    property var predefinedCommands: []
 
     ListModel {
         id: inputModel
@@ -58,7 +55,6 @@ fdghnjmk,mhngbfvdsccfvgbhnmjn,kdfghnjmkhghfdfcvgbnhmj,kmhngbfdvgbhnmjn,mhngbhfvd
                             inspectorModel.set(i, root.jsCall(cmd))
                         }
                     }
-
                 }
                 Component.onCompleted: {
                     timer.start()
@@ -72,73 +68,101 @@ fdghnjmk,mhngbfvdsccfvgbhnmjn,kdfghnjmkhghfdfcvgbnhmj,kmhngbfdvgbhnmjn,mhngbhfvd
                 anchors.fill: parent
                 anchors.margins: 9
 
+                contentHeight: parent.height
+                contentWidth: parent.width
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.rightMargin: 25
+                    anchors.bottomMargin: 25
+                    clip: true
+                    ListView {
+                        anchors.fill: parent
+                        anchors.margins: 10
+                        id: resultView
+                        // 奇技淫巧
+                        model: eval(targetModel)
+                        delegate: ColumnLayout {
+                            required property int index
+                            required property var model
 
-                ListView {
-                    id: resultView
-                    // 奇技淫巧
-                    model: eval(targetModel)
-                    delegate: ColumnLayout {
-                        width: ListView.view.width
-                        RowLayout {
-                            // Layout.fillHeight: true
-                            Layout.fillWidth: true
-                            Button {
+                            width: ListView.view.width
+                            RowLayout {
+                                // Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                contentItem: Text {
-                                    text: "> " + model.expression
-                                    font.family: "Consolas"
-                                    horizontalAlignment : Text.AlignLeft
-                                }
-                                onClicked: {
-                                    Utils.copyToClipBoard(model.expression)
-                                }
-                            }
-                            Button {
-                                visible: targetModel == "outputModel"
-                                Layout.preferredWidth: contentTxt.contentWidth+20
-                                contentItem: Text {
-                                    id: contentTxt
-                                    text: "Watch"
-                                    horizontalAlignment : Text.AlignLeft
-                                }
-                                onClicked: {
-                                    let data = root.jsCall(model.expression)
-                                    inspectorModel.insert(0, data)
-                                }
-                            }
-                        }
-
-                        ScrollView {
-                            Layout.fillWidth: true
-                            Layout.preferredHeight: contentHeight + 10
-                            Flickable {
-                                clip: true
-                                contentWidth: btn.implicitWidth
-                                contentHeight: btn.implicitHeight
                                 Button {
-                                    id: btn
-                                    leftPadding: 4
-                                    topPadding: 4
-                                    rightPadding: 4
-                                    bottomPadding: 4
+                                    Layout.fillWidth: true
+                                    clip: true
                                     contentItem: Text {
-                                        id: resultText
-                                        text: "" + model.result
+                                        text: "> " + model.expression
                                         font.family: "Consolas"
                                         horizontalAlignment : Text.AlignLeft
                                     }
                                     onClicked: {
-                                        Utils.copyToClipBoard(model.result)
+                                        Utils.copyToClipBoard(model.expression)
+                                    }
+                                }
+                                Button {
+                                    visible: targetModel == "outputModel"
+                                    Layout.preferredWidth: contentTxt.contentWidth+20
+                                    contentItem: Text {
+                                        id: contentTxt
+                                        text: "Watch"
+                                        horizontalAlignment : Text.AlignLeft
+                                    }
+                                    onClicked: {
+                                        let data = root.jsCall(model.expression)
+                                        inspectorModel.insert(0, data)
+                                    }
+                                }
+                                Button {
+                                    Layout.preferredWidth: contentTxt1.contentWidth+20
+                                    contentItem: Text {
+                                        id: contentTxt1
+                                        text: "Delete"
+                                        horizontalAlignment : Text.AlignLeft
+                                    }
+                                    onClicked: {
+                                        resultView.model.remove(index)
                                     }
                                 }
                             }
-                        }
 
-                        Rectangle {
-                            height: 1
-                            Layout.fillWidth: true
-                            color: '#333'
-                            opacity: 0.2
+                            ScrollView {
+                                Layout.fillWidth: true
+                                Layout.preferredHeight: contentHeight + 10
+                                Flickable {
+                                    clip: true
+                                    contentWidth: parent.width
+                                    contentHeight: btn.implicitHeight
+                                    Rectangle {
+                                        anchors.fill: parent
+                                        Button {
+                                            anchors.fill: parent
+                                            id: btn
+                                            leftPadding: 4
+                                            topPadding: 4
+                                            rightPadding: 4
+                                            bottomPadding: 4
+                                            contentItem: Text {
+                                                id: resultText
+                                                text: "" + model.result
+                                                font.family: "Consolas"
+                                                horizontalAlignment : Text.AlignLeft
+                                            }
+                                            onClicked: {
+                                                Utils.copyToClipBoard(model.result)
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            Rectangle {
+                                height: 1
+                                Layout.fillWidth: true
+                                color: '#333'
+                                opacity: 0.2
+                            }
                         }
                     }
                 }
@@ -191,13 +215,21 @@ fdghnjmk,mhngbfvdsccfvgbhnmjn,kdfghnjmkhghfdfcvgbnhmj,kmhngbfdvgbhnmjn,mhngbhfvd
                         addCommand(input.text)
                     }
                 }
-                Button {
+                DelayButton {
                     text: qsTr("Clear")
                     onClicked: {
                         outputModel.clear()
                         input.text = ""
                     }
+                    onActivated: {
+                        outputModel.clear()
+                        inputModel.clear()
+                        inspectorModel.clear()
+                        input.text = ""
+                        progress = 0
+                    }
                 }
+
                 Switch {
                     id: historySwitch
                     visible: false
@@ -257,8 +289,6 @@ fdghnjmk,mhngbfvdsccfvgbhnmjn,kdfghnjmkhghfdfcvgbnhmj,kmhngbfdvgbhnmjn,mhngbhfvd
                         radius: 0
                     }
 
-
-
                     Repeater {
                         anchors.fill: parent
                         // 作用是代替Loader
@@ -302,9 +332,6 @@ fdghnjmk,mhngbfvdsccfvgbhnmjn,kdfghnjmkhghfdfcvgbnhmj,kmhngbfdvgbhnmjn,mhngbhfvd
             }
         }
     }
-
-
-
 
     Component.onDestruction: {
         outputModel.clear()

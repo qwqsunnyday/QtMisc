@@ -1,0 +1,33 @@
+[
+    {
+        "title": "绿色荧光",
+        "description": "CMV-LUC",
+        "picture": "Assets/Questions/greencell@4x.png"
+    },
+    {
+        "title": "高血糖生成绿色荧光",
+        "description": "P-GIP-LUC",
+        "picture": "Assets/Questions/sugargreen@4x.png"
+    },
+    {
+        "title": "蓝光下生成绿色荧光",
+        "description": "CMV-GI-GAL4 \nU-6P-LOV-VP16 \n9XUAS-LUC",
+        "picture": "Assets/Questions/bluegreen@4x.png"
+    },
+    {
+        "title": "蓝光下胰岛素生成",
+        "description": "CMV-GI-GAL4 \nU-6P-LOV-VP16 \n9XUAS-INS",
+        "picture": "Assets/Questions/blue_ins@4x.png"
+    },
+    {
+        "title": "高血糖胰岛素上升",
+        "description": "P-GIP-INS",
+        "picture": "Assets/Questions/sugar_ins@4x.png",
+        "note": "不好表现，我觉得这个question不需要存在，先存疑"
+    },
+    {
+        "title": "CSU项目",
+        "description": "CMV-GI-GAL4 \nP-GIP-LOV-VP16 \n9XUAS-INS-miRNA-BS \nU-6P-miRNA \nQ-GIP-circRNA",
+        "picture": ""
+    }
+]

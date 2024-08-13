@@ -16,10 +16,11 @@ Rectangle {
     required property color fillColor
     required property string name
     required property string type // ["启动子" | "蛋白质编码区"]
+    required property url sourceUrl
 
     Image {
         id: svgImage
-        source: "Genetic_Element/"+root.type+".svg"
+        source: sourceUrl
         width: parent.width
         // height: parent.height
         anchors.bottom: parent.bottom

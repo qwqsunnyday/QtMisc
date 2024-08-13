@@ -1,11 +1,14 @@
 # This Python file uses the following encoding: utf-8
 import json
+import os
 import sys
 from pathlib import Path
 
 from PySide6.QtGui import QGuiApplication
-from PySide6.QtQml import QQmlApplicationEngine, QQmlDebuggingEnabler, QmlElement
+from PySide6.QtQml import QQmlApplicationEngine, QQmlDebuggingEnabler,  QmlElement, QmlSingleton, qmlRegisterType
 from argparse import ArgumentParser
+
+# from PySide6.QtWebEngineQuick import QtWebEngineQuick
 
 from PySide6.QtCore import QObject, Slot
 
@@ -16,12 +19,11 @@ from pd import evaluate_conditions
 QML_IMPORT_NAME = "io.emulator"
 QML_IMPORT_MAJOR_VERSION = 1
 
-
 @QmlElement
 class Emulator(QObject):
 
     @Slot(str, result=str)
-    def evaluate(self, sequencesJSONData: str):
+    def evaluate(self, sequences_JSON_data: str):
         """_summary_
 
         Args:
@@ -36,7 +38,7 @@ class Emulator(QObject):
             {"uuid":17,"droppedItemModel":[{"uuid":15,"modelData":"data: 2","posX":52,"posY":141.5,"stateType":"inSequence","sourceData":{"objectName":"","description":"","fillColor":"orange","type":"启动子","internalName":"U6_P","name":"U6_P"},"itemWidth":200,"itemHeight":100},{"uuid":16,"modelData":"data: 9","posX":10.5,"posY":-48.5,"stateType":"inSequence","sourceData":{"objectName":"","description":"","fillColor":"orange","type":"蛋白质编码区","internalName":"LOV","name":"LOV"},"itemWidth":200,"itemHeight":100}],"posX":52,"posY":141.5}
         ]
         """
-        sequences: list = json.loads(sequencesJSONData)
+        sequences: list = json.loads(sequences_JSON_data)
         conditions: list[str] = []
         for sequence in sequences:
             bio_devices: list = sequence["droppedItemModel"]
@@ -47,6 +49,27 @@ class Emulator(QObject):
         return evaluate_conditions(conditions)
 
 
+QML_IMPORT_NAME = "FileIO"
+QML_IMPORT_MAJOR_VERSION = 1
+QML_IMPORT_MINOR_VERSION = 0 # Optional
+
+@QmlElement
+@QmlSingleton
+class FileIO(QObject):
+    
+    # @staticmethod
+    # def create(engine):
+    #     print("created")
+    #     return FileIO()
+    
+    @Slot(str, result=str)
+    def read(self, file_path: str):
+        if os.path.exists(file_path):
+            with open(file_path, 'r', encoding='utf-8') as file:
+                return file.read()
+        return ""
+
+
 if __name__ == "__main__":
     argument_parser = ArgumentParser()
     argument_parser.add_argument("-qmljsdebugger", action="store",
@@ -54,6 +77,9 @@ if __name__ == "__main__":
     options = argument_parser.parse_args()
     if options.qmljsdebugger:
         QQmlDebuggingEnabler.enableDebugging(True)
+
+    # for WebEngineView
+    # QtWebEngineQuick.initialize()
 
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()

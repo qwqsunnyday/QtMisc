@@ -44,4 +44,5 @@
     },
     "cmake.sourceDirectory": "C:/Users/bobby/DATA/Git/QtMisc/QtQuickPreview",
     "editor.formatOnSave": false,
+    "livePreview.defaultPreviewPath": "/QtQuickPreview/view.html",
 }

@@ -7,6 +7,7 @@ import QtCore
 import "Utils.js" as Utils
 
 import io.emulator 1.0
+import FileIO 1.0 // 单例
 
 Item {
     id: root
@@ -20,11 +21,18 @@ Item {
         id: settings
         property bool debug: debugSwitch.checked
         property color highlightColor: debug ? Qt.lighter("red") : "transparent"
+        property url questionsDataUrl: "Assets/Questions/Questions.json"
+        property url tutorialDataUrl: "Assets/Questions/Tutorial.json"
+        property url sourceModelDataUrl: "Assets/Genetic_Element/GeneticElementData.json"
         Component.onCompleted: {
             Qt.application.name = "Gene-circuit"
             Qt.application.organization = ""
             Qt.application.domain = ""
         }
+    }
+
+    Emulator {
+        id: emulator
     }
 
     RowLayout {
@@ -56,17 +64,19 @@ Item {
 
                     ListModel {
                         id: sourceModel
-                        ListElement { name: "9XUAS"; internalName: "9XUAS"; type: "启动子"; fillColor: "orange"; description: "" }
-                        ListElement { name: "CMV"; internalName: "CMV"; type: "启动子"; fillColor: "orange"; description: "" }
-                        ListElement { name: "U6_P"; internalName: "U6_P"; type: "启动子"; fillColor: "orange"; description: "" }
-                        ListElement { name: "P_GIP"; internalName: "P_GIP"; type: "启动子"; fillColor: "orange"; description: "" }
-                        ListElement { name: "GAL4"; internalName: "GAL4"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
-                        ListElement { name: "INS"; internalName: "INS"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
-                        ListElement { name: "Luciferase"; internalName: "Luciferase"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
-                        ListElement { name: "miRNA"; internalName: "miRNA"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
-                        ListElement { name: "miRNA_BS"; internalName: "miRNA_BS"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
-                        ListElement { name: "LOV"; internalName: "LOV"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
-                        ListElement { name: "VP16"; internalName: "VP16"; type: "蛋白质编码区"; fillColor: "orange"; description: "" }
+                        // ListElement {
+                        //     name: "9XUAS"
+                        //     internalName: "9XUAS"
+                        //     sourceUrl: "Assets/Genetic_Element/启动子.svg"
+                        //     type: "启动子"
+                        //     color: "orange"
+                        //     description: ""
+                        // }
+                        function init() {
+                            let sourceModelJSON = FileIO.read(settings.sourceModelDataUrl)
+                            let sourceModelObject = JSON.parse(sourceModelJSON)
+                            sourceModel.append(sourceModelObject)
+                        }
                     }
 
                     ListModel {
@@ -658,9 +668,11 @@ Item {
                                     }
 
                                     Component.onCompleted: {
+
                                         for (let i = 0; i < sourceModel.count; i++) {
                                             Utils.uuid()
                                         }
+                                        sourceModel.init()
                                         rePresent()
                                     }
                                 }
@@ -756,7 +768,7 @@ Item {
                                     anchors.rightMargin: 30
                                     anchors.verticalCenter: parent.verticalCenter
                                     fillMode: Image.PreserveAspectFit
-                                    source: "./Light_button/Light_close.png"
+                                    source: "Assets/Light_button/Light_close.png"
                                 }
                             }
                         }
@@ -831,6 +843,7 @@ Item {
 
                     ColumnLayout {
                         anchors.fill: parent
+                        anchors.margins: 4
                         Rectangle {
                             Layout.preferredHeight: tabPanel.implicitHeight + tabPanel.anchors.margins*2
                             Layout.fillWidth: true
@@ -882,110 +895,265 @@ Item {
                                         console.log(result)
                                         textOutput.text = result
                                     }
-                                    Emulator {
-                                        id: emulator
-                                    }
                                 }
                             }
                         }
 
-                        SwipeView {
+                        Control {
                             Layout.fillHeight: true
                             Layout.fillWidth: true
-                            id: view
-                            // 双向绑定
-                            currentIndex: bar.currentIndex
+                            background: Rectangle {
+                                border.color: Qt.lighter("gray")
+                                border.width: 2
+                            }
+                            contentItem: SwipeView {
+                                id: view
+                                // 双向绑定
+                                currentIndex: bar.currentIndex
 
-                            // from Item, default false 限制被显示的项是否只在当前区域内显示
-                            clip: true
-                            Item {
-                                id: tutorial
-                                Text {
-                                    text: "tutorial"
-                                    anchors.centerIn: parent
+                                // from Item, default false 限制被显示的项是否只在当前区域内显示
+                                clip: true
+
+                                Component {
+                                    id: swipeBannerComponent
+
+                                    Container {
+                                        id: swipeBannerContainer
+
+                                        contentItem: RowLayout {
+
+                                            Button {
+                                                Layout.fillHeight: true
+                                                Layout.minimumWidth: 20
+                                                text: "<"
+                                                onClicked: {
+                                                    textDisplayView.decrementCurrentIndex()
+                                                }
+                                            }
+
+                                            Control {
+                                                Layout.fillHeight: true
+                                                Layout.fillWidth: true
+
+                                                background: Rectangle {
+                                                    border.color: Qt.lighter("gray")
+                                                    border.width: 2
+                                                }
+
+                                                topPadding: 10
+                                                leftPadding: 10
+                                                rightPadding: 10
+                                                contentItem: ColumnLayout {
+                                                    SwipeView {
+                                                        id: textDisplayView
+                                                        Layout.fillHeight: true
+                                                        Layout.fillWidth: true
+                                                        clip: true
+                                                        Repeater {
+                                                            model: swipeBannerContainer.contentModel
+                                                        }
+                                                    }
+                                                    PageIndicator {
+                                                        count: textDisplayView.count
+                                                        currentIndex: textDisplayView.currentIndex
+                                                        Layout.alignment: Qt.AlignHCenter
+                                                    }
+                                                }
+                                            }
+
+                                            Button {
+                                                Layout.fillHeight: true
+                                                Layout.minimumWidth: 20
+                                                text: ">"
+                                                onClicked: {
+                                                    textDisplayView.incrementCurrentIndex()
+                                                }
+                                            }
+                                        }
+
+                                        Repeater {
+                                            id: tutorialText
+                                            model: JSON.parse(FileIO.read(settings.tutorialDataUrl))
+                                            delegate: ColumnLayout {
+                                                id: tutorialTextSection
+                                                spacing: 20
+                                                required property string title
+                                                required property string description
+                                                Text {
+                                                    Layout.fillHeight: true
+                                                    Layout.fillWidth: true
+                                                    text: tutorialTextSection.title
+
+                                                    font.pixelSize: 18
+                                                    font.bold: true
+                                                    horizontalAlignment: Text.AlignHCenter
+                                                }
+
+                                                Text {
+                                                    Layout.fillHeight: true
+                                                    Layout.fillWidth: true
+                                                    text: tutorialTextSection.description
+                                                    wrapMode: Text.WordWrap
+                                                    font.pixelSize: 14
+                                                }
+                                            }
+                                        }
+
+                                    }
                                 }
-                            }
-                            Item {
-                                id: questions
-                                Text {
-                                    text: "questions"
-                                    anchors.centerIn: parent
+
+                                Item {
+                                    id: tutorial
+
+                                    SwipeBanner {
+                                        anchors.fill: parent
+                                        anchors.margins: 6
+                                        Repeater {
+                                            model: JSON.parse(FileIO.read(settings.tutorialDataUrl))
+                                            delegate: ColumnLayout {
+                                                spacing: 20
+                                                required property string title
+                                                required property string description
+                                                Text {
+                                                    Layout.fillHeight: true
+                                                    Layout.fillWidth: true
+                                                    text: parent.title
+
+                                                    font.pixelSize: 18
+                                                    font.bold: true
+                                                    horizontalAlignment: Text.AlignHCenter
+                                                }
+
+                                                Text {
+                                                    Layout.fillHeight: true
+                                                    Layout.fillWidth: true
+                                                    text: parent.description
+                                                    wrapMode: Text.WordWrap
+                                                    font.pixelSize: 14
+                                                }
+                                            }
+                                        }
+                                    }
+                                   }
+                                Item {
+                                    id: questions
+
+                                    SwipeBanner {
+                                        anchors.fill: parent
+                                        anchors.margins: 6
+                                        Repeater {
+                                            model: JSON.parse(FileIO.read(settings.questionsDataUrl))
+                                            delegate: ColumnLayout {
+                                                id: questionsTextSection
+                                                spacing: 20
+                                                required property string title
+                                                required property string description
+                                                required property string picture
+                                                Text {
+                                                    Layout.fillHeight: true
+                                                    Layout.fillWidth: true
+                                                    text: questionsTextSection.title
+
+                                                    font.pixelSize: 18
+                                                    font.bold: true
+                                                    horizontalAlignment: Text.AlignHCenter
+                                                }
+
+                                                Rectangle {
+                                                    border.color: settings.highlightColor
+                                                    border.width: 1
+
+                                                    Layout.preferredHeight: 100
+                                                    Layout.preferredWidth: 200
+                                                    Layout.alignment: Qt.AlignHCenter
+                                                    Image {
+                                                        id: img
+                                                        anchors.fill: parent
+                                                        source: questionsTextSection.picture
+                                                        fillMode: Image.PreserveAspectFit
+                                                    }
+                                                }
+
+                                                Text {
+                                                    Layout.fillHeight: true
+                                                    Layout.fillWidth: true
+                                                    text: parent.description
+                                                    wrapMode: Text.WordWrap
+                                                    font.pixelSize: 14
+                                                    horizontalAlignment: Text.AlignHCenter
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
-                            }
-                            Item {
-                                id: load
-                                ColumnLayout {
-                                    anchors.fill: parent
-                                    Rectangle {
-                                        height: bar.implicitHeight
-                                        width: bar.implicitWidth
-                                        color: "transparent"
+                                Item {
+                                    id: load
+
+                                    ColumnLayout {
+                                        anchors.fill: parent
+                                        Rectangle {
+                                            height: bar.implicitHeight
+                                            width: bar.implicitWidth
+                                            color: "transparent"
+                                        }
+
+                                        RowLayout {
+                                            id: controlPanel
+                                            Layout.fillWidth: true
+                                            Layout.preferredHeight: 28
+                                            Layout.alignment: Qt.AlignCenter | Qt.AlignTop
+                                            Button {
+                                                id: clear
+                                                text: "Clear"
+                                                onClicked: {
+                                                    dropModel.clear()
+                                                    sequenceModel.clear()
+                                                }
+                                            }
+                                            Button {
+                                                id: restore
+                                                text: "Restore"
+                                                onClicked: {
+                                                    // save.data为对象数组
+                                                    dropModel.append(save.dropModelData)
+                                                    sequenceModel.append(save.sequenceModelData)
+                                                }
+                                            }
+                                            Button {
+                                                id: save
+                                                text: "Save"
+                                                property var dropModelData
+                                                property var sequenceModelData
+                                                onClicked: {
+                                                    dropModelData = JSON.parse(Utils.modelToJSON(dropModel))
+                                                    sequenceModelData = JSON.parse(Utils.modelToJSON(sequenceModel))
+                                                }
+                                            }
+                                            Button {
+                                                id: debugSwitch
+                                                text: "Debug"
+                                                checkable: true
+                                            }
+                                            JSConsoleButton {
+                                                windowHeight: 600
+                                                windowWidth: 800
+                                                predefinedCommands: [
+                                                    "Utils.getRepeaterItem(dragRepeater, 1)",
+                                                    "Utils.getRepeaterItem(dropRepeater, 4)",
+                                                    "Utils.modelToJSON(dragModel)",
+                                                    "Utils.modelToJSON(dropModel)",
+                                                    "Utils.modelToJSON(sequenceModel)"
+                                                ]
+                                            }
+                                        }
                                     }
 
-                                    RowLayout {
-                                        id: controlPanel
-                                        Layout.fillWidth: true
-                                        Layout.preferredHeight: 28
-                                        Layout.alignment: Qt.AlignCenter | Qt.AlignTop
-                                        Button {
-                                            id: clear
-                                            text: "Clear"
-                                            onClicked: {
-                                                dropModel.clear()
-                                                sequenceModel.clear()
-                                            }
-                                        }
-                                        Button {
-                                            id: restore
-                                            text: "Restore"
-                                            onClicked: {
-                                                // save.data为对象数组
-                                                dropModel.append(save.dropModelData)
-                                                sequenceModel.append(save.sequenceModelData)
-                                            }
-                                        }
-                                        Button {
-                                            id: save
-                                            text: "Save"
-                                            property var dropModelData
-                                            property var sequenceModelData
-                                            onClicked: {
-                                                dropModelData = JSON.parse(Utils.modelToJSON(dropModel))
-                                                sequenceModelData = JSON.parse(Utils.modelToJSON(sequenceModel))
-                                            }
-                                        }
-                                        Button {
-                                            id: debugSwitch
-                                            text: "Debug"
-                                            checkable: true
-                                        }
-                                        JSConsoleButton {
-                                            windowHeight: 600
-                                            windowWidth: 800
-                                            predefinedCommands: [
-                                                "Utils.getRepeaterItem(dragRepeater, 1)",
-                                                "Utils.getRepeaterItem(dropRepeater, 4)",
-                                                "Utils.modelToJSON(dragModel)",
-                                                "Utils.modelToJSON(dropModel)",
-                                                "Utils.modelToJSON(sequenceModel)"
-                                            ]
-                                        }
+                                    Text {
+                                        text: "load"
+                                        anchors.centerIn: parent
                                     }
                                 }
-
-                                Text {
-                                    text: "load"
-                                    anchors.centerIn: parent
-                                }
                             }
-                        }
-                        PageIndicator {
-                            id: indicator
-
-                            count: view.count
-                            currentIndex: view.currentIndex
-
-                            Layout.alignment: Qt.AlignHCenter
                         }
                     }
                 }

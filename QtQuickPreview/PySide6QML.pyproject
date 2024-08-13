@@ -4,6 +4,7 @@
         "GeneticElementComponent.qml",
         "JSConsole.qml",
         "JSConsoleButton.qml",
+        "SwipeBanner.qml",
         "Utils.js",
         "WindowFrameRate.qml",
         "main.py",

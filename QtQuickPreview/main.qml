@@ -17,6 +17,8 @@ Item {
     anchors.fill: parent
     anchors.margins: 1
 
+    objectName: "Gene-circuit Main Window"
+
     Settings {
         id: settings
         property bool debug: debugSwitch.checked
@@ -26,6 +28,8 @@ Item {
         property url sourceModelDataUrl: "Assets/Genetic_Element/GeneticElementData.json"
         property url predefinedCommandsUrl: "Assets/PredefinedCommands.json"
         property url saveUrl: "Assets/Save.json"
+        property url lightCloseUrl: "Assets/Light_button/Light_close.png"
+        property url lightOpenUrl: "Assets/Light_button/Light_open.png"
 
         property var dropModelData
         property var sequenceModelData
@@ -729,7 +733,7 @@ Item {
             id: rightZone
 
             Layout.fillHeight: true
-            Layout.preferredWidth: bar.implicitWidth+120
+            Layout.preferredWidth: tabPanel.implicitWidth + 40
             border.color: Qt.lighter("gray")
             border.width: 2
             ColumnLayout {
@@ -772,15 +776,11 @@ Item {
                                     anchors.rightMargin: 30
                                     anchors.verticalCenter: parent.verticalCenter
                                     fillMode: Image.PreserveAspectFit
-                                    source: "Assets/Light_button/Light_close.png"
+                                    source: settings.lightCloseUrl
                                 }
                             }
                         }
-                        Slider {
-                            Layout.fillWidth: true
-                            from: 0
-                            to: 100
-                        }
+
 
                         // 为了使用居中
                         RowLayout {
@@ -789,14 +789,20 @@ Item {
                             Layout.margins: 10
                             spacing: 10
                             Switch {
-                                // ? * 28
-                                text: "Option 1"
-                                Layout.alignment: Qt.AlignCenter
+                                id: blueraySwitch
+                                checked: true
+                                text: "Blueray"
                             }
 
-                            Switch {
-                                text: "Option 2"
-                                Layout.alignment: Qt.AlignCenter
+                            Slider {
+                                id: bloodSugarSlider
+                                Layout.fillWidth: true
+                                from: 10
+                                to: 100
+                                value: 50
+                            }
+                            Text {
+                                text: "Blood Sugar: " + bloodSugarSlider.value
                             }
                         }
                     }
@@ -895,9 +901,12 @@ Item {
                                     id: evaluate
                                     text: "Evaluate ▶️"
                                     onClicked: {
-                                        var result = emulator.evaluate(Utils.modelToJSON(sequenceModel))
+                                        var sequences_JSON_data = Utils.modelToJSON(sequenceModel)
+                                        var environment_variables_JSON_data = JSON.stringify({"blood_sugar": bloodSugarSlider.value, "blueray": blueraySwitch.enabled})
+                                        var result = emulator.evaluate(sequences_JSON_data, environment_variables_JSON_data)
                                         console.log(result)
                                         textOutput.text = result
+                                        light.source = result == "绿光" ? settings.lightOpenUrl : settings.lightCloseUrl
                                     }
                                 }
                             }
@@ -918,92 +927,6 @@ Item {
                                 // from Item, default false 限制被显示的项是否只在当前区域内显示
                                 clip: true
 
-                                Component {
-                                    id: swipeBannerComponent
-
-                                    Container {
-                                        id: swipeBannerContainer
-
-                                        contentItem: RowLayout {
-
-                                            Button {
-                                                Layout.fillHeight: true
-                                                Layout.minimumWidth: 20
-                                                text: "<"
-                                                onClicked: {
-                                                    textDisplayView.decrementCurrentIndex()
-                                                }
-                                            }
-
-                                            Control {
-                                                Layout.fillHeight: true
-                                                Layout.fillWidth: true
-
-                                                background: Rectangle {
-                                                    border.color: Qt.lighter("gray")
-                                                    border.width: 2
-                                                }
-
-                                                topPadding: 10
-                                                leftPadding: 10
-                                                rightPadding: 10
-                                                contentItem: ColumnLayout {
-                                                    SwipeView {
-                                                        id: textDisplayView
-                                                        Layout.fillHeight: true
-                                                        Layout.fillWidth: true
-                                                        clip: true
-                                                        Repeater {
-                                                            model: swipeBannerContainer.contentModel
-                                                        }
-                                                    }
-                                                    PageIndicator {
-                                                        count: textDisplayView.count
-                                                        currentIndex: textDisplayView.currentIndex
-                                                        Layout.alignment: Qt.AlignHCenter
-                                                    }
-                                                }
-                                            }
-
-                                            Button {
-                                                Layout.fillHeight: true
-                                                Layout.minimumWidth: 20
-                                                text: ">"
-                                                onClicked: {
-                                                    textDisplayView.incrementCurrentIndex()
-                                                }
-                                            }
-                                        }
-
-                                        Repeater {
-                                            id: tutorialText
-                                            model: JSON.parse(FileIO.read(settings.tutorialDataUrl))
-                                            delegate: ColumnLayout {
-                                                id: tutorialTextSection
-                                                spacing: 20
-                                                required property string title
-                                                required property string description
-                                                Text {
-                                                    Layout.fillHeight: true
-                                                    Layout.fillWidth: true
-                                                    text: tutorialTextSection.title
-
-                                                    font.pixelSize: 18
-                                                    font.bold: true
-                                                    horizontalAlignment: Text.AlignHCenter
-                                                }
-
-                                                Text {
-                                                    Layout.fillHeight: true
-                                                    Layout.fillWidth: true
-                                                    text: tutorialTextSection.description
-                                                    wrapMode: Text.WordWrap
-                                                    font.pixelSize: 14
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
                                 Item {
                                     id: questions
 

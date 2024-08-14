@@ -6,13 +6,13 @@ import QtQuick.Controls.Universal
 import "Utils.js" as Utils
 
 Item {
-    id: root
+    id: rootItem
     width: 640
     height: 480
     anchors.fill: parent
     visible: true
 
-    property var predefinedCommands: Array.from({ length: 20 }, () => "\""+Utils.uuid("xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx")+"\"")
+    property var predefinedCommands: []
 
     ListModel {
         id: inputModel
@@ -24,7 +24,7 @@ Item {
         Component.onCompleted: {
             for (let i = 0; i < predefinedCommands.length ; i++) {
                 addCommand(predefinedCommands[i])
-                let data = root.jsCall(predefinedCommands[i])
+                let data = rootItem.jsCall(predefinedCommands[i])
                 inspectorModel.insert(0, data)
             }
         }
@@ -52,7 +52,7 @@ Item {
                     if (targetModel == "inspectorModel") {
                         for (let i = 0; i < inspectorModel.count ; i++) {
                             let cmd = inspectorModel.get(i).expression
-                            inspectorModel.set(i, root.jsCall(cmd))
+                            inspectorModel.set(i, rootItem.jsCall(cmd))
                         }
                     }
                 }
@@ -107,7 +107,7 @@ Item {
                                     horizontalAlignment : Text.AlignLeft
                                 }
                                 onClicked: {
-                                    let data = root.jsCall(model.expression)
+                                    let data = rootItem.jsCall(model.expression)
                                     inspectorModel.insert(0, data)
                                 }
                             }
@@ -331,7 +331,7 @@ Item {
     }
 
     function addCommand(cmd) {
-        let data = root.jsCall(cmd)
+        let data = rootItem.jsCall(cmd)
         outputModel.insert(0, data)
         inputModel.insert(inputModel.count-1, {modelData: cmd})
         inputModel.currentIdx = inputModel.count-1

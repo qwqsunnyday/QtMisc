@@ -1,5 +1,5 @@
-def evaluate_conditions(conditions):
-    global gal4_vp16, luciferase, ins, gal4, vp16, vp16_gi, vp16_lov, gal4_gi, gal4_lov,circrna, miRNA, gi_lov,blood_sugar,blueray
+def evaluate_conditions(conditions: list[str], environment_variables: dict):
+    global gal4_vp16, luciferase, ins, gal4, vp16, vp16_gi, vp16_lov, gal4_gi, gal4_lov,circrna, miRNA, gi_lov, blood_sugar, blueray
     # 初始化变量状态
     gal4_vp16 = False
     luciferase = False
@@ -13,8 +13,8 @@ def evaluate_conditions(conditions):
     circrna = False
     miRNA = False
     gi_lov = False
-    blood_sugar=50 
-    blueray=True
+    blood_sugar=environment_variables["blood_sugar"]
+    blueray=environment_variables["blueray"]
     conditions_to_skip = set()  # 用于存储需要跳过的condition
 
 
@@ -110,5 +110,5 @@ def determine_result():
 #     'CMV-GAL4-LOV'
 # ]
 # 执行函数并打印结果
-# result = evaluate_conditions(conditions)
+# result = evaluate_conditions(conditions, {"blood_sugar": 50, "blueray": True})
 # print(result)

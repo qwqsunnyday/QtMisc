@@ -6,7 +6,7 @@ import QtCore
 
 import "Utils.js" as Utils
 
-import io.emulator 1.0
+import Emulator 1.0
 import FileIO 1.0 // 单例
 
 Item {
@@ -584,7 +584,6 @@ Item {
                                                     dropModel.remove(upItemIndex)
                                                     dropModel.remove(downItem.index)
                                                 }
-
                                             }
                                         }
                                     }
@@ -746,63 +745,129 @@ Item {
                     border.color: Qt.lighter("gray")
                     border.width: 2
 
-                    ColumnLayout {
-                        anchors.fill: parent
-                        spacing: 10
-                        anchors.margins: 20
-
-                        Rectangle {
-                            Layout.preferredHeight: 100
-                            Layout.fillWidth: true
-                            border.color: Qt.lighter("gray")
-                            border.width: 2
-                            Canvas {
-                                id: output
-                                // anchors.fill: parent
-                                // anchors.margins: 10
-                                height: 0.6 * parent.height
-                                width: parent.width
-                                Text {
-                                    id: textOutput
-                                    font.pixelSize: 20
-                                    anchors.centerIn: parent
-                                }
-
-                                Image {
-                                    id: light
-                                    height: 0.6 * parent.height
-                                    // width: 0.6 * parent.width
-                                    anchors.right: parent.right
-                                    anchors.rightMargin: 30
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    fillMode: Image.PreserveAspectFit
-                                    source: settings.lightCloseUrl
-                                }
-                            }
+                    ListModel {
+                        id: ioModel
+                        // MVC
+                        // ListElement {
+                        //     // environment
+                        //     blueray: true
+                        //     blood_sugar: 50
+                        //     // output
+                        //     greenLight: false
+                        //     sugar: false
+                        //     rawOutput: ""
+                        // }
+                        function init() {
+                            ioModel.clear()
+                            ioModel.append({
+                               // environment
+                               blueray: true,
+                               blood_sugar: 50,
+                               // output
+                               greenLight: false,
+                               sugar: false,
+                               rawOutput: ""
+                            })
                         }
+                        Component.onCompleted: {
+                            ioModel.init()
+                        }
+                    }
 
+                    Repeater {
+                        model: ioModel
 
-                        // 为了使用居中
-                        RowLayout {
-                            Layout.fillHeight: true
-                            Layout.fillWidth: true
-                            Layout.margins: 10
+                        delegate: ColumnLayout {
+                            id: ioZone
+                            anchors.fill: parent
                             spacing: 10
-                            Switch {
-                                id: blueraySwitch
-                                checked: true
-                                text: "Blueray"
+                            anchors.margins: 20
+
+                            required property bool blueray
+                            required property int blood_sugar
+                            required property bool greenLight
+                            required property bool sugar
+                            required property string rawOutput
+
+                            Rectangle {
+                                id: outputZone
+
+                                Layout.fillHeight: true
+                                Layout.fillWidth: true
+                                border.color: Qt.lighter("gray")
+                                border.width: 2
+
+                                RowLayout {
+                                    anchors.fill: parent
+                                    anchors.margins: 4
+
+                                    Repeater {
+                                        model: ["Sugar", "Insulin"]
+                                        delegate: PlotCanvas {
+                                            required property string modelData
+                                            Text {
+                                                text: modelData
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Layout.fillWidth: true
+                                            Layout.fillHeight: true
+                                            scale: 0.35
+                                            border.color: Qt.lighter("gray")
+                                            opacity: ioZone.sugar ? 1 : 0.5
+                                            prisugar: ioZone.sugar ? ioZone.blood_sugar : 10
+                                            type: modelData
+                                        }
+                                    }
+
+                                    Text {
+                                        text: ioZone.rawOutput
+                                        visible: settings.debug
+                                        font.pixelSize: 20
+                                    }
+                                    Rectangle {
+                                        Layout.preferredWidth: 40
+                                        Layout.fillHeight: true
+                                        border.color: settings.highlightColor
+                                        opacity: ioZone.greenLight ? 1 : 0.5
+                                        Image {
+                                            id: light
+                                            anchors.fill: parent
+                                            fillMode: Image.PreserveAspectFit
+                                            source: ioZone.greenLight ? settings.lightOpenUrl : settings.lightCloseUrl
+                                        }
+                                    }
+                                }
                             }
 
-                            Slider {
-                                id: bloodSugarSlider
+                            // 为了使用居中
+                            RowLayout {
+                                id: inputZone
+
+                                Layout.fillHeight: true
                                 Layout.fillWidth: true
-                                from: 10
-                                to: 100
-                                value: 50
-                            }
-                            Text {
-                                text: "Blood Sugar: " + bloodSugarSlider.value
+                                Layout.margins: 10
+                                spacing: 10
+                                Switch {
+                                    text: "Blueray"
+                                    checked: ioZone.blueray
+                                    onCheckedChanged: {
+                                        ioModel.get(0).blueray = checked
+                                    }
+                                }
+
+                                Slider {
+                                    Layout.fillWidth: true
+                                    from: 10
+                                    to: 80
+                                    value: ioZone.blood_sugar
+                                    onValueChanged: {
+                                        ioModel.get(0).blood_sugar = Math.floor(value)
+                                    }
+                                }
+                                Text {
+                                    text: "Blood Sugar: " + ioZone.blood_sugar
+                                }
                             }
                         }
                     }
@@ -902,11 +967,13 @@ Item {
                                     text: "Evaluate ▶️"
                                     onClicked: {
                                         var sequences_JSON_data = Utils.modelToJSON(sequenceModel)
-                                        var environment_variables_JSON_data = JSON.stringify({"blood_sugar": bloodSugarSlider.value, "blueray": blueraySwitch.enabled})
-                                        var result = emulator.evaluate(sequences_JSON_data, environment_variables_JSON_data)
-                                        console.log(result)
-                                        textOutput.text = result
-                                        light.source = result == "绿光" ? settings.lightOpenUrl : settings.lightCloseUrl
+                                        var environment_variables_JSON_data = JSON.stringify(ioModel.get(0))
+                                        var result = JSON.parse(emulator.evaluate(sequences_JSON_data, environment_variables_JSON_data))
+                                        console.log(Utils.modelToJSON(ioModel))
+                                        console.log(JSON.stringify(result))
+                                        ioModel.get(0).rawOutput = result.rawOutput
+                                        ioModel.get(0).greenLight = result.greenLight
+                                        ioModel.get(0).sugar = result.sugar
                                     }
                                 }
                             }
@@ -991,6 +1058,7 @@ Item {
                                                     onClicked: {
                                                         dropModel.clear()
                                                         sequenceModel.clear()
+                                                        ioModel.init()
                                                         // TODO ??? 直接append questionsTextSection.loadData不行
                                                         sequenceModel.append(JSON.parse(JSON.stringify(questionsTextSection.loadData)))
                                                     }

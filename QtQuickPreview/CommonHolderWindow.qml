@@ -5,6 +5,8 @@ import QtQuick.Controls.Universal
 
 import "Utils.js" as Utils
 
+import FileIO 1.0
+
 /*
 # 文件概述
 
@@ -119,19 +121,7 @@ Window {
                 }
                 ComboBox {
                     id: reloadUrlSelect
-                    model: [
-                        "main.qml",
-                        "Drag_All.qml",
-                        "Drag_Internal.qml",
-                        "Drag_Combination.qml",
-                        "Temp.qml",
-                        "ViewModel.qml",
-                        "DynamicLoadComponent.qml",
-                        "CommonHolderWindow.qml",
-                        "tiles/tiles.qml",
-                        "JSConsole.qml",
-                        "GeneticElementComponent.qml"
-                    ]
+                    model: JSON.parse(FileIO.read("Assets/qmls.json"))
                     implicitContentWidthPolicy: ComboBox.WidestTextWhenCompleted
                     Layout.fillWidth: true
                     Layout.minimumWidth: 50

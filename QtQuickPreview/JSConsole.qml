@@ -317,9 +317,6 @@ Item {
                             }
                         }
                         delegate: cmdEchoDisplayComponent
-                        Component.onCompleted: {
-                            console.log(Utils.modelToJSON(inspectorModel))
-                        }
                     }
                 }
             }

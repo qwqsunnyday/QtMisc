@@ -7,7 +7,7 @@ from pd import evaluate_conditions
 
 # To be used on the @QmlElement decorator
 # (QML_IMPORT_MINOR_VERSION is optional)
-QML_IMPORT_NAME = "io.emulator"
+QML_IMPORT_NAME = "Emulator"
 QML_IMPORT_MAJOR_VERSION = 1
 
 @QmlElement
@@ -32,7 +32,13 @@ class Emulator(QObject):
                 }
 
         Returns:
-            str: answer
+            str: answer JSON
+            
+            {   
+                "greenLight": raw_output=="绿光", 
+                "sugar": raw_output=="血糖", 
+                "rawOutput": raw_output 
+            }
         
         """
         sequences: list = json.loads(sequences_JSON_data)
@@ -45,4 +51,6 @@ class Emulator(QObject):
             for bio_device in bio_devices:
                 condition += bio_device["sourceData"]["name"] + "-"
             conditions.append(condition[:-1])
-        return evaluate_conditions(conditions, environment_variables)
+        raw_output: str = evaluate_conditions(conditions, environment_variables)
+        result: dict = {"greenLight": raw_output=="绿光", "sugar": raw_output=="血糖", "rawOutput": raw_output }
+        return json.dumps(result)

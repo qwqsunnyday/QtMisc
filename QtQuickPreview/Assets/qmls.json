@@ -1,0 +1,13 @@
+[
+    "main.qml",
+    "Drag_All.qml",
+    "Drag_Internal.qml",
+    "Drag_Combination.qml",
+    "Temp.qml",
+    "ViewModel.qml",
+    "DynamicLoadComponent.qml",
+    "CommonHolderWindow.qml",
+    "tiles/tiles.qml",
+    "JSConsole.qml",
+    "GeneticElementComponent.qml"
+]

@@ -1,4 +1,7 @@
 /src/
 /.qtcreator/
-/io/
+/Emulator/
 /FileIO/
+/dist/
+/main.build/
+/main.dist/

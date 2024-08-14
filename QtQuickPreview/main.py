@@ -1,18 +1,17 @@
 # This Python file uses the following encoding: utf-8
 import json
-import os
 import sys
 from pathlib import Path
 
-from PySide6.QtGui import QGuiApplication
-from PySide6.QtQml import QQmlApplicationEngine, QQmlDebuggingEnabler,  QmlElement, QmlSingleton, qmlRegisterType
 from argparse import ArgumentParser
-
+from PySide6.QtGui import QGuiApplication, QFont
+from PySide6.QtQml import QQmlApplicationEngine, QQmlDebuggingEnabler,  QmlElement
+from PySide6.QtCore import QObject, Slot
 # from PySide6.QtWebEngineQuick import QtWebEngineQuick
 
-from PySide6.QtCore import QObject, Slot
-
 from pd import evaluate_conditions
+
+import FileIO
 
 # To be used on the @QmlElement decorator
 # (QML_IMPORT_MINOR_VERSION is optional)
@@ -48,34 +47,6 @@ class Emulator(QObject):
             conditions.append(condition[:-1])
         return evaluate_conditions(conditions)
 
-
-QML_IMPORT_NAME = "FileIO"
-QML_IMPORT_MAJOR_VERSION = 1
-QML_IMPORT_MINOR_VERSION = 0 # Optional
-
-@QmlElement
-@QmlSingleton
-class FileIO(QObject):
-    
-    # @staticmethod
-    # def create(engine):
-    #     print("created")
-    #     return FileIO()
-    
-    @Slot(str, result=str)
-    def read(self, file_path: str):
-        if os.path.exists(file_path):
-            with open(file_path, 'r', encoding='utf-8') as file:
-                return file.read()
-        return ""
-    
-    @Slot(str, str, result=str)
-    def write(self, file_path: str, content: str):
-        # 打开文件并写入
-        with open(file_path, 'w') as file:
-            file.write(content)
-
-
 if __name__ == "__main__":
     argument_parser = ArgumentParser()
     argument_parser.add_argument("-qmljsdebugger", action="store",
@@ -91,6 +62,7 @@ if __name__ == "__main__":
     app.setApplicationName("Gene-circuit")
     app.setOrganizationName(" ")
     app.setOrganizationDomain(" ")
+    # app.setFont(QFont("Consolas, 微软雅黑"))
     engine = QQmlApplicationEngine()
     qml_file = Path(__file__).resolve().parent / "CommonHolderWindow.qml"
 

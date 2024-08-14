@@ -42,11 +42,12 @@ function modelToJSON(model) {
     return str
 }
 
-function uuid() {
-    uuid.count = ((typeof(uuid.count)=="undefined") ? 0 : uuid.count) + 1;
-
-    // let str = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+function uuid(format) {
     let str = 'xxxxxxxx'
+    if (typeof(format)!="undefined") {
+        str = format
+    }
+    uuid.count = ((typeof(uuid.count)=="undefined") ? 0 : uuid.count) + 1;
     return uuid.count + "-" + str.replace(/[xy]/g, item => {
       const r =Math.random() * 0x10 | 0
       const v = item === 'x' ? r : (r & 0x3 | 0x8)

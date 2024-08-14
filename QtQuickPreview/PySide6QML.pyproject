@@ -1,6 +1,7 @@
 {
     "files": [
         "CommonHolderWindow.qml",
+        "FileIO.py",
         "GeneticElementComponent.qml",
         "JSConsole.qml",
         "JSConsoleButton.qml",

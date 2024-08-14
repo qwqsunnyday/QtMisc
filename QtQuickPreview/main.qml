@@ -25,13 +25,11 @@ Item {
         property url tutorialDataUrl: "Assets/Tutorial.json"
         property url sourceModelDataUrl: "Assets/Genetic_Element/GeneticElementData.json"
         property url predefinedCommandsUrl: "Assets/PredefinedCommands.json"
-        property url saveUrl: "Save.json"
+        property url saveUrl: "Assets/Save.json"
 
-        Component.onCompleted: {
-            Qt.application.name = "Gene-circuit"
-            Qt.application.organization = ""
-            Qt.application.domain = ""
-        }
+        property var dropModelData
+        property var sequenceModelData
+
     }
 
     Emulator {
@@ -77,15 +75,14 @@ Item {
                         // }
                         function init() {
                             let sourceModelJSON = FileIO.read(settings.sourceModelDataUrl)
-                            let sourceModelObject = JSON.parse(sourceModelJSON)
-                            sourceModel.append(sourceModelObject)
+                            sourceModel.append(JSON.parse(sourceModelJSON))
                         }
                     }
 
                     ListModel {
                         id: dragModel
                         // ListElement {
-                        //     uuid: int
+                        //     uuid: string
                         //     modelData: string
                         //     posX: real
                         //     posY: real
@@ -94,6 +91,20 @@ Item {
                         //     stateType: string ["inSource" | "dropped" | "inSequence"]
                         //     sourceData: var
                         // }
+                        function init() {
+                            for (let i = 0; i < sourceModel.count; i++) {
+                                dragModel.append({
+                                    "uuid": Utils.uuid(),
+                                    "modelData": "data: " + i,
+                                    "posX": 0,
+                                    "posY": 0,
+                                    "stateType": "inSource",
+                                    "sourceData": JSON.parse(JSON.stringify(sourceModel.get(i))),
+                                    "itemWidth": 200,
+                                    "itemHeight": 100
+                                })
+                            }
+                        }
                     }
 
                     ListModel {
@@ -103,7 +114,7 @@ Item {
                         // Model和View是单向绑定(MVC)
                         // sequenceIndex 可以通过parent.parent.index访问(当stateType=="inSequence")
                         // ListElement {
-                        //     uuid: int
+                        //     uuid: string
                         //     modelData: string
                         //     posX: real
                         //     posY: real
@@ -117,7 +128,7 @@ Item {
                     ListModel {
                         id: sequenceModel
                         // ListElement {
-                        //     uuid: int
+                        //     uuid: string
                         //     droppedItemModel: var
                         //     posX: real
                         //     posY: real
@@ -149,7 +160,7 @@ Item {
                             z: 10
 
                             required property var droppedItemModel
-                            required property int uuid
+                            required property string uuid
                             required property int index
                             required property real posX
                             required property real posY
@@ -262,7 +273,7 @@ Item {
 
                             // 要手动加才可以访问index附加属性
                             required property int index
-                            required property int uuid
+                            required property string uuid
                             required property real posX
                             required property real posY
                             required property real itemWidth
@@ -523,16 +534,12 @@ Item {
                                                 }
                                                 console.log(upItem.stringify())
                                                 if (upItem.stateType === "inSource") {
-                                                    dropModel.append({
-                                                        "uuid": Utils.uuid(),
-                                                        "modelData": upItem.modelData,
-                                                        "posX": drop.x - drop.source.Drag.hotSpot.x,
-                                                        "posY": drop.y - drop.source.Drag.hotSpot.y,
-                                                        "stateType": "inSequence",
-                                                        "sourceData": upItem.sourceData,
-                                                        "itemWidth": upItem.itemWidth,
-                                                        "itemHeight": upItem.itemHeight
-                                                    })
+                                                    var upItemData = JSON.parse(JSON.stringify(upItem.getCurrentData()))
+                                                    upItemData.uuid = Utils.uuid()
+                                                    upItemData.posX = drop.x - drop.source.Drag.hotSpot.x
+                                                    upItemData.posY = drop.y - drop.source.Drag.hotSpot.y
+                                                    upItemData.stateType = "inSequence"
+                                                    dropModel.append(upItemData)
                                                 }
                                                 let upItemIndex = upItem.stateType === "inSource" ? dropModel.count-1 : upItem.index
 
@@ -614,16 +621,12 @@ Item {
                             }
 
                             // console.log("drag at: ("+drop.x+", "+drop.y+") with Drag.hotSpot: ("+drag.source.Drag.hotSpot.x+", "+drop.source.Drag.hotSpot.y+")")
-                            dropModel.append({
-                                "uuid": Utils.uuid(),
-                                "modelData": upItem.modelData,
-                                "posX": drop.x - drop.source.Drag.hotSpot.x,
-                                "posY": drop.y - drop.source.Drag.hotSpot.y,
-                                "stateType": "dropped",
-                                "sourceData": upItem.sourceData,
-                                "itemWidth": upItem.itemWidth,
-                                "itemHeight": upItem.itemHeight
-                            })
+                            var upItemData = JSON.parse(JSON.stringify(upItem.getCurrentData()))
+                            upItemData.uuid = Utils.uuid()
+                            upItemData.posX = drop.x - drop.source.Drag.hotSpot.x
+                            upItemData.posY = drop.y - drop.source.Drag.hotSpot.y
+                            upItemData.stateType = "dropped"
+                            dropModel.append(upItemData)
 
                             if (upItem.pressed) {
                                 // workaround... >_<###
@@ -666,27 +669,14 @@ Item {
 
                                     function rePresent() {
                                         canvas.clip = true
+                                        var dragModelData = Utils.modelToJSON(dragModel)
                                         dragModel.clear()
-                                        for (let i = 0; i < sourceModel.count; i++) {
-                                            dragModel.append({
-                                                "uuid": i+1,
-                                                "modelData": "data: " + i,
-                                                "posX": 0,
-                                                "posY": 0,
-                                                "stateType": "inSource",
-                                                "sourceData": JSON.parse(JSON.stringify(sourceModel.get(i))),
-                                                "itemWidth": 200,
-                                                "itemHeight": 100
-                                            })
-                                        }
+                                        dragModel.append(JSON.parse(dragModelData))
                                     }
 
                                     Component.onCompleted: {
-
-                                        for (let i = 0; i < sourceModel.count; i++) {
-                                            Utils.uuid()
-                                        }
                                         sourceModel.init()
+                                        dragModel.init()
                                         rePresent()
                                     }
                                 }
@@ -1012,7 +1002,6 @@ Item {
                                                 }
                                             }
                                         }
-
                                     }
                                 }
                                 Item {
@@ -1120,7 +1109,7 @@ Item {
                                             }
                                         }
                                     }
-                                   }
+                                }
 
                                 Item {
                                     id: load
@@ -1150,19 +1139,17 @@ Item {
                                                 id: restore
                                                 text: "Restore"
                                                 onClicked: {
-                                                    // save.data为对象数组
-                                                    dropModel.append(save.dropModelData)
-                                                    sequenceModel.append(save.sequenceModelData)
+                                                    // 对象数组
+                                                    dropModel.append(JSON.parse(JSON.stringify(settings.dropModelData)))
+                                                    sequenceModel.append(JSON.parse(JSON.stringify(settings.sequenceModelData)))
                                                 }
                                             }
                                             Button {
                                                 id: save
                                                 text: "Save"
-                                                property var dropModelData
-                                                property var sequenceModelData
                                                 onClicked: {
-                                                    dropModelData = JSON.parse(Utils.modelToJSON(dropModel))
-                                                    sequenceModelData = JSON.parse(Utils.modelToJSON(sequenceModel))
+                                                    settings.dropModelData = JSON.parse(Utils.modelToJSON(dropModel))
+                                                    settings.sequenceModelData = JSON.parse(Utils.modelToJSON(sequenceModel))
                                                 }
                                             }
                                             Button {
@@ -1176,11 +1163,6 @@ Item {
                                                 predefinedCommands: JSON.parse(FileIO.read(settings.predefinedCommandsUrl))
                                             }
                                         }
-                                    }
-
-                                    Text {
-                                        text: "load"
-                                        anchors.centerIn: parent
                                     }
                                 }
                             }

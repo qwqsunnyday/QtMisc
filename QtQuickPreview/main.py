@@ -88,6 +88,9 @@ if __name__ == "__main__":
     # QtWebEngineQuick.initialize()
 
     app = QGuiApplication(sys.argv)
+    app.setApplicationName("Gene-circuit")
+    app.setOrganizationName(" ")
+    app.setOrganizationDomain(" ")
     engine = QQmlApplicationEngine()
     qml_file = Path(__file__).resolve().parent / "CommonHolderWindow.qml"
 

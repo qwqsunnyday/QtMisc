@@ -22,7 +22,7 @@ Rectangle {
             var y = []
 
             ctx.beginPath()
-            ctx.strokeStyle = prisugar <= 40 ? "blue" : "red"
+            ctx.strokeStyle = prisugar <= 40 ? "red" : "blue"
             ctx.lineWidth = 2
 
             if (prisugar <= 40) {
@@ -60,7 +60,7 @@ Rectangle {
             var y = []
 
             ctx.beginPath()
-            ctx.strokeStyle = "red"
+            ctx.strokeStyle = "blue"
             ctx.lineWidth = 2
 
             if (prisugar <= 40) {

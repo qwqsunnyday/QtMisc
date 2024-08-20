@@ -9,6 +9,7 @@
         "JSConsoleButton.qml",
         "PlotCanvas.qml",
         "SwipeBanner.qml",
+        "Temp.qml",
         "Utils.js",
         "WindowFrameRate.qml",
         "main.py",

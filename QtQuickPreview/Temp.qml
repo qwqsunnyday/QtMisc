@@ -4,22 +4,70 @@ import QtQuick.Layouts 1.15
 
 import "Utils.js" as Utils
 
+
+
 Rectangle {
-    id: outerSquare
     width: 200
     height: 200
-    color: "blue"
     anchors.centerIn: parent
 
-    // 内层透明的正方形
-    Rectangle {
-        id: innerSquare
-        width: 100
-        height: 100
-        color: "transparent"
-        anchors.centerIn: parent
-        border.color: "transparent"  // 内层正方形边框透明
+    Component {
+        id: item
+        Rectangle {
+            // width: 100
+            // height: 100
+            Layout.preferredHeight: 100
+            Layout.preferredWidth: 100
+            color: "transparent"
+            // anchors.centerIn: parent
+            border.color: "red"  // 内层正方形边框透明
+            border.width: 1
+            Text {
+                anchors.centerIn: parent
+                text: index
+            }
+        }
     }
+
+    Control {
+        background: Rectangle {
+            border.color: "green"
+        }
+        padding: 10
+        // leftInset: 10
+        // rightInset: 10
+        // topInset: 10
+        // bottomInset: 10
+        contentItem: RowLayout {
+            spacing: -10
+
+            Repeater {
+                model: 4
+                delegate: item
+            }
+        }
+    }
+
+    Control {
+        anchors.right: parent.right
+        background: Rectangle {
+            border.color: "green"
+        }
+        padding: 10
+        // leftInset: 10
+        // rightInset: 10
+        // topInset: 10
+        // bottomInset: 10
+        contentItem: RowLayout {
+            spacing: -10
+
+            Repeater {
+                model: 3
+                delegate: item
+            }
+        }
+    }
+
 }
 
 // Rectangle {

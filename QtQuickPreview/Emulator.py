@@ -52,5 +52,10 @@ class Emulator(QObject):
                 condition += bio_device["sourceData"]["name"] + "-"
             conditions.append(condition[:-1])
         raw_output: str = evaluate_conditions(conditions, environment_variables)
-        result: dict = {"greenLight": raw_output=="绿光", "sugar": raw_output=="血糖", "rawOutput": raw_output }
+        result: dict = {
+            "greenLight": ("绿光" in raw_output),
+            "sugar": ("血糖" in raw_output),
+            "noResult": raw_output == "无结果",
+            "rawOutput": raw_output
+        }
         return json.dumps(result)

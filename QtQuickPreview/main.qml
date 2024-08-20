@@ -22,7 +22,9 @@ Item {
     Settings {
         id: settings
         property bool debug: debugSwitch.checked
-        property color highlightColor: debug ? Qt.lighter("red") : "transparent"
+        property color debugRed: debug ? Qt.lighter("red") : "transparent"
+        property color debugGreen: debug ? Qt.lighter("green") : "transparent"
+        property color debugPurple: debug ? Qt.lighter("purple") : "transparent"
         property url questionsDataUrl: "Assets/Questions/Questions.json"
         property url tutorialDataUrl: "Assets/Tutorial.json"
         property url sourceModelDataUrl: "Assets/Genetic_Element/GeneticElementData.json"
@@ -30,6 +32,7 @@ Item {
         property url saveUrl: "Assets/Save.json"
         property url lightCloseUrl: "Assets/Light_button/Light_close.png"
         property url lightOpenUrl: "Assets/Light_button/Light_open.png"
+        property url formulaUrl: "Assets/Misc/Formula.png"
 
         property var dropModelData
         property var sequenceModelData
@@ -159,7 +162,7 @@ Item {
                         Rectangle {
                             id: sequenceItem
                             color: "transparent"
-                            border.color: settings.highlightColor
+                            border.color: settings.debugGreen
                             border.width: 4
                             z: 10
 
@@ -174,13 +177,35 @@ Item {
                             x: posX
                             y: posY
                             RowLayout {
-                                spacing: -20
+                                spacing: -45
                                 anchors.fill: parent
 
                                 Repeater {
                                     model: droppedItemModel
 
                                     delegate: dragCompenent
+                                    // delegate: Rectangle {
+                                    //     id: element
+
+                                    //     required property int index
+                                    //     required property string uuid
+                                    //     required property real posX
+                                    //     required property real posY
+                                    //     required property real itemWidth
+                                    //     required property real itemHeight
+                                    //     required property string modelData
+                                    //     required property string stateType
+                                    //     required property var sourceData
+
+                                    //     height: 100
+                                    //     width: 200
+                                    //     color: "transparent"
+                                    //     border.color: "black"
+                                    //     border.width: 2
+                                    //     Text {
+                                    //         text: element.modelData
+                                    //     }
+                                    // }
                                 }
                             }
 
@@ -223,8 +248,8 @@ Item {
                                 anchors.bottom: parent.bottom
 
                                 color: "transparent"
-                                border.color: settings.highlightColor
-                                border.width: 4
+                                border.color: settings.debugRed
+                                border.width: 2
 
                                 MouseArea {
                                     anchors.fill: parent
@@ -341,7 +366,7 @@ Item {
                             width: itemWidth
                             height: itemHeight
                             color: "transparent"
-                            border.color: settings.highlightColor
+                            border.color: settings.debugRed
                             border.width: 2
                             objectName: "description of dragItem"
 
@@ -409,7 +434,7 @@ Item {
                                 anchors.bottom: parent.bottom
 
                                 color: "transparent"
-                                border.color: settings.highlightColor
+                                border.color: settings.debugRed
                                 border.width: 4
                                 MouseArea {
                                     id: dragArea
@@ -482,7 +507,7 @@ Item {
                                     delegate: Rectangle {
                                         id: connectionArea
                                         color: "transparent"
-                                        border.color: settings.highlightColor
+                                        border.color: settings.debugPurple
                                         border.width: 2
                                         // anchors.fill: parent
                                         // anchors.margins: 4
@@ -610,6 +635,10 @@ Item {
                         onEntered: {
                             // console.log("entered canvasDropArea")
                         }
+                        onExited: {
+                            // console.log("exited canvasDropArea")
+                        }
+
                         // DropArea还具有drag.source属性
                         onDropped: { // canvasDropArea
                             // dropped(DragEvent drop)
@@ -739,6 +768,17 @@ Item {
                 anchors.fill: parent
                 anchors.margins: 4
                 Rectangle {
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: formula.implicitHeight
+                    Image {
+                        id: formula
+                        anchors.fill: parent
+                        source: settings.formulaUrl
+                        fillMode: Image.PreserveAspectFit
+                    }
+                }
+
+                Rectangle {
                     id: interactiveZone
                     Layout.minimumHeight: 240
                     Layout.fillWidth: true
@@ -751,10 +791,11 @@ Item {
                         // ListElement {
                         //     // environment
                         //     blueray: true
-                        //     blood_sugar: 50
+                        //     blood_sugar: 30
                         //     // output
                         //     greenLight: false
                         //     sugar: false
+                        //     noResult: false
                         //     rawOutput: ""
                         // }
                         function init() {
@@ -762,10 +803,11 @@ Item {
                             ioModel.append({
                                // environment
                                blueray: true,
-                               blood_sugar: 50,
+                               blood_sugar: 30,
                                // output
                                greenLight: false,
                                sugar: false,
+                               noResult: false,
                                rawOutput: ""
                             })
                         }
@@ -787,6 +829,7 @@ Item {
                             required property int blood_sugar
                             required property bool greenLight
                             required property bool sugar
+                            required property bool noResult
                             required property string rawOutput
 
                             Rectangle {
@@ -802,7 +845,26 @@ Item {
                                     anchors.margins: 4
 
                                     Repeater {
-                                        model: ["Sugar", "Insulin"]
+                                        model: ["Sugar"]
+                                        delegate: PlotCanvas {
+                                            required property string modelData
+                                            Text {
+                                                text: modelData
+                                                anchors.horizontalCenter: parent.horizontalCenter
+                                            }
+
+                                            Layout.fillWidth: true
+                                            Layout.fillHeight: true
+                                            scale: 0.35
+                                            border.color: Qt.lighter("gray")
+                                            opacity: ioZone.sugar ? 1 : 0.5
+                                            prisugar: ioZone.blood_sugar
+                                            threshold: !ioZone.sugar ? sugarSlider.to : 40
+                                            type: modelData
+                                        }
+                                    }
+                                    Repeater {
+                                        model: ["Insulin"]
                                         delegate: PlotCanvas {
                                             required property string modelData
                                             Text {
@@ -816,6 +878,7 @@ Item {
                                             border.color: Qt.lighter("gray")
                                             opacity: ioZone.sugar ? 1 : 0.5
                                             prisugar: ioZone.sugar ? ioZone.blood_sugar : 10
+                                            threshold: 40
                                             type: modelData
                                         }
                                     }
@@ -825,11 +888,13 @@ Item {
                                         visible: settings.debug
                                         font.pixelSize: 20
                                     }
+
                                     Rectangle {
-                                        Layout.preferredWidth: 40
+                                        Layout.preferredWidth: 60
                                         Layout.fillHeight: true
-                                        border.color: settings.highlightColor
+                                        border.color: settings.debugRed
                                         opacity: ioZone.greenLight ? 1 : 0.5
+
                                         Image {
                                             id: light
                                             anchors.fill: parent
@@ -848,6 +913,7 @@ Item {
                                 Layout.fillWidth: true
                                 Layout.margins: 10
                                 spacing: 10
+
                                 Switch {
                                     text: "Blueray"
                                     checked: ioZone.blueray
@@ -857,14 +923,17 @@ Item {
                                 }
 
                                 Slider {
+                                    id: sugarSlider
                                     Layout.fillWidth: true
                                     from: 10
                                     to: 80
                                     value: ioZone.blood_sugar
                                     onValueChanged: {
                                         ioModel.get(0).blood_sugar = Math.floor(value)
+                                        evaluate.clicked()
                                     }
                                 }
+
                                 Text {
                                     text: "Blood Sugar: " + ioZone.blood_sugar
                                 }
@@ -938,7 +1007,7 @@ Item {
                                     }
                                     Repeater {
                                         id: tabButtons
-                                        model: ["Tutorial 📚", "Questions 💡", "Load 🛠"]
+                                        model: ["Example 📚", "Questions 💡", "Load 🛠"]
                                         delegate: Control {
                                             Layout.fillHeight: true
                                             Layout.preferredWidth: tabButtons.getButtonWidth()
@@ -974,6 +1043,7 @@ Item {
                                         ioModel.get(0).rawOutput = result.rawOutput
                                         ioModel.get(0).greenLight = result.greenLight
                                         ioModel.get(0).sugar = result.sugar
+                                        ioModel.get(0).noResult = result.noResult
                                     }
                                 }
                             }
@@ -1011,7 +1081,7 @@ Item {
                                                 required property var loadData
                                                 Control {
                                                     background: Rectangle {
-                                                        border.color: settings.highlightColor
+                                                        border.color: settings.debugRed
                                                     }
                                                     Layout.fillWidth: true
                                                     Layout.alignment: Qt.AlignHCenter
@@ -1025,7 +1095,7 @@ Item {
 
                                                 Control {
                                                     background: Rectangle {
-                                                        border.color: settings.highlightColor
+                                                        border.color: settings.debugRed
                                                         border.width: 2
                                                     }
                                                     Layout.fillWidth: true
@@ -1041,7 +1111,7 @@ Item {
 
                                                 Control {
                                                     background: Rectangle {
-                                                        border.color: settings.highlightColor
+                                                        border.color: settings.debugRed
                                                     }
                                                     Layout.fillWidth: true
                                                     Layout.alignment: Qt.AlignHCenter

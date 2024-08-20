@@ -4,6 +4,7 @@ Rectangle {
     property alias prisugar: plotCanvas.prisugar
     property alias type: plotCanvas.type
     property alias scale: plotCanvas.scale
+    property alias threshold: plotCanvas.threshold
     Canvas {
         id: plotCanvas
 
@@ -13,6 +14,7 @@ Rectangle {
 
         required property int prisugar
         required property string type // ["Sugar" | "Insulin"]
+        required property int threshold
 
         function plotSugar() {
             var ctx = plotCanvas.getContext("2d")
@@ -22,10 +24,10 @@ Rectangle {
             var y = []
 
             ctx.beginPath()
-            ctx.strokeStyle = prisugar <= 40 ? "red" : "blue"
+            ctx.strokeStyle = prisugar <= threshold ? "red" : "blue"
             ctx.lineWidth = 2
 
-            if (prisugar <= 40) {
+            if (prisugar <= threshold) {
                 for (var i = 1; i < 100; i++) {
                     x.push(i)
                     var yVal = Math.sin(i) + prisugar
@@ -63,7 +65,7 @@ Rectangle {
             ctx.strokeStyle = "blue"
             ctx.lineWidth = 2
 
-            if (prisugar <= 40) {
+            if (prisugar <= threshold) {
                 for (var i = 1; i < 100; i++) {
                     x.push(i)
                 }

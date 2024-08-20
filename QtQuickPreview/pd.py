@@ -94,7 +94,9 @@ def handle_miRNA_BS(parts):
   # 处理miRNA-BS
 
 def determine_result():
-    if luciferase:
+    if luciferase and ins:
+        return '绿光+血糖'
+    elif luciferase:
         return '绿光'
     elif ins:
         return '血糖'

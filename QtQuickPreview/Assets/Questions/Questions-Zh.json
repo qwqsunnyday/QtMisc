@@ -1,8 +1,8 @@
 [
     {
-        "title": "1，Green fluorescence",
-        "description": "Normally, the cells fluoresce green. \nCMV-LUC",
-        "picture": "Assets/Questions/green1@4x-8.png",
+        "title": "绿色荧光",
+        "description": "CMV-LUC",
+        "picture": "Assets/Questions/greencell@4x.png",
         "loadData": [
             {
                 "uuid": 3,
@@ -15,10 +15,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
-                            "fillColor": "#00D4B5",
-                            "type": "promoter",
+                            "fillColor": "orange",
+                            "type": "启动子",
                             "internalName": "CMV",
                             "name": "CMV"
                         },
@@ -33,10 +33,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#2AFF7E",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "Luciferase",
                             "name": "Luciferase"
                         },
@@ -50,9 +50,9 @@
         ]
     },
     {
-        "title": "2，Hyperglycemia generates \ngreen fluorescence",
-        "description": "In the case of high blood sugar, \nthe cells emit green fluorescence.\nP-GIP-LUC",
-        "picture": "Assets/Questions/sugargreen1@4x-8.png",
+        "title": "高血糖生成绿色荧光",
+        "description": "P-GIP-LUC",
+        "picture": "Assets/Questions/sugargreen@4x.png",
         "loadData": [
             {
                 "uuid": 6,
@@ -65,10 +65,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
-                            "fillColor": "#ff8688",
-                            "type": "promoter",
+                            "fillColor": "orange",
+                            "type": "启动子",
                             "internalName": "P_GIP",
                             "name": "P_GIP"
                         },
@@ -83,10 +83,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#2AFF7E",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "Luciferase",
                             "name": "Luciferase"
                         },
@@ -100,9 +100,9 @@
         ]
     },
     {
-        "title": "3，Green fluorescence is \ngenerated under blue light",
-        "description": "Under blue light, the cells fluoresce green.\nCMV-GI-GAL4 \nU-6P-LOV-VP16 \n9XUAS-LUC",
-        "picture": "Assets/Questions/bluegreen1@4x-8.png",
+        "title": "蓝光下生成绿色荧光",
+        "description": "CMV-GI-GAL4 \nU-6P-LOV-VP16 \n9XUAS-LUC",
+        "picture": "Assets/Questions/bluegreen@4x.png",
         "loadData": [
             {
                 "uuid": 3,
@@ -115,10 +115,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
-                            "fillColor": "#00D4B5",
-                            "type": "promoter",
+                            "fillColor": "orange",
+                            "type": "启动子",
                             "internalName": "CMV",
                             "name": "CMV"
                         },
@@ -133,10 +133,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#8f9efb",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "GI",
                             "name": "GI"
                         },
@@ -151,10 +151,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#FF5575",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "GAL4",
                             "name": "GAL4"
                         },
@@ -176,10 +176,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
-                            "fillColor": "#00D4B5",
-                            "type": "promoter",
+                            "fillColor": "orange",
+                            "type": "启动子",
                             "internalName": "U6_P",
                             "name": "U6_P"
                         },
@@ -194,10 +194,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#8f9efb",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "LOV",
                             "name": "LOV"
                         },
@@ -212,10 +212,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#FF5575",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "VP16",
                             "name": "VP16"
                         },
@@ -237,10 +237,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
                             "fillColor": "orange",
-                            "type": "promoter",
+                            "type": "启动子",
                             "internalName": "9XUAS",
                             "name": "9XUAS"
                         },
@@ -255,10 +255,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#2AFF7E",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "Luciferase",
                             "name": "Luciferase"
                         },
@@ -272,9 +272,9 @@
         ]
     },
     {
-        "title": "4，Insulin production \nunder blue light",
-        "description": "When exposed to blue light, the engineered cells produced insulin\nCMV-GI-GAL4 \nU-6P-LOV-VP16 \n9XUAS-INS",
-        "picture": "Assets/Questions/blueins1@4x-8.png",
+        "title": "蓝光下胰岛素生成",
+        "description": "CMV-GI-GAL4 \nU-6P-LOV-VP16 \n9XUAS-INS",
+        "picture": "Assets/Questions/blue_ins@4x.png",
         "loadData": [
             {
                 "uuid": 3,
@@ -287,10 +287,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
-                            "fillColor": "#00D4B5",
-                            "type": "promoter",
+                            "fillColor": "orange",
+                            "type": "启动子",
                             "internalName": "CMV",
                             "name": "CMV"
                         },
@@ -305,10 +305,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#8f9efb",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "GI",
                             "name": "GI"
                         },
@@ -323,10 +323,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#FF5575",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "GAL4",
                             "name": "GAL4"
                         },
@@ -348,10 +348,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
-                            "fillColor": "#00D4B5",
-                            "type": "promoter",
+                            "fillColor": "orange",
+                            "type": "启动子",
                             "internalName": "U6_P",
                             "name": "U6_P"
                         },
@@ -366,10 +366,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#8f9efb",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "LOV",
                             "name": "LOV"
                         },
@@ -384,10 +384,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#FF5575",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "VP16",
                             "name": "VP16"
                         },
@@ -409,10 +409,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
                             "fillColor": "orange",
-                            "type": "promoter",
+                            "type": "启动子",
                             "internalName": "9XUAS",
                             "name": "9XUAS"
                         },
@@ -427,10 +427,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#ff99db",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "INS",
                             "name": "INS"
                         },
@@ -444,9 +444,9 @@
         ]
     },
     {
-        "title": "5，Insulin increases \nunder hyperglycemia",
-        "description": "In times of high blood sugar, \nthe engineered cells secrete insulin to bring it down\nP-GIP-INS",
-        "picture": "Assets/Questions/sugarins1@4x-8.png",
+        "title": "高血糖胰岛素上升",
+        "description": "P-GIP-INS",
+        "picture": "Assets/Questions/sugar_ins@4x.png",
         "loadData": [
             {
                 "uuid": 16,
@@ -459,10 +459,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
                             "description": "",
-                            "fillColor": "#ff8688",
-                            "type": "promoter",
+                            "fillColor": "orange",
+                            "type": "启动子",
                             "internalName": "P_GIP",
                             "name": "P_GIP"
                         },
@@ -477,10 +477,10 @@
                         "stateType": "inSequence",
                         "sourceData": {
                             "objectName": "",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
                             "description": "",
-                            "fillColor": "#ff99db",
-                            "type": "protein",
+                            "fillColor": "orange",
+                            "type": "蛋白质编码区",
                             "internalName": "INS",
                             "name": "INS"
                         },
@@ -495,9 +495,9 @@
         "note": "不好表现，我觉得这个question不需要存在，先存疑"
     },
     {
-        "title": "6，CSU project",
-        "description": "Load our project\nCMV-GI-GAL4 \nP-GIP-LOV-VP16 \n9XUAS-INS-miRNA-BS \nU-6P-miRNA \nP-GIP-circRNA",
-        "picture": "Assets/Questions/csupro1@4x-8.png",
+        "title": "CSU项目",
+        "description": "CMV-GI-GAL4 \nP-GIP-LOV-VP16 \n9XUAS-INS-miRNA-BS \nU-6P-miRNA \nP-GIP-circRNA",
+        "picture": "",
         "loadData": [
             {
                 "droppedItemModel": [
@@ -509,11 +509,11 @@
                         "posY": -4,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#00D4B5",
+                            "fillColor": "orange",
                             "internalName": "CMV",
                             "name": "CMV",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
-                            "type": "promoter"
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
                         },
                         "stateType": "inSequence",
                         "uuid": 1
@@ -526,11 +526,11 @@
                         "posY": -50.5,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#8f9efb",
+                            "fillColor": "orange",
                             "internalName": "GI",
                             "name": "GI",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
-                            "type": "protein"
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
                         },
                         "stateType": "inSequence",
                         "uuid": 2
@@ -543,11 +543,11 @@
                         "posY": -56,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#FF5575",
+                            "fillColor": "orange",
                             "internalName": "GAL4",
                             "name": "GAL4",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
-                            "type": "protein"
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
                         },
                         "stateType": "inSequence",
                         "uuid": 4
@@ -567,11 +567,11 @@
                         "posY": 90.5,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#ff8688",
+                            "fillColor": "orange",
                             "internalName": "P_GIP",
                             "name": "P_GIP",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
-                            "type": "promoter"
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
                         },
                         "stateType": "inSequence",
                         "uuid": 5
@@ -584,11 +584,11 @@
                         "posY": -55,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#8f9efb",
+                            "fillColor": "orange",
                             "internalName": "LOV",
                             "name": "LOV",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
-                            "type": "protein"
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
                         },
                         "stateType": "inSequence",
                         "uuid": 6
@@ -601,11 +601,11 @@
                         "posY": -56,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#FF5575",
+                            "fillColor": "orange",
                             "internalName": "VP16",
                             "name": "VP16",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
-                            "type": "protein"
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
                         },
                         "stateType": "inSequence",
                         "uuid": 8
@@ -628,8 +628,8 @@
                             "fillColor": "orange",
                             "internalName": "9XUAS",
                             "name": "9XUAS",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
-                            "type": "promoter"
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
                         },
                         "stateType": "inSequence",
                         "uuid": 9
@@ -642,11 +642,11 @@
                         "posY": -43.5,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#ff99db",
+                            "fillColor": "orange",
                             "internalName": "INS",
                             "name": "INS",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
-                            "type": "protein"
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
                         },
                         "stateType": "inSequence",
                         "uuid": 10
@@ -659,11 +659,11 @@
                         "posY": -43.5,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#7c7380",
+                            "fillColor": "orange",
                             "internalName": "miRNA_BS",
                             "name": "miRNA_BS",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
-                            "type": "protein"
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
                         },
                         "stateType": "inSequence",
                         "uuid": 12
@@ -683,11 +683,11 @@
                         "posY": 278,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#00D4B5",
+                            "fillColor": "orange",
                             "internalName": "U6_P",
                             "name": "U6_P",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
-                            "type": "promoter"
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
                         },
                         "stateType": "inSequence",
                         "uuid": 13
@@ -700,11 +700,11 @@
                         "posY": -45.5,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#9cab0d",
+                            "fillColor": "orange",
                             "internalName": "miRNA",
                             "name": "miRNA",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
-                            "type": "protein"
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
                         },
                         "stateType": "inSequence",
                         "uuid": 14
@@ -724,11 +724,11 @@
                         "posY": 110,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#ff8688",
+                            "fillColor": "orange",
                             "internalName": "P_GIP",
                             "name": "P_GIP",
-                            "sourceUrl": "Assets/Genetic_Element/promoter.svg",
-                            "type": "promoter"
+                            "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+                            "type": "启动子"
                         },
                         "stateType": "inSequence",
                         "uuid": 1
@@ -741,11 +741,11 @@
                         "posY": -52.5,
                         "sourceData": {
                             "description": "",
-                            "fillColor": "#78B3DF",
-                            "internalName": "circRNA",
+                            "fillColor": "orange",
+                            "internalName": "miRNA",
                             "name": "circRNA",
-                            "sourceUrl": "Assets/Genetic_Element/protein.svg",
-                            "type": "protein"
+                            "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+                            "type": "蛋白质编码区"
                         },
                         "stateType": "inSequence",
                         "uuid": 2

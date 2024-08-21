@@ -1,105 +1,105 @@
 [
     {
-        "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+        "sourceUrl": "Assets/Genetic_Element/promoter.svg",
         "description": "",
         "fillColor": "orange",
-        "type": "启动子",
+        "type": "promoter",
         "internalName": "9XUAS",
         "name": "9XUAS"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+        "sourceUrl": "Assets/Genetic_Element/promoter.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "启动子",
+        "fillColor": "#00D4B5",
+        "type": "promoter",
         "internalName": "CMV",
         "name": "CMV"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+        "sourceUrl": "Assets/Genetic_Element/promoter.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "启动子",
+        "fillColor": "#00D4B5",
+        "type": "promoter",
         "internalName": "U6_P",
         "name": "U6_P"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+        "sourceUrl": "Assets/Genetic_Element/promoter.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "启动子",
+        "fillColor": "#ff8688",
+        "type": "promoter",
         "internalName": "P_GIP",
         "name": "P_GIP"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
+        "fillColor": "#FF5575",
+        "type": "protein",
         "internalName": "GAL4",
         "name": "GAL4"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
+        "fillColor": "#8f9efb",
+        "type": "protein",
         "internalName": "GI",
         "name": "GI"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
+        "fillColor": "#ff99db",
+        "type": "protein",
         "internalName": "INS",
         "name": "INS"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
+        "fillColor": "#2AFF7E",
+        "type": "protein",
         "internalName": "Luciferase",
         "name": "Luciferase"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
+        "fillColor": "#9cab0d",
+        "type": "protein",
         "internalName": "miRNA",
         "name": "miRNA"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
-        "internalName": "miRNA",
+        "fillColor": "#78B3DF",
+        "type": "protein",
+        "internalName": "circRNA",
         "name": "circRNA"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
+        "fillColor": "#7c7380",
+        "type": "protein",
         "internalName": "miRNA_BS",
         "name": "miRNA_BS"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
+        "fillColor": "#8f9efb",
+        "type": "protein",
         "internalName": "LOV",
         "name": "LOV"
     },
     {
-        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "sourceUrl": "Assets/Genetic_Element/protein.svg",
         "description": "",
-        "fillColor": "orange",
-        "type": "蛋白质编码区",
+        "fillColor": "#FF5575",
+        "type": "protein",
         "internalName": "VP16",
         "name": "VP16"
     }

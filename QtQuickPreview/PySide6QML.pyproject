@@ -12,6 +12,7 @@
         "Temp.qml",
         "Utils.js",
         "WindowFrameRate.qml",
+        "deploy.bat",
         "main.py",
         "main.qml",
         "pd.py"

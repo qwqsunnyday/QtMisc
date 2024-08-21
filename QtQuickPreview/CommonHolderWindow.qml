@@ -12,6 +12,11 @@ import FileIO 1.0
 
 用于实时预览QML文件
 
+## 快捷键
+
+- 使用F12切换控制栏可见性
+- 使用F2重载页面(控制栏可见时)
+
 ## Layout的使用
 
 Layout布局(RowLayout/...)比基于Anchor的锚定布局(Row/Column/...)更加灵活简便, 在使用上接近XAML的StackPanel
@@ -42,9 +47,10 @@ import QtQuick.Controls.Universal
 
 */
 Window {
-    width: 800
-    height: 600
+    width: 1000
+    height: 700
     visible: true
+    visibility: Window.Maximized
     id: rootWindow
 
     flags: alwayOnTopSwitch.checked ? (Qt.Widget | Qt.Window | Qt.CustomizeWindowHint | Qt.WindowTitleHint | Qt.WindowMinMaxButtonsHint | Qt.WindowCloseButtonHint | Qt.WindowStaysOnTopHint) : (Qt.Widget | Qt.Window)
@@ -57,6 +63,8 @@ Window {
         id: mainLayout
         anchors.fill: parent
         Rectangle {
+            id: controlPanel
+            visible: false
             border.color: "gray"
             border.width: 2
             Layout.minimumHeight: controls.implicitHeight + controls.anchors.margins * 2
@@ -150,7 +158,7 @@ Window {
                     id: alwayOnTopSwitch
                     text: "Toggle Always On Top"
                     // 默认值
-                    checked: true
+                    checked: false
                     Layout.fillWidth: true
                     Layout.minimumWidth: 50
                 }
@@ -200,6 +208,24 @@ Window {
             loadSource()
         }
     }
+
+    Shortcut {
+        context: Qt.WindowShortcut
+        sequence: "F12"
+        onActivated: {
+            controlPanel.visible = !controlPanel.visible
+        }
+    }
+    Shortcut {
+        context: Qt.WindowShortcut
+        sequence: "F2"
+        onActivated: {
+            if(controlPanel.visible) {
+                loadSource()
+            }
+        }
+    }
+
     function loadSource(loadUrl) {
         // "继承"作用域
         loader.setSource(reloadUrl.text + "#" + new Date().getTime())

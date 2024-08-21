@@ -75,8 +75,8 @@ Item {
                         // ListElement {
                         //     name: "9XUAS"
                         //     internalName: "9XUAS"
-                        //     sourceUrl: "Assets/Genetic_Element/启动子.svg"
-                        //     type: "启动子"
+                        //     sourceUrl: "Assets/Genetic_Element/promoter.svg"
+                        //     type: "promoter"
                         //     color: "orange"
                         //     description: ""
                         // }
@@ -528,10 +528,10 @@ Item {
                                                 if (!keys.includes(upItem.stateType)) {
                                                     return false
                                                 }
-                                                if (upItem.sourceData.type==="启动子") {
+                                                if (upItem.sourceData.type==="promoter") {
                                                     return false
                                                 }
-                                                if (downItem.sourceData.type==="启动子" && connectionArea.index===0) {
+                                                if (downItem.sourceData.type==="promoter" && connectionArea.index===0) {
                                                     return false
                                                 }
                                                 return true
@@ -1032,6 +1032,15 @@ Item {
                                     }
                                 }
                                 Button {
+                                    id: clearCanvas
+                                    text: "Clear ❌"
+                                    onClicked: {
+                                        dropModel.clear()
+                                        sequenceModel.clear()
+                                    }
+                                }
+
+                                Button {
                                     id: evaluate
                                     text: "Evaluate ▶️"
                                     onClicked: {
@@ -1217,6 +1226,7 @@ Item {
                                                 id: debugSwitch
                                                 text: "Debug"
                                                 checkable: true
+                                                checked: settings.debug
                                             }
                                             JSConsoleButton {
                                                 windowHeight: 600

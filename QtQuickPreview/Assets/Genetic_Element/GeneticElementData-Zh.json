@@ -1,0 +1,106 @@
+[
+    {
+        "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "启动子",
+        "internalName": "9XUAS",
+        "name": "9XUAS"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "启动子",
+        "internalName": "CMV",
+        "name": "CMV"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "启动子",
+        "internalName": "U6_P",
+        "name": "U6_P"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/启动子.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "启动子",
+        "internalName": "P_GIP",
+        "name": "P_GIP"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "GAL4",
+        "name": "GAL4"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "GI",
+        "name": "GI"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "INS",
+        "name": "INS"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "Luciferase",
+        "name": "Luciferase"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "miRNA",
+        "name": "miRNA"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "miRNA",
+        "name": "circRNA"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "miRNA_BS",
+        "name": "miRNA_BS"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "LOV",
+        "name": "LOV"
+    },
+    {
+        "sourceUrl": "Assets/Genetic_Element/蛋白质编码区.svg",
+        "description": "",
+        "fillColor": "orange",
+        "type": "蛋白质编码区",
+        "internalName": "VP16",
+        "name": "VP16"
+    }
+]

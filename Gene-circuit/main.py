@@ -1,7 +1,6 @@
 # This Python file uses the following encoding: utf-8
 import os
 import sys
-from pathlib import Path
 
 from argparse import ArgumentParser
 from PySide6.QtGui import QGuiApplication, QFont
@@ -37,5 +36,4 @@ def main():
 
     sys.exit(app.exec())
 
-os.chdir("Qmls")
 main()

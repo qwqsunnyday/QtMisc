@@ -55,8 +55,8 @@ cd build\Deploy
 
 call .\runtime\Scripts\activate.bat
 @REM 使用call激活, 防止父进程退出
-@REM pyinstaller -F -c main.py --distpath=.\build --name "Gene-circuit.exe" --upx-dir=upx.exe --add-data=".\\Assets;.\\Assets" --add-data=".\*.qml;." --add-data=".\*.py;."  --add-data=".\*.js;."
-pyinstaller -F -w main.py^
+@REM pyinstaller -F -c start.py --distpath=.\build --name "Gene-circuit.exe" --upx-dir=upx.exe --add-data=".\\Assets;.\\Assets" --add-data=".\*.qml;." --add-data=".\*.py;."  --add-data=".\*.js;."
+pyinstaller -F -w start.py^
     --distpath=.\dist^
     --name="Gene-circuit.exe"^
     --add-data=".\\Assets;.\\Assets"^

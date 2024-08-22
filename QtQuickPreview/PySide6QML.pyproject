@@ -9,7 +9,6 @@
         "JSConsoleButton.qml",
         "PlotCanvas.qml",
         "SwipeBanner.qml",
-        "Temp.qml",
         "Utils.js",
         "WindowFrameRate.qml",
         "deploy.bat",

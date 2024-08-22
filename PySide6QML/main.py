@@ -5,11 +5,12 @@ from pathlib import Path
 from PySide6.QtGui import QGuiApplication
 from PySide6.QtQml import QQmlApplicationEngine
 
+import FileIO
 
 if __name__ == "__main__":
     app = QGuiApplication(sys.argv)
     engine = QQmlApplicationEngine()
-    qml_file = Path(__file__).resolve().parent / "main.qml"
+    qml_file = Path(__file__).resolve().parent / "CommonHolderWindow.qml"
     engine.load(qml_file)
     if not engine.rootObjects():
         sys.exit(-1)

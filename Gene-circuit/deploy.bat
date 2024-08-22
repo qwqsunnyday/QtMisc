@@ -70,8 +70,17 @@ call .\runtime\Scripts\deactivate.bat
 copy /Y .\dist\Gene-circuit.exe ..
 rmdir /s /q .\dist
 rmdir /s /q .\build
-echo 输出exe: \build\Gene-circuit.exe
 cd ..\..
-    
+echo 输出exe: .\build\Gene-circuit.exe
+
+choice /m "启动 .\build\Gene-circuit.exe?"
+if errorlevel 2 (    
+    echo ""
+) else if errorlevel 1 (
+    echo "启动"
+    .\build\Gene-circuit.exe
+)
+pause
+
 @REM pip freeze > requirements.txt
 @REM pip install -r requirements.txt

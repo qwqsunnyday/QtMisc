@@ -26,7 +26,7 @@ Item {
         property color debugGreen: debug ? Qt.lighter("green") : "transparent"
         property color debugPurple: debug ? Qt.lighter("purple") : "transparent"
         property url questionsDataUrl: "Assets/Questions/Questions.json"
-        property url tutorialDataUrl: "Assets/Tutorial.json"
+        property url tutorialDataUrl: "Assets/Tutorial/Tutorial.json"
         property url sourceModelDataUrl: "Assets/Genetic_Element/GeneticElementData.json"
         property url predefinedCommandsUrl: "Assets/PredefinedCommands.json"
         property url saveUrl: "Assets/Save.json"
@@ -1156,9 +1156,11 @@ Item {
                                         Repeater {
                                             model: JSON.parse(FileIO.read(settings.tutorialDataUrl))
                                             delegate: ColumnLayout {
+                                                id: tutorialTextSection
                                                 spacing: 20
                                                 required property string title
                                                 required property string description
+                                                required property string picture
                                                 Text {
                                                     Layout.fillHeight: true
                                                     Layout.fillWidth: true
@@ -1167,6 +1169,21 @@ Item {
                                                     font.pixelSize: 18
                                                     font.bold: true
                                                     horizontalAlignment: Text.AlignHCenter
+                                                }
+                                                
+                                                Control {
+                                                    background: Rectangle {
+                                                        border.color: settings.debugRed
+                                                        border.width: 2
+                                                    }
+                                                    Layout.fillWidth: true
+                                                    Layout.fillHeight: true
+                                                    Layout.alignment: Qt.AlignHCenter
+                                                    Image {
+                                                        anchors.fill: parent
+                                                        source: tutorialTextSection.picture
+                                                        fillMode: Image.PreserveAspectFit
+                                                    }
                                                 }
 
                                                 Text {
